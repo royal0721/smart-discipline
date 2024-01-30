@@ -1,0 +1,12 @@
+<div class="mx-auto px-2 py-6 sm:px-8 lg:container">
+  <app-plan-board-header></app-plan-board-header>
+  <ng-container *ngIf="planCards.length > 0">
+    <div
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      class="card-list dark:bg-dark bg-white"
+      (cdkDropListDropped)="drop($event)">
+      <app-plan-board-card class="card" *ngFor="let card of planCards" [cardData]="card" cdkDrag></app-plan-board-card>
+    </div>
+  </ng-container>
+</div>
