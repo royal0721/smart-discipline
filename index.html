@@ -510,7 +510,7 @@
 
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
-    flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
+    flex: none; display: grid; grid-template-columns: repeat(5, 1fr);
     background: rgba(255,255,255,.94); backdrop-filter: blur(20px);
     box-shadow: 0 -1px 0 var(--hair); padding: 10px 6px 26px;
   }
@@ -715,19 +715,6 @@
               <div class="routeChip" id="routeChip"></div>
             </div>
 
-            <div class="nextStop">
-              <div class="nsTop">
-                <span class="nsTag" id="nsTag">下一站</span>
-                <span class="nsCount" id="nsCount">--</span>
-              </div>
-              <h3 class="nsTitle" id="nsTitle">今天沒有行程</h3>
-              <div class="nsMeta" id="nsMeta"></div>
-              <div class="nsSay" id="nsSay">…</div>
-              <button class="nsBtn" id="nsBtn">現在叫車</button>
-            </div>
-
-            <div class="places" id="places"></div>
-
             <div class="acts" id="acts"></div>
 
             <div class="pane">
@@ -741,6 +728,26 @@
 
             <div class="scTitle" style="margin-top:4px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
+          </section>
+
+          <!-- 行程 -->
+          <section class="screen" id="sc-trip" hidden>
+            <div class="scTitle"><h2>行程</h2><span id="tripWho">乙方跑客戶</span></div>
+            <div class="nextStop">
+              <div class="nsTop">
+                <span class="nsTag" id="nsTag">下一站</span>
+                <span class="nsCount" id="nsCount">--</span>
+              </div>
+              <h3 class="nsTitle" id="nsTitle">今天沒有行程</h3>
+              <div class="nsMeta" id="nsMeta"></div>
+              <div class="nsSay" id="nsSay">…</div>
+              <button class="nsBtn" id="nsBtn">現在叫車</button>
+            </div>
+
+            <div class="places" id="places"></div>
+
+            <div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">今天的安排</h2><span id="todayLeft"></span></div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="todayList"></div>
           </section>
 
           <!-- 個性 -->
@@ -1474,6 +1481,102 @@
     return { pos: new Float32Array(pos), nor, uv: new Float32Array(uv), idx: new Uint16Array(idx) };
   }
 
+  /* ── 車身：沿車長放樣的圓角剖面 ───────────────────────
+     參考圖是又短又高的泡泡車，不是長條車。所以不用單一超二次
+     曲面，而是定義一條側面輪廓（車頂線、車底線、車寬），沿 Z
+     軸放樣；車窗用同一條輪廓往外偏移一點的曲面片，才會服貼。
+     +Z 是車頭。
+     ──────────────────────────────────────────────────── */
+  const BODY = { A: 0.96, C: 1.09, n: 2.75, END: 1.15, CAP: 0.15 };
+
+  /* |t| <= 1 是車身本體（幾乎維持全寬，車頭仍是一個完整的面）；
+     超過 1 之後在 CAP 的長度內收成圓角端蓋，車頭才不會變成尖的。 */
+  function bodyProfile(t) {
+    const at = Math.abs(t);
+    let taper;
+    if (at <= 1) taper = 1 - 0.09 * Math.pow(at, 3);
+    else {
+      const k = Math.min(1, (at - 1) / BODY.CAP);
+      taper = 0.91 * Math.sqrt(Math.max(0, 1 - k * k));
+    }
+    const tc = Math.min(1, at) * Math.sign(t);
+    const top = 0.88 - 0.34 * Math.pow(Math.max(0, tc), 2.3) - 0.05 * Math.pow(Math.max(0, -tc), 3);
+    const bot = -0.86 + 0.12 * Math.pow(Math.abs(tc), 4);
+    return { a: BODY.A * taper, b: (top - bot) / 2 * taper, cy: (top + bot) / 2 };
+  }
+
+  /* 數值求出 (x,y) 落在車頭表面的 z，五官才貼得準 */
+  function frontZ(x, y) {
+    const e = 2 / BODY.n;
+    for (let t = BODY.END; t > 0.3; t -= 0.004) {
+      const p = bodyProfile(t);
+      if (p.a < 1e-3 || p.b < 1e-3) continue;
+      const v = (y - p.cy) / p.b;
+      if (Math.abs(v) > 1) continue;
+      const th = Math.asin(Math.sign(v) * Math.pow(Math.abs(v), BODY.n / 2));
+      const c = Math.cos(th);
+      if (Math.abs(x) <= p.a * Math.sign(c) * Math.pow(Math.abs(c), e)) return BODY.C * t;
+    }
+    return BODY.C * 0.9;
+  }
+
+  /* 車窗視帶：給定高度區間，回推每個剖面對應的角度範圍。
+     車頭處若整個上緣都落在區間內，左右兩片會在車頂正中接起來，
+     自然形成包覆式前擋；車頂上緣則留給綠色。 */
+  function glassArc(t0, t1, y0, y1, side, off, nu, nv) {
+    const n2 = BODY.n / 2, e = 2 / BODY.n;
+    const ang = v => { const c = Math.max(-1, Math.min(1, v)); return Math.asin(Math.sign(c) * Math.pow(Math.abs(c), n2)); };
+    const cs = w => { const c = Math.cos(w); return Math.sign(c) * Math.pow(Math.abs(c), e); };
+    const sn = w => { const v = Math.sin(w); return Math.sign(v) * Math.pow(Math.abs(v), e); };
+    const pos = [], uv = [], idx = [];
+    for (let i = 0; i <= nu; i++) {
+      const t = t0 + (t1 - t0) * i / nu, p = bodyProfile(t);
+      const b = Math.max(p.b, 1e-4);
+      const v0 = typeof y0 === "function" ? y0(t) : y0;
+      const v1 = typeof y1 === "function" ? y1(t) : y1;
+      const a0 = ang((v0 - p.cy) / b);
+      const a1 = Math.max(a0, Math.min(Math.PI / 2, ang((v1 - p.cy) / b)));
+      for (let j = 0; j <= nv; j++) {
+        let th = a0 + (a1 - a0) * j / nv;
+        if (side < 0) th = Math.PI - th;
+        const dx = cs(th), dy = sn(th), l = Math.hypot(dx, dy) || 1;
+        pos.push(p.a * dx + off * dx / l, p.cy + p.b * dy + off * dy / l, BODY.C * t);
+        uv.push(j / nv, i / nu);
+      }
+    }
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const a = i * (nv + 1) + j, b2 = a + nv + 1;
+      idx.push(a, a + 1, b2, a + 1, b2 + 1, b2);
+    }
+    return finalize(pos, idx, uv);
+  }
+
+  /* t0..t1 沿車長，th0..th1 剖面角度（90° 是車頂），off 為外偏移 */
+  function loftMesh(t0, t1, th0, th1, off, nu, nv) {
+    const pos = [], uv = [], idx = [], e = 2 / BODY.n;
+    const cs = w => { const c = Math.cos(w); return Math.sign(c) * Math.pow(Math.abs(c), e); };
+    const sn = w => { const s = Math.sin(w); return Math.sign(s) * Math.pow(Math.abs(s), e); };
+    for (let i = 0; i <= nu; i++) {
+      const t = t0 + (t1 - t0) * i / nu, p = bodyProfile(t);
+      for (let j = 0; j <= nv; j++) {
+        const th = th0 + (th1 - th0) * j / nv;
+        const dx = cs(th), dy = sn(th);
+        let x = p.a * dx, y = p.cy + p.b * dy;
+        if (off) {
+          const l = Math.hypot(dx, dy) || 1;
+          x += off * dx / l; y += off * dy / l;
+        }
+        pos.push(x, y, BODY.C * t);
+        uv.push(j / nv, i / nu);
+      }
+    }
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const a = i * (nv + 1) + j, b = a + nv + 1;
+      idx.push(a, a + 1, b, a + 1, b + 1, b);
+    }
+    return finalize(pos, idx, uv);
+  }
+
   function superq(e1, e2, nu, nv) {
     const pos = [], uv = [], idx = [];
     const c = (w, e) => { const v = Math.cos(w); return Math.sign(v) * Math.pow(Math.abs(v), e); };
@@ -1574,10 +1677,12 @@
         return;
       }
       vec3 base = uColA;
-      if (uMode == 0) {                                  // 上下雙色，分界帶弧度
-        float b = uSplit + 0.13 * cos(vL.x * 1.25);
-        base = mix(uColB, uColA, smoothstep(b - 0.03, b + 0.03, vL.y));
-        if (uStripe > 0.5 && abs(vL.x) < 0.11 && vL.y > -0.1) base = vec3(0.97);
+      if (uMode == 0) {                                  // 車頂與車尾綠、下半白
+        float b = uSplit + 0.10 * cos(vL.x * 1.3);
+        float g = smoothstep(b - 0.05, b + 0.05, vL.y);
+        g = max(g, smoothstep(-0.46, -0.66, vL.z));
+        base = mix(uColB, uColA, g);
+        if (uStripe > 0.5 && abs(vL.x) < 0.12 && vL.y > 0.0) base = vec3(0.97);
       } else if (uMode == 3) {                           // 貼花（車頂燈箱、車牌字樣）
         vec4 t = texture2D(uTex, vUV);
         if (t.a < 0.5) discard;
@@ -1629,8 +1734,15 @@
       return b;
     };
 
+    const D = Math.PI / 180;
     const MESH = {
-      body:  upload(superq(0.42, 0.42, 34, 46)),
+      body:  upload(loftMesh(-BODY.END, BODY.END, 0, Math.PI * 2, 0, 62, 52)),
+      // 車窗：前擋整片，側窗兩片，後擋一片，全都貼著車身外偏移
+      // 分層塗裝：車身整台綠，白色下半身與深色車窗各是一片貼合車身的殼
+      pnR:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 0.86 ? 9 : 0.06,  1, 0.012, 60, 18)),
+      pnL:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 0.86 ? 9 : 0.06, -1, 0.012, 60, 18)),
+      glR:   upload(glassArc(-1.06, BODY.END, 0.04, 0.56,  1, 0.026, 50, 14)),
+      glL:   upload(glassArc(-1.06, BODY.END, 0.04, 0.56, -1, 0.026, 50, 14)),
       soft:  upload(superq(0.62, 0.62, 26, 34)),
       sph:   upload(superq(1, 1, 20, 26)),
       cyl:   upload(cylinder(26)),
@@ -1664,7 +1776,6 @@
     }
 
     gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.CULL_FACE);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     function drawPart(p, eye) {
@@ -1693,11 +1804,9 @@
         gl.vertexAttribPointer(loc, sz, gl.FLOAT, false, 0, 0);
       }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.idx);
-      if (p.mode === 4) { gl.enable(gl.BLEND); gl.depthMask(false); gl.disable(gl.CULL_FACE); }
-      if (p.mode === 3) gl.disable(gl.CULL_FACE);
+      if (p.mode === 4) { gl.enable(gl.BLEND); gl.depthMask(false); }
       gl.drawElements(gl.TRIANGLES, b.n, gl.UNSIGNED_SHORT, 0);
-      if (p.mode === 4) { gl.disable(gl.BLEND); gl.depthMask(true); gl.enable(gl.CULL_FACE); }
-      if (p.mode === 3) gl.enable(gl.CULL_FACE);
+      if (p.mode === 4) { gl.disable(gl.BLEND); gl.depthMask(true); }
     }
 
     function render(parts, yaw, pitch, hop, dpr) {
@@ -1725,82 +1834,89 @@
 
     P.push({ m: "quad", mode: 4, a: sk.acc === "neon" ? "#7DD3FC" : "#000000",
              alpha: sk.acc === "neon" ? 0.42 : 0.26, ground: true,
-             pos: [0,-0.95,0.05], rot: [-Math.PI/2,0,0], scl: [1.55,1.45,1] });
+             pos: [0,-1.02,0.02], rot: [-Math.PI/2,0,0], scl: [1.45,1.40,1] });
 
-    // 車輪
-    for (const x of [-0.86, 0.86]) for (const z of [0.76, -0.78])
-      P.push({ m: "cyl", a: tyre, spec: 0.18, shin: 14, amb: 0.34,
-               pos: [x,-0.60,z], rot: [0,0,Math.PI/2], scl: [0.29,0.10,0.29] });
+    // 車輪：小顆、收在車底，只露出下緣
+    for (const x of [-0.66, 0.66]) for (const z of [0.62, -0.64]) {
+      P.push({ m: "cyl", a: tyre, spec: 0.22, shin: 18, amb: 0.38,
+               pos: [x,-0.83,z], rot: [0,0,Math.PI/2], scl: [0.195,0.115,0.195] });
+      P.push({ m: "cyl", a: "#8E9AA6", spec: 0.6, shin: 40, amb: 0.46,
+               pos: [x*1.015,-0.83,z], rot: [0,0,Math.PI/2], scl: [0.095,0.118,0.095] });
+    }
 
-    // 車身：上綠下白
-    P.push({ m: "body", mode: 0, a: sk.body, b: sk.lower, split: -0.04,
-             spec: 0.72, shin: 46, amb: 0.46, stripe: sk.acc === "racer",
-             pos: [0,0,0], scl: [1.02,0.74,1.28] });
+    // 車身（整台品牌綠）
+    P.push({ m: "body", a: sk.body, spec: 0.78, shin: 52, amb: 0.46, stripe: sk.acc === "racer" });
 
-    // 擋風玻璃：從車身前上方穿出來，形成環繞的深色車窗
-    P.push({ m: "soft", mode: 2, a: sk.glass, spec: 1.15, shin: 96, amb: 0.16,
-             pos: [0,0.30,0.36], scl: [0.90,0.31,0.70] });
+    // 白色下半身：車尾留綠，所以只包到 t = -0.56
+    const paint = { a: sk.lower, spec: 0.72, shin: 48, amb: 0.50 };
+    for (const m of ["pnR", "pnL"]) P.push({ m, ...paint });
+
+    // 包覆式車窗視帶
+    const glassMat = { a: sk.glass, spec: 1.25, shin: 110, amb: 0.13, mode: 2 };
+    for (const m of ["glR", "glL"]) P.push({ m, ...glassMat });
 
     // 後照鏡
-    for (const x of [-1.06, 1.06])
-      P.push({ m: "soft", a: sk.body, spec: 0.6, shin: 40, amb: 0.32,
-               pos: [x,0.16,0.52], scl: [0.13,0.09,0.10] });
+    for (const x of [-0.98, 0.98])
+      P.push({ m: "soft", a: sk.body, spec: 0.6, shin: 40, amb: 0.40,
+               pos: [x,0.14,0.40], scl: [0.11,0.075,0.09] });
 
-    // 車頂燈箱 + 字樣
-    P.push({ m: "soft", a: sk.deep, spec: 0.45, shin: 30, amb: 0.34, pos: [0,0.80,0.10], scl: [0.32,0.11,0.18] });
-    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.62, spec: 0.1,
-             pos: [0,0.80,0.285], scl: [0.30,0.095,1] });
+    // 車頂燈箱
+    P.push({ m: "soft", a: sk.deep, spec: 0.5, shin: 34, amb: 0.44, pos: [0,0.90,0.0], scl: [0.30,0.10,0.19] });
+    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.70, spec: 0.1,
+             pos: [0,0.90,0.195], scl: [0.28,0.088,1] });
 
-    // 車牌
-    P.push({ m: "soft", a: sk.deep, spec: 0.35, shin: 26, amb: 0.32, pos: [0,-0.46,1.20], scl: [0.28,0.095,0.05] });
-    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.62, spec: 0.1,
-             pos: [0,-0.46,1.26], scl: [0.26,0.082,1] });
-
-    // 大頭燈＝眼睛
+    // 大頭燈＝眼睛，貼在車頭真正的表面上
+    const eyeY = -0.28;
     for (const x of [-0.55, 0.55]) {
-      P.push({ m: "sph", a: "#FFFFFF", spec: 0.9, shin: 60, amb: 0.66, pos: [x,-0.02,1.10], scl: [0.27,0.27,0.15] });
-      P.push({ m: "sph", a: sk.light, spec: 1.3, shin: 80, amb: 0.60, pos: [x,-0.02,1.16], scl: [0.215,0.215,0.13] });
-      // 眼睛一律圓的，心情靠嘴巴和眉毛表達
-      P.push({ m: "sph", a: dark, spec: 0.5, shin: 40, amb: 0.42, pos: [x,-0.02,1.255], scl: [0.115,0.115,0.06] });
-      P.push({ m: "sph", a: "#FFFFFF", spec: 0.4, amb: 0.9, pos: [x+0.042,0.028,1.29], scl: [0.042,0.042,0.03] });
+      const z = frontZ(x, eyeY);
+      P.push({ m: "sph", a: "#FFFFFF", spec: 0.9, shin: 60, amb: 0.76, pos: [x,eyeY,z-0.10], scl: [0.27,0.27,0.20] });
+      P.push({ m: "sph", a: sk.light, spec: 1.3, shin: 90, amb: 0.72, pos: [x,eyeY,z-0.045], scl: [0.215,0.215,0.17] });
+      P.push({ m: "sph", a: dark, spec: 0.5, shin: 40, amb: 0.46, pos: [x,eyeY,z+0.065], scl: [0.108,0.108,0.07] });
+      P.push({ m: "sph", a: "#FFFFFF", spec: 0.4, amb: 0.92, pos: [x+0.040,eyeY+0.048,z+0.105], scl: [0.039,0.039,0.03] });
       if (mood === "grumpy")
-        P.push({ m: "soft", a: dark, spec: 0.3, amb: 0.45, pos: [x,0.145,1.235], rot: [0,0, x < 0 ? -0.42 : 0.42], scl: [0.15,0.026,0.04] });
+        P.push({ m: "soft", a: dark, spec: 0.3, amb: 0.45, pos: [x,eyeY+0.17,frontZ(x,eyeY+0.17)+0.02], rot: [0,0, x < 0 ? -0.42 : 0.42], scl: [0.15,0.026,0.04] });
       if (mood === "sleepy")
-        P.push({ m: "soft", a: sk.body, spec: 0.4, amb: 0.4, pos: [x,0.085,1.245], scl: [0.20,0.055,0.05] });
+        P.push({ m: "soft", a: sk.body, spec: 0.4, amb: 0.42, pos: [x,eyeY+0.10,frontZ(x,eyeY+0.10)+0.02], scl: [0.20,0.055,0.05] });
     }
 
     // 前保桿的嘴
-    const mm = mood === "grumpy" ? "frown" : "smile";
+    const mY = mood === "grumpy" ? -0.60 : -0.52;
     if (mood === "sleepy") {
-      P.push({ m: "ring", a: dark, spec: 0.35, amb: 0.45, pos: [0,-0.22,1.27], scl: [0.075,0.075,0.075] });
+      P.push({ m: "ring", a: dark, spec: 0.35, amb: 0.48, pos: [0,-0.52,frontZ(0,-0.52)+0.02], scl: [0.075,0.075,0.075] });
     } else {
-      P.push({ m: mm, a: dark, spec: 0.35, amb: 0.45,
-               pos: [0, mood === "grumpy" ? -0.30 : -0.20, 1.26],
-               scl: [0.30, mood === "happy" ? 0.24 : 0.17, 0.14] });
+      P.push({ m: mood === "grumpy" ? "frown" : "smile", a: dark, spec: 0.35, amb: 0.48,
+               pos: [0, mY, frontZ(0.28, mY) + 0.03],
+               scl: [0.33, mood === "happy" ? 0.26 : 0.19, 0.13] });
     }
+
+    // 車牌
+    const pY = -0.665, pZ = frontZ(0.24, pY);
+    P.push({ m: "soft", a: sk.deep, spec: 0.4, shin: 28, amb: 0.44, pos: [0,pY,pZ-0.03], scl: [0.26,0.088,0.075] });
+    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.72, spec: 0.1,
+             pos: [0,pY,pZ+0.05], scl: [0.24,0.075,1] });
 
     // 造型配件
     if (sk.acc === "cat") {
-      for (const x of [-0.52, 0.52]) {
-        P.push({ m: "cone", a: sk.body, spec: 0.5, amb: 0.34, pos: [x,0.86,0.06], rot: [0.16,0, x<0 ? 0.24 : -0.24], scl: [0.24,0.30,0.16] });
-        P.push({ m: "cone", a: "#FF9BB3", spec: 0.5, amb: 0.42, pos: [x,0.84,0.14], rot: [0.16,0, x<0 ? 0.24 : -0.24], scl: [0.14,0.20,0.10] });
+      for (const x of [-0.50, 0.50]) {
+        P.push({ m: "cone", a: sk.body, spec: 0.5, amb: 0.44, pos: [x,0.98,0.0], rot: [0.16,0, x<0 ? 0.26 : -0.26], scl: [0.23,0.30,0.16] });
+        P.push({ m: "cone", a: "#FF9BB3", spec: 0.5, amb: 0.52, pos: [x,0.96,0.08], rot: [0.16,0, x<0 ? 0.26 : -0.26], scl: [0.13,0.19,0.10] });
       }
     }
     if (sk.acc === "racer") {
-      P.push({ m: "soft", a: "#1A2028", spec: 0.5, amb: 0.30, pos: [0,0.66,-1.16], scl: [0.60,0.045,0.11] });
+      P.push({ m: "soft", a: "#1A2028", spec: 0.5, amb: 0.30, pos: [0,0.62,-1.06], scl: [0.56,0.045,0.10] });
       for (const x of [-0.44, 0.44])
-        P.push({ m: "soft", a: "#1A2028", spec: 0.4, amb: 0.30, pos: [x,0.50,-1.10], scl: [0.05,0.16,0.05] });
+        P.push({ m: "soft", a: "#1A2028", spec: 0.4, amb: 0.30, pos: [x,0.48,-1.02], scl: [0.05,0.15,0.05] });
     }
     if (sk.acc === "deer") {
       for (const x of [-0.42, 0.42]) {
-        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x,0.95,0.05], rot: [0,0, x<0 ? 0.34 : -0.34], scl: [0.035,0.24,0.035] });
-        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x*1.5,1.16,0.05], rot: [0,0, x<0 ? 1.15 : -1.15], scl: [0.03,0.16,0.03] });
+        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x,1.06,0.0], rot: [0,0, x<0 ? 0.34 : -0.34], scl: [0.035,0.24,0.035] });
+        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x*1.5,1.28,0.0], rot: [0,0, x<0 ? 1.15 : -1.15], scl: [0.03,0.16,0.03] });
       }
-      P.push({ m: "sph", a: "#FF4D4D", spec: 0.9, shin: 50, amb: 0.55, pos: [0,-0.14,1.30], scl: [0.13,0.13,0.09] });
+      P.push({ m: "sph", a: "#FF4D4D", spec: 0.9, shin: 50, amb: 0.55, pos: [0,-0.50,1.12], scl: [0.13,0.13,0.10] });
     }
     if (sk.acc === "sakura") {
-      P.push({ m: "ring", a: "#FF9BB8", spec: 0.6, amb: 0.45, pos: [0,0.80,0.10], rot: [Math.PI/2,0,0], scl: [0.40,0.40,0.40] });
-      for (const [x, y, z] of [[-0.9,0.95,0.5],[0.95,1.02,-0.2],[0.7,0.62,1.0],[-1.05,0.55,-0.6]])
+      P.push({ m: "ring", a: "#FF9BB8", spec: 0.6, amb: 0.45, pos: [0,0.92,0.02], rot: [Math.PI/2,0,0], scl: [0.40,0.40,0.40] });
+      for (const [x, y, z] of [[-0.95,1.05,0.4],[1.0,1.12,-0.25],[0.72,0.70,0.95],[-1.08,0.60,-0.6]])
         P.push({ m: "sph", a: "#FF9BB8", spec: 0.6, amb: 0.52, pos: [x,y,z], scl: [0.065,0.02,0.065] });
     }
     return P;
@@ -1882,7 +1998,7 @@
       get(sk, key) {
         if (cache[key]) return cache[key];
         if (!init()) return null;
-        R.render(carParts(sk, "normal"), 0.30, 0.13, 0, 2);
+        R.render(carParts(sk, "normal"), 0.32, 0.14, 0, 2);
         try { cache[key] = cv.toDataURL("image/png"); } catch { return null; }
         return cache[key];
       }
@@ -1905,6 +2021,7 @@
     home:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.2-5.4a2 2 0 0 1 2-1.6h5.6a2 2 0 0 1 2 1.6L18 17M7 17v2M17 17v2M8.5 13.5h7"/></svg>`,
     pers:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
     skin:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.4-1.2-1.8-1.2-2.9 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4-4-7-9-7Z"/><circle cx="8" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="11" r="1.2" fill="currentColor" stroke="none"/></svg>`,
+    trip:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
     box:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v12H3zM3 8l2-4h14l2 4M12 8v12"/></svg>`,
     pet:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
     wash:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c0 4-4 5.5-4 9a4 4 0 0 0 8 0c0-3.5-4-5-4-9Z"/><path d="M5 20h14"/></svg>`,
@@ -2039,6 +2156,25 @@
     }));
   }
 
+  function renderTrip() {
+    $("tripWho").textContent = PERSONAS[persona].name;
+    renderNextStop(); renderPlaces(); renderToday();
+  }
+
+  function renderToday() {
+    const now = hour * 60 + 40;
+    const list = PERSONAS[persona].appts.map(a => ({ ...a, at: a.h * 60 + a.m }));
+    $("todayLeft").textContent = `${list.filter(a => a.at > now).length} 個未到`;
+    $("todayList").innerHTML = list.map(a => {
+      const past = a.at <= now;
+      return `<div class="trip" style="${past ? "opacity:.45" : ""}">
+        <span class="idx" style="background:${past ? "#9AA79F" : "var(--grass)"}">${pad(a.h)}</span>
+        <span>${a.t}<br><span style="color:var(--fog);font-size:11.5px">${a.loc}</span></span>
+        <span class="km">${past ? "已完成" : a.ride + " 分車程"}</span>
+      </div>`;
+    }).join("");
+  }
+
   function renderMap() {
     const list = trips();
     if (mapHl >= list.length) mapHl = 0;
@@ -2070,7 +2206,7 @@
     if (Car3D.mount($("carHold"))) Car3D.set(skin(), m);
     else $("carHold").innerHTML = carSVG(skin(), m, false);
     $("bubble").textContent = line();
-    renderMap(); renderNextStop(); renderPlaces();
+    renderMap();
 
     const lv = level(), prog = Math.min(100, S.intimacy - (lv - 1) * 100);
     $("lvText").textContent = `Lv.${lv} · ${LV_NAMES[lv - 1]}`;
@@ -2239,8 +2375,9 @@
 
   function renderTabs() {
     const T = [
-      { id: "home", n: "車庫", ic: "home" }, { id: "pers", n: "個性", ic: "pers" },
-      { id: "skin", n: "造型", ic: "skin" }, { id: "box", n: "盲盒", ic: "box" }
+      { id: "home", n: "車庫", ic: "home" }, { id: "trip", n: "行程", ic: "trip" },
+      { id: "pers", n: "個性", ic: "pers" }, { id: "skin", n: "造型", ic: "skin" },
+      { id: "box", n: "盲盒", ic: "box" }
     ];
     $("tabs").innerHTML = T.map(t => `
       <button class="tab" data-t="${t.id}" aria-selected="${t.id === currentTab}">
@@ -2252,10 +2389,10 @@
 
   function go(id) {
     currentTab = id;
-    ["home", "pers", "skin", "box"].forEach(k => { $("sc-" + k).hidden = k !== id; });
+    ["home", "trip", "pers", "skin", "box"].forEach(k => { $("sc-" + k).hidden = k !== id; });
     $("screens").scrollTop = 0;
     renderTabs();
-    ({ home: renderHome, pers: renderPers, skin: renderSkins, box: renderBox })[id]();
+    ({ home: renderHome, trip: renderTrip, pers: renderPers, skin: renderSkins, box: renderBox })[id]();
   }
 
   /* ════ 互動 ════════════════════════════════════════════ */
@@ -2420,6 +2557,7 @@
       renderClock();
       if (S.onboarded) recordVisit(hour);
       if (currentTab === "home") renderHome();
+      if (currentTab === "trip") renderTrip();
       renderConsole();
     });
 
@@ -2438,6 +2576,7 @@
       $("personaRow").querySelectorAll("[data-pp]").forEach(o =>
         o.setAttribute("aria-pressed", String(o.dataset.pp === persona)));
       if (currentTab === "home") renderHome();
+      if (currentTab === "trip") renderTrip();
       renderConsole();
       toast(`情境切換：${PERSONAS[persona].name}`);
     }));
