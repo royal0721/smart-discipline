@@ -508,6 +508,80 @@
 
   .privacy { display: flex; gap: 10px; font-size: 11.5px; color: var(--fog-dim); padding: 2px 6px 8px; line-height: 1.5; }
 
+  /* ── 每日行車日誌 ─────────────────────────────────────── */
+  .logCard {
+    display: flex; flex-direction: column; gap: 7px; width: 100%; text-align: left;
+    padding: 15px 16px; border: none; border-radius: var(--rLg); cursor: pointer;
+    background: linear-gradient(150deg, #F6F2E4 0%, #FFFFFF 70%);
+    box-shadow: var(--lift); font-family: var(--sans); color: var(--chalk); transition: .18s;
+  }
+  .logCard > span { display: block; }
+  .logCard:hover { transform: translateY(-2px); }
+  .logCard:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  .logTop { display: flex !important; align-items: baseline; gap: 10px; }
+  .logTop .lt { font-size: 13.5px; font-weight: 700; color: #8A6A22; }
+  .logTop .lg { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--fog-dim); }
+  .logLine { font-size: 12.5px; color: var(--fog); line-height: 1.5; }
+  .logGo { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--lime-d); }
+
+  .kmRow { display: flex; gap: 16px; font-size: 12px; color: var(--fog); }
+  .kmRow b { color: var(--chalk); font-family: var(--mono); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .sheet {
+    position: absolute; inset: 0; z-index: 78; display: flex; flex-direction: column;
+    background: linear-gradient(180deg, #FBF7EC 0%, var(--ink) 38%);
+    animation: sheetUp .4s cubic-bezier(.2,1,.35,1);
+  }
+  .sheet[hidden] { display: none; }
+  @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+  .sheetBar { flex: none; display: flex; align-items: center; padding: 58px 20px 12px; }
+  .sheetTitle { font-size: 20px; font-weight: 900; letter-spacing: -.03em; }
+  .sheetX {
+    margin-left: auto; width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--slab-2); color: var(--fog); font-size: 14px; cursor: pointer;
+  }
+  .sheetX:hover { background: var(--slab-3); color: var(--chalk); }
+  .sheetBody { flex: 1; overflow-y: auto; padding: 4px 18px 28px; display: flex; flex-direction: column; gap: 14px; scrollbar-width: none; }
+  .sheetBody::-webkit-scrollbar { display: none; }
+  .sheetBody > * { flex: none; }
+
+  .logHero { border-radius: var(--rLg); overflow: hidden; height: 168px; background: #E9EFE2; box-shadow: var(--lift); }
+  .logHero svg { width: 100%; height: 100%; display: block; }
+  .logStat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .logStat div {
+    background: #FFFFFF; border: 1px solid var(--hair); border-radius: var(--rMd);
+    padding: 12px 6px; text-align: center; box-shadow: var(--lift);
+  }
+  .logStat b { display: block; font-family: var(--mono); font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .logStat span { font-size: 11px; color: var(--fog-dim); }
+  .logSay {
+    background: #17211B; color: #F4F7F1; padding: 13px 15px; border-radius: 16px 16px 16px 6px;
+    font-size: 13.5px; line-height: 1.55;
+  }
+  .logItem { display: flex; gap: 11px; align-items: flex-start; font-size: 12.5px; color: var(--fog); line-height: 1.5; }
+  .logItem .tm { flex: none; width: 42px; font-family: var(--mono); font-size: 11.5px; color: var(--lime-d); }
+  .logSec { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--fog-dim); }
+
+  /* ── 紀念品收藏 ───────────────────────────────────────── */
+  .souvGroup { display: flex; flex-direction: column; gap: 9px; }
+  .souvHead { display: flex; align-items: baseline; gap: 8px; }
+  .souvHead .n { font-size: 13.5px; font-weight: 700; }
+  .souvHead .c { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--fog-dim); }
+  .souvGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .souvCell {
+    position: relative; aspect-ratio: 1; border: none; border-radius: 14px; cursor: pointer;
+    background: #FFFFFF; box-shadow: var(--lift); display: grid; place-items: center;
+    padding: 6px; font-family: var(--sans); color: var(--chalk); transition: .16s;
+  }
+  .souvCell:hover { transform: translateY(-2px); }
+  .souvCell:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  .souvCell.lock { background: #F1F3EE; box-shadow: none; cursor: default; }
+  .souvCell .dot2 { width: 30px; height: 30px; border-radius: 9px; }
+  .souvCell.lock .dot2 { background: #DDE2D8 !important; border-radius: 50%; }
+  .souvCell .qty { position: absolute; right: 5px; bottom: 4px; font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); }
+  .souvCell[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
+  .souvName { font-size: 11px; color: var(--fog); line-height: 1.4; }
+
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
     flex: none; display: grid; grid-template-columns: repeat(5, 1fr);
@@ -628,7 +702,7 @@
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn primary" id="btnPush" style="justify-content:center">發一則推播</button>
-        <button class="btn" id="btnSeed" style="justify-content:center">灌一週紀錄</button>
+        <button class="btn" id="btnSeed" style="justify-content:center">模擬跑一天</button>
         <button class="btn ghost" id="btnReset" style="justify-content:center">重來</button>
       </div>
     </div>
@@ -717,13 +791,24 @@
 
             <div class="acts" id="acts"></div>
 
+            <button class="logCard" id="logCard">
+              <span class="logTop"><span class="lt">今天的行車日誌</span><span class="lg" id="logCount">還沒出門</span></span>
+              <span class="logLine" id="logLine">今天還沒跑，日誌是空的。</span>
+              <span class="logGo">打開日誌 →</span>
+            </button>
+
             <div class="pane">
               <div class="paneTop">
-                <span class="lv" id="lvText">Lv.2 · 熟客</span>
-                <span class="nx" id="lvNext">62 / 100</span>
+                <span class="lv" id="lvText">Lv.1 · 初次見面</span>
+                <span class="nx" id="lvNext">0 / 100</span>
               </div>
-              <div class="bar"><i id="lvBar" style="width:62%;background:linear-gradient(90deg,#7CC168,#3F9430)"></i></div>
-              <div class="cap" id="lvCap">再相處一點，就會解鎖新的造型。</div>
+              <div class="bar"><i id="lvBar" style="width:0%;background:linear-gradient(90deg,#7CC168,#3F9430)"></i></div>
+              <div class="kmRow">
+                <span><b id="kmVal">0.0</b> km</span>
+                <span><b id="rideVal">0</b> 趟</span>
+                <span><b id="souvVal">0</b> 件紀念品</span>
+              </div>
+              <div class="cap" id="lvCap">親密度只會因為你真的搭車而長。</div>
             </div>
 
             <div class="scTitle" style="margin-top:4px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
@@ -769,9 +854,14 @@
             <div class="privacy" id="skinNote"></div>
           </section>
 
-          <!-- 盲盒 -->
+          <!-- 收藏：紀念品與地點盲盒 -->
           <section class="screen" id="sc-box" hidden>
-            <div class="scTitle"><h2>盲盒約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div class="scTitle"><h2>收藏</h2><span id="souvCount">0 / 0</span></div>
+            <div class="cap" style="padding:0 4px">車車會從你去過的地方帶東西回來。點一件掛到車上（最多兩件）。</div>
+            <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:16px">盲盒約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div class="cap" style="padding:0 4px" id="boxWhere">從你最常去的地方長出來的行程。</div>
             <div class="boxHold">
               <button class="boxBtn" id="boxBtn">
                 <span id="boxArt"></span>
@@ -781,9 +871,19 @@
             <div id="planHold"></div>
             <div id="histHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
+
         </div>
 
         <nav class="tabs" id="tabs"></nav>
+      </div>
+
+      <!-- 每日行車日誌 -->
+      <div class="sheet" id="logSheet" hidden>
+        <div class="sheetBar">
+          <span class="sheetTitle">行車日誌</span>
+          <button class="sheetX" id="logClose" aria-label="關閉">✕</button>
+        </div>
+        <div class="sheetBody" id="logBody"></div>
       </div>
 
       <!-- 上線引導 -->
@@ -988,29 +1088,29 @@
   };
 
   const PLANS = [
-    { r: "N", title: "深夜補給線", slot: "23:10 出發 · 約 40 分", from: "你家樓下", to: "24 小時全家 + 河堤繞一圈", fare: 145,
+    { r: "N", pt: "store", title: "深夜補給線", slot: "23:10 出發 · 約 40 分", from: "你家樓下", to: "24 小時全家 + 河堤繞一圈", fare: 145,
       say: { warm: "你冰箱空了對吧，我都看到了。", tsun: "順路而已，不要多想。", sunny: "宵夜！宵夜！", gent: "夜間補給，我陪您走一趟。", misty: "深夜的便利商店，是城市裡最誠實的地方。" } },
-    { r: "N", title: "早餐店巡邏", slot: "08:00 出發 · 約 25 分", from: "住處", to: "巷口蛋餅 → 公司", fare: 95,
+    { r: "N", pt: "market", title: "早餐店巡邏", slot: "08:00 出發 · 約 25 分", from: "住處", to: "巷口蛋餅 → 公司", fare: 95,
       say: { warm: "先吃了再上班，好不好？", tsun: "我不是特地繞的，剛好會經過。", sunny: "蛋餅加辣！走！", gent: "早餐是一天的基礎。", misty: "早餐店的油煙，是很好的開場。" } },
-    { r: "N", title: "午休逃亡 20 分", slot: "12:20 出發 · 約 20 分", from: "公司", to: "有樹的那個小公園", fare: 110,
+    { r: "N", pt: "office", title: "午休逃亡 20 分", slot: "12:20 出發 · 約 20 分", from: "公司", to: "有樹的那個小公園", fare: 110,
       say: { warm: "二十分鐘，什麼都不用想。", tsun: "蹺班喔？我沒看到。", sunny: "偷跑！我掩護你！", gent: "短暫的離席是被允許的。", misty: "中午的樹影，一年只有幾天這麼好。" } },
-    { r: "N", title: "加班救援專車", slot: "22:30 出發 · 約 30 分", from: "公司樓下", to: "鹹酥雞 → 你家", fare: 165,
+    { r: "N", pt: "office", title: "加班救援專車", slot: "22:30 出發 · 約 30 分", from: "公司樓下", to: "鹹酥雞 → 你家", fare: 165,
       say: { warm: "今天到這裡就好，剩下的明天再說。", tsun: "你再加班，我氣囊就自己爆給你看。上車。", sunny: "解放！鹹酥雞！大份的！", gent: "工時已逾合理範圍。請上車。", misty: "加班的人跟深夜的計程車一樣，都在等一個停下來的理由。" } },
-    { r: "R", title: "河堤看飛機", slot: "17:40 出發 · 約 1 小時", from: "市區", to: "濱江街街底 · 看降落", fare: 210,
+    { r: "R", pt: "river", title: "河堤看飛機", slot: "17:40 出發 · 約 1 小時", from: "市區", to: "濱江街街底 · 看降落", fare: 210,
       say: { warm: "看飛機的時候人會變小一點，壓力也是。", tsun: "只是剛好那邊好停車。", sunny: "飛機超近的！超大聲！", gent: "航班約每七分鐘一班。", misty: "看別人離開，也是一種休息。" } },
-    { r: "R", title: "書店打烊前", slot: "21:00 出發 · 約 1.5 小時", from: "住處", to: "還沒關的獨立書店", fare: 260,
+    { r: "R", pt: "cafe", title: "書店打烊前", slot: "21:00 出發 · 約 1.5 小時", from: "住處", to: "還沒關的獨立書店", fare: 260,
       say: { warm: "你上次說想看的那本，我記得。", tsun: "書店而已，又不是約會。", sunny: "我在外面等你！不要買太多！", gent: "打烊前的書店最安靜。", misty: "打烊前一小時，書才會開始講話。" } },
-    { r: "R", title: "老市場早鳥局", slot: "06:30 出發 · 約 1 小時", from: "住處", to: "傳統市場 · 現做飯糰", fare: 180,
+    { r: "R", pt: "market", title: "老市場早鳥局", slot: "06:30 出發 · 約 1 小時", from: "住處", to: "傳統市場 · 現做飯糰", fare: 180,
       say: { warm: "早起一次，你會覺得賺到。", tsun: "起得來再說。", sunny: "早市！人生高峰！", gent: "市場的節奏值得體驗一次。", misty: "六點半的市場，是城市醒著的證據。" } },
-    { r: "SR", title: "山上看整座城市", slot: "19:30 出發 · 約 2.5 小時", from: "市區", to: "碧山巖 · 夜景第一排", fare: 480,
+    { r: "SR", pt: "river", title: "山上看整座城市", slot: "19:30 出發 · 約 2.5 小時", from: "市區", to: "碧山巖 · 夜景第一排", fare: 480,
       say: { warm: "上去以後，你今天的事會小很多。", tsun: "彎道很多，你不要吐在我身上。", sunny: "衝上山！視野無敵！", gent: "山路我會開得穩一些。", misty: "從上面看，你的煩惱只有一格路燈那麼大。" } },
-    { r: "SR", title: "海邊看日出", slot: "04:20 出發 · 約 4 小時", from: "台北", to: "外木山 · 日出線", fare: 620,
+    { r: "SR", pt: "river", title: "海邊看日出", slot: "04:20 出發 · 約 4 小時", from: "台北", to: "外木山 · 日出線", fare: 620,
       say: { warm: "睡不著就別睡了，我載你去看天亮。", tsun: "你確定？現在四點欸。……好啦。", sunny: "熬夜看日出！最狂的行程！", gent: "日出時間 05:12，我們來得及。", misty: "有些夜晚不該被浪費在床上。" } },
-    { r: "SR", title: "雨天不下車路線", slot: "隨時 · 約 1 小時", from: "你在的地方", to: "繞城一圈，不下車", fare: 390,
+    { r: "SR", pt: "home", title: "雨天不下車路線", slot: "隨時 · 約 1 小時", from: "你在的地方", to: "繞城一圈，不下車", fare: 390,
       say: { warm: "下雨天不想見人，那就都在車上。", tsun: "反正你也不想講話對吧。", sunny: "雨聲超好聽的！我開慢一點！", gent: "雨天車內，是很好的獨處空間。", misty: "雨打在車頂的聲音，比任何歌單都好。" } },
-    { r: "SSR", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午", from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
+    { r: "SSR", pt: "market", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午", from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
       say: { warm: "今天就翹掉吧，我負責開，你負責睡。", tsun: "……我早就把油加滿了。不要問。", sunny: "私奔！！我準備好了！！", gent: "行李我已備妥。請上車。", misty: "有些早上，不該在原本的城市醒來。" } },
-    { r: "SSR", title: "你生日那天的路線", slot: "只會出現一次", from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
+    { r: "SSR", pt: "home", title: "你生日那天的路線", slot: "只會出現一次", from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
       say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。" } }
   ];
 
@@ -1045,13 +1145,17 @@
 
   /* ════ 狀態 ════════════════════════════════════════════ */
 
-  const KEY = "yoxi.car.v3";
+  const KEY = "yoxi.car.v4";
   const defaults = () => ({
     onboarded: false, name: "小綠", pers: "warm",
     traits: { ...PERSONALITIES[0].traits },
-    skin: "yoxi", intimacy: 140, energy: 78, mood: 84, sync: 41,
+    skin: "yoxi", intimacy: 40, energy: 78, mood: 84, sync: 41,
     visits: new Array(24).fill(0), weekendVisits: 0, totalVisits: 0,
-    boxLeft: 3, history: []
+    boxLeft: 3, history: [],
+    // 皮克敏式：親密度只由真實搭車餵養
+    km: 0, rides: 0, rideLog: [],
+    placeVisits: {}, souv: {}, equip: [],
+    today: { rides: [], souv: [], events: [] }
   });
 
   let S = load();
@@ -1079,6 +1183,50 @@
   const slotOf = h => SLOTS.find(s => s.hrs.includes(h)) || SLOTS[0];
   const pick = a => a[Math.floor(Math.random() * a.length)];
 
+
+  /* ════ 地點與紀念品 ════════════════════════════════════
+     皮克敏的做法：收集品由「你去過哪裡」決定，不是憑空抽。
+     所以每個地點類型有自己的一組紀念品，搭車回來才會帶到。
+     ──────────────────────────────────────────────────── */
+  const PLACE_TYPE = {
+    office: { name: "客戶端與辦公室", icon: "🏢" },
+    home:   { name: "家",             icon: "🏠" },
+    store:  { name: "超商與宵夜",     icon: "🏪" },
+    cafe:   { name: "咖啡廳與工作室", icon: "☕" },
+    market: { name: "市場與小吃",     icon: "🍜" },
+    river:  { name: "河堤與水岸",     icon: "🌊" }
+  };
+
+  const SOUV = [
+    { id: "badge",  n: "識別證吊牌",     t: "office", r: "N",  m: "soft", c: "#E8ECF0", scl: [0.075,0.11,0.014], slot: "hang" },
+    { id: "pen",    n: "會議室原子筆",   t: "office", r: "N",  m: "cyl",  c: "#3B6EA8", scl: [0.018,0.10,0.018], slot: "roof" },
+    { id: "can",    n: "沒喝完的罐裝咖啡", t: "office", r: "R", m: "cyl", c: "#8A5A2B", scl: [0.055,0.085,0.055], slot: "roof" },
+    { id: "cake",   n: "客戶送的鳳梨酥", t: "office", r: "SR", m: "soft", c: "#E8C86A", scl: [0.075,0.05,0.055], slot: "roof" },
+
+    { id: "stick",  n: "關東煮竹籤",     t: "store",  r: "N",  m: "cyl",  c: "#D9C08A", scl: [0.012,0.12,0.012], slot: "roof" },
+    { id: "sticker",n: "集點貼紙",       t: "store",  r: "N",  m: "soft", c: "#F0603C", scl: [0.07,0.07,0.012], slot: "hang" },
+    { id: "onigiri",n: "限定口味御飯糰", t: "store",  r: "R",  m: "cone", c: "#F4F2EA", scl: [0.075,0.075,0.075], slot: "roof" },
+    { id: "receipt",n: "中獎的發票",     t: "store",  r: "SR", m: "soft", c: "#FFFFFF", scl: [0.06,0.09,0.01],  slot: "hang" },
+
+    { id: "cup",    n: "拉花拍壞的照片", t: "cafe",   r: "N",  m: "soft", c: "#F7F3EC", scl: [0.08,0.06,0.012], slot: "hang" },
+    { id: "bean",   n: "掉在座位的咖啡豆", t: "cafe", r: "N",  m: "sph",  c: "#6B4526", scl: [0.035,0.028,0.035], slot: "roof" },
+    { id: "catfur", n: "店貓的毛",       t: "cafe",   r: "R",  m: "sph",  c: "#D8CFC2", scl: [0.05,0.04,0.05],  slot: "roof" },
+    { id: "card",   n: "常客卡",         t: "cafe",   r: "SR", m: "soft", c: "#2E6B52", scl: [0.075,0.05,0.012], slot: "hang" },
+
+    { id: "scallion", n: "還熱的蔥抓餅", t: "market", r: "N",  m: "sph",  c: "#E2C083", scl: [0.075,0.03,0.075], slot: "roof" },
+    { id: "egg",    n: "阿姨多給的滷蛋", t: "market", r: "R",  m: "sph",  c: "#8A5C34", scl: [0.05,0.045,0.05], slot: "roof" },
+    { id: "bag",    n: "紅白塑膠袋",     t: "market", r: "N",  m: "soft", c: "#E85A5A", scl: [0.065,0.075,0.04], slot: "hang" },
+
+    { id: "reed",   n: "河堤的蘆葦",     t: "river",  r: "N",  m: "cone", c: "#C9B47A", scl: [0.03,0.13,0.03],  slot: "roof" },
+    { id: "plane",  n: "拍到的飛機",     t: "river",  r: "R",  m: "soft", c: "#DCE3EA", scl: [0.10,0.02,0.035], slot: "roof" },
+    { id: "sunset", n: "那天的夕陽",     t: "river",  r: "SR", m: "sph",  c: "#F09040", scl: [0.055,0.055,0.055], slot: "hang" },
+
+    { id: "key",    n: "家裡的鑰匙圈",   t: "home",   r: "N",  m: "ring", c: "#C0C6CC", scl: [0.05,0.05,0.05],  slot: "hang" },
+    { id: "slipper",n: "一隻拖鞋",       t: "home",   r: "N",  m: "soft", c: "#7FB8D8", scl: [0.08,0.03,0.045], slot: "roof" },
+    { id: "downcat",n: "樓下那隻貓",     t: "home",   r: "R",  m: "sph",  c: "#EFE3D0", scl: [0.06,0.055,0.06], slot: "roof" }
+  ];
+  const SOUV_RATE = { N: 0.52, R: 0.34, SR: 0.14 };
+
   /* ════ 使用者情境 ══════════════════════════════════════
      yoxi 的常客多半在趕路：乙方跑客戶、自由接案、通勤上班族。
      情境決定行程、常跑地點、地圖上的既有路線。
@@ -1087,12 +1235,13 @@
   const PERSONAS = {
     agency: {
       name: "乙方跑客戶",
-      places: ["客戶端 · 敦南", "客戶端 · 南港", "提案會議室", "公司", "家"],
+      places: [{ n: "客戶端 · 敦南", t: "office", km: 6.8 }, { n: "客戶端 · 南港", t: "office", km: 11.2 },
+               { n: "深夜超商", t: "store", km: 2.4 }, { n: "公司", t: "office", km: 9.4 }, { n: "家", t: "home", km: 12.0 }],
       appts: [
-        { h: 10, m: 0,  t: "客戶提案",   loc: "敦南 · 客戶端",   ride: 26 },
-        { h: 14, m: 0,  t: "季報會議",   loc: "南港軟體園區",     ride: 34 },
-        { h: 17, m: 30, t: "回公司交件", loc: "公司 · 民生東路", ride: 22 },
-        { h: 20, m: 0,  t: "收工回家",   loc: "家",              ride: 28 }
+        { h: 10, m: 0,  t: "客戶提案",   loc: "敦南 · 客戶端",   ride: 26, pt: "office", km: 6.8 },
+        { h: 14, m: 0,  t: "季報會議",   loc: "南港軟體園區",     ride: 34, pt: "office", km: 11.2 },
+        { h: 17, m: 30, t: "回公司交件", loc: "公司 · 民生東路", ride: 22, pt: "office", km: 9.4 },
+        { h: 20, m: 0,  t: "收工回家",   loc: "家",              ride: 28, pt: "home", km: 12.0 }
       ],
       trips: [
         { name: "公司 → 敦南客戶端", km: 6.8, r: 0 },
@@ -1103,12 +1252,13 @@
     },
     free: {
       name: "自由接案",
-      places: ["咖啡廳 · 大安", "共同工作空間", "客戶碰面 · 信義", "家"],
+      places: [{ n: "咖啡廳 · 大安", t: "cafe", km: 4.6 }, { n: "共同工作空間", t: "cafe", km: 5.8 },
+               { n: "客戶碰面 · 信義", t: "office", km: 7.9 }, { n: "巷口小吃", t: "market", km: 1.8 }, { n: "家", t: "home", km: 6.2 }],
       appts: [
-        { h: 11, m: 0,  t: "跟客戶對需求", loc: "信義 · 咖啡廳",   ride: 24 },
-        { h: 15, m: 0,  t: "進工作室趕稿", loc: "共同工作空間",     ride: 18 },
-        { h: 19, m: 0,  t: "交件前最後一版", loc: "家",            ride: 21 },
-        { h: 23, m: 0,  t: "宵夜靈感局",   loc: "深夜咖啡 · 大安", ride: 16 }
+        { h: 11, m: 0,  t: "跟客戶對需求", loc: "信義 · 咖啡廳",   ride: 24, pt: "cafe", km: 7.9 },
+        { h: 15, m: 0,  t: "進工作室趕稿", loc: "共同工作空間",     ride: 18, pt: "cafe", km: 5.8 },
+        { h: 19, m: 0,  t: "交件前最後一版", loc: "家",            ride: 21, pt: "home", km: 6.2 },
+        { h: 23, m: 0,  t: "宵夜靈感局",   loc: "深夜咖啡 · 大安", ride: 16, pt: "store", km: 3.1 }
       ],
       trips: [
         { name: "家 → 共同工作空間", km: 4.6, r: 4 },
@@ -1119,12 +1269,13 @@
     },
     worker: {
       name: "趕時間上班族",
-      places: ["公司 · 信義", "家 · 中和", "健身房", "捷運站"],
+      places: [{ n: "公司 · 信義", t: "office", km: 12.6 }, { n: "家 · 中和", t: "home", km: 12.4 },
+               { n: "巷口超商", t: "store", km: 1.6 }, { n: "河堤走走", t: "river", km: 5.1 }],
       appts: [
-        { h: 9,  m: 0,  t: "打卡",     loc: "公司 · 信義",   ride: 32 },
-        { h: 13, m: 0,  t: "午餐外出", loc: "公司附近",       ride: 9  },
-        { h: 18, m: 30, t: "下班",     loc: "家 · 中和",     ride: 36 },
-        { h: 21, m: 0,  t: "健身房",   loc: "健身房 · 松江", ride: 14 }
+        { h: 9,  m: 0,  t: "打卡",     loc: "公司 · 信義",   ride: 32, pt: "office", km: 12.6 },
+        { h: 13, m: 0,  t: "午餐外出", loc: "公司附近",       ride: 9,  pt: "market", km: 1.9 },
+        { h: 18, m: 30, t: "下班",     loc: "家 · 中和",     ride: 36, pt: "home", km: 12.4 },
+        { h: 21, m: 0,  t: "夜跑河堤", loc: "基隆路河堤",     ride: 14, pt: "river", km: 5.1 }
       ],
       trips: [
         { name: "中和 → 信義（早班）", km: 12.6, r: 5 },
@@ -1220,8 +1371,9 @@
       name: h.title, km: [4.2, 7.6, 12.8, 21.4][["N", "R", "SR", "SSR"].indexOf(h.r)] || 6,
       r: (i + 3) % 6, kind: "約會", color: DATE_COLOR[h.r] || "#FFC46B"
     }));
+    const rides = (S.rideLog || []).map((t, i) => ({ ...t, kind: "今天", color: ["#4CA53A", "#3E8F55"][i % 2] }));
     const work = P.trips.map((t, i) => ({ ...t, kind: "常跑", color: ["#2C7FBF", "#4C8FA8", "#3E6FA8"][i % 3] }));
-    return [...dates, ...work].slice(0, 6);
+    return [...rides, ...dates, ...work].slice(0, 6);
   }
 
   /* ════ 車車插畫 ════════════════════════════════════════
@@ -1895,6 +2047,26 @@
     P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.72, spec: 0.1,
              pos: [0,pY,pZ+0.05], scl: [0.24,0.075,1] });
 
+    // 帶回來的紀念品：一件放車頂、一件掛在後照鏡下
+    let roofSlot = 0;
+    for (const id of (S.equip || [])) {
+      const it = souvOf(id);
+      if (!it) continue;
+      if (it.slot === "roof") {
+        const x = roofSlot === 0 ? -0.40 : 0.40;
+        roofSlot++;
+        P.push({ m: it.m, a: it.c, spec: 0.6, shin: 46, amb: 0.54,
+                 pos: [x, 0.88 + (it.scl[1] || 0.06), -0.34],
+                 rot: it.m === "cyl" ? [0.35,0,0.2] : [0,0.4,0], scl: it.scl });
+      } else {
+        P.push({ m: "cyl", a: "#9AA3AA", spec: 0.4, amb: 0.55,
+                 pos: [1.00, 0.02, 0.40], scl: [0.009,0.11,0.009] });
+        P.push({ m: it.m, a: it.c, spec: 0.65, shin: 46, amb: 0.56,
+                 pos: [1.00, -0.10 - (it.scl[1] || 0.05), 0.40],
+                 rot: it.m === "ring" ? [0,Math.PI/2,0] : [0,0.35,0], scl: it.scl });
+      }
+    }
+
     // 造型配件
     if (sk.acc === "cat") {
       for (const x of [-0.50, 0.50]) {
@@ -2083,6 +2255,74 @@
     return out.sort((a, b) => a.h - b.h);
   }
 
+  /* 搭一趟車：里程進親密度，地點決定帶回什麼。
+     這是整個養成系統唯一的燃料來源。 */
+  function takeRide(place, atHour) {
+    const h = atHour === undefined ? hour : atHour;
+    const km = place.km || 5;
+    S.km = +(S.km + km).toFixed(1);
+    S.rides += 1;
+    S.intimacy += Math.round(4 + km * 1.6);
+    S.mood = clamp(S.mood + 3);
+    S.energy = clamp(S.energy - 4);
+    S.placeVisits[place.t] = (S.placeVisits[place.t] || 0) + 1;
+    S.rideLog.unshift({ name: `→ ${place.n}`, km, r: (S.rides * 2) % 6 });
+    S.rideLog = S.rideLog.slice(0, 4);
+    S.today.rides.push({ n: place.n, t: place.t, km, at: `${pad(h)}:${pad(((h * 17) % 6) * 10)}` });
+
+    // 帶回紀念品：機率隨稀有度遞減，已有的會再撿到（數量累加）
+    let got = null;
+    if (Math.random() < 0.62) {
+      const pool = SOUV.filter(x => x.t === place.t);
+      const roll = Math.random();
+      const tier = roll < SOUV_RATE.SR ? "SR" : roll < SOUV_RATE.SR + SOUV_RATE.R ? "R" : "N";
+      const cand = pool.filter(x => x.r === tier);
+      got = pick(cand.length ? cand : pool);
+      if (got) {
+        const isNew = !S.souv[got.id];
+        S.souv[got.id] = (S.souv[got.id] || 0) + 1;
+        S.today.souv.push({ id: got.id, isNew });
+        if (isNew && S.equip.length < 2) S.equip.push(got.id);
+      }
+    }
+    S.today.events.push(rideEvent(place, got));
+    save();
+    return got;
+  }
+
+  function rideEvent(place, got) {
+    if (got) return pick({
+      warm:  [`從${place.n}回來的路上，我把「${got.n}」收好了。`, `在${place.n}撿到「${got.n}」，想說你可能會想留著。`],
+      tsun:  [`「${got.n}」。不是特地幫你撿的，剛好在腳踏墊上。`, `${place.n}掉了個「${got.n}」，我順手而已。`],
+      sunny: [`「${got.n}」！${place.n}的戰利品！超讚！`, `我從${place.n}帶回「${got.n}」！要不要掛起來！`],
+      gent:  [`自${place.n}帶回一件「${got.n}」，已為您安置妥當。`, `「${got.n}」，${place.n}所得。`],
+      misty: [`${place.n}留下了「${got.n}」，我覺得它想跟著你。`, `「${got.n}」。有些東西只會在那個地方出現。`]
+    }[S.pers]);
+    return pick({
+      warm:  [`載你到${place.n}，路上很順。`, `${place.n}這趟很安靜，你好像在想事情。`],
+      tsun:  [`${place.n}。又是這裡。我沒有在記。`, `到${place.n}了。你下車前手機差點忘了拿。`],
+      sunny: [`${place.n}到囉！這條路我越開越熟！`, `衝到${place.n}！今天路況超好！`],
+      gent:  [`已抵達${place.n}，全程平穩。`, `${place.n}，準時到達。`],
+      misty: [`往${place.n}的那段路，天色剛好。`, `${place.n}。我們好像常在這個時間來。`]
+    }[S.pers]);
+  }
+
+  function souvGlyph(it) {
+    const c = it.c, o = "rgba(0,0,0,.16)";
+    const body = {
+      soft: `<rect x="7" y="10" width="22" height="18" rx="5" fill="${c}"/><rect x="7" y="10" width="22" height="6" rx="3" fill="#fff" opacity=".28"/>`,
+      cyl:  `<rect x="12" y="8" width="12" height="21" rx="5" fill="${c}"/><ellipse cx="18" cy="9" rx="6" ry="2.6" fill="#fff" opacity=".35"/>`,
+      cone: `<path d="M18 6 L28 29 H8 Z" fill="${c}"/><path d="M18 6 L23 18 H13 Z" fill="#fff" opacity=".22"/>`,
+      sph:  `<circle cx="18" cy="19" r="10" fill="${c}"/><circle cx="14.5" cy="15.5" r="3.2" fill="#fff" opacity=".38"/>`,
+      ring: `<circle cx="18" cy="19" r="10" fill="none" stroke="${c}" stroke-width="4.5"/>`
+    }[it.m] || `<circle cx="18" cy="19" r="10" fill="${c}"/>`;
+    return `<svg viewBox="0 0 36 36" width="32" height="32" aria-hidden="true">
+      <ellipse cx="18" cy="31" rx="9" ry="2" fill="${o}"/>${body}</svg>`;
+  }
+
+  const souvOf = id => SOUV.find(x => x.id === id);
+  const souvOwned = () => SOUV.filter(x => S.souv[x.id]).length;
+
   function recordVisit(h) {
     S.visits[h] = (S.visits[h] || 0) + 1;
     S.totalVisits++;
@@ -2138,10 +2378,11 @@
   }
 
   function renderPlaces() {
-    $("places").innerHTML = PERSONAS[persona].places.map(p =>
-      `<button class="place" data-pl="${p}" aria-pressed="${pinned === p}">${p}</button>`).join("");
+    $("places").innerHTML = PERSONAS[persona].places.map((p, i) =>
+      `<button class="place" data-pl="${i}" aria-pressed="${pinned === p.n}">${p.n}</button>`).join("");
     $("places").querySelectorAll("[data-pl]").forEach(b => b.addEventListener("click", () => {
-      pinned = pinned === b.dataset.pl ? null : b.dataset.pl;
+      const p = PERSONAS[persona].places[+b.dataset.pl];
+      pinned = pinned === p.n ? null : p.n;
       renderPlaces(); renderNextStop();
       if (pinned) {
         $("bubble").textContent = pick({
@@ -2154,6 +2395,22 @@
         toast(`目的地設為「${pinned}」`);
       }
     }));
+  }
+
+  const topPlace = () => {
+    const e = Object.entries(S.placeVisits || {});
+    if (!e.length) return null;
+    return e.sort((a, b) => b[1] - a[1])[0][0];
+  };
+
+  /* 叫車：完成一趟，結算里程與紀念品 */
+  function doRide(place) {
+    const got = takeRide(place);
+    renderTrip(); renderConsole();
+    if (currentTab === "home") renderHome();
+    if (Car3D.alive()) Car3D.set(skin(), moodOf());
+    toast(got ? `帶回「${got.n}」` : `+${place.km} km · 親密度成長`);
+    setTimeout(() => showPush(S.today.events[S.today.events.length - 1]), 700);
   }
 
   function renderTrip() {
@@ -2173,6 +2430,78 @@
         <span class="km">${past ? "已完成" : a.ride + " 分車程"}</span>
       </div>`;
     }).join("");
+  }
+
+  function renderLogCard() {
+    const t = S.today;
+    const km = t.rides.reduce((a, r) => a + r.km, 0);
+    $("logCount").textContent = t.rides.length ? `${t.rides.length} 趟 · ${km.toFixed(1)} km` : "還沒出門";
+    $("logLine").textContent = t.events.length ? t.events[t.events.length - 1]
+      : "今天還沒跑，日誌是空的。去「行程」叫一台車就會開始寫。";
+  }
+
+  function openLog() {
+    const t = S.today;
+    const km = t.rides.reduce((a, r) => a + r.km, 0);
+    const newSouv = t.souv.filter(x => x.isNew);
+    const types = [...new Set(t.rides.map(r => r.t))];
+    const list = trips();
+    $("logBody").innerHTML = `
+      <div class="logHero">${mapSVG(list, 0)}</div>
+      <div class="logStat">
+        <div><b>${t.rides.length}</b><span>今天的趟數</span></div>
+        <div><b>${km.toFixed(1)}</b><span>公里</span></div>
+        <div><b>${newSouv.length}</b><span>新紀念品</span></div>
+      </div>
+      <div class="logSay">${t.events.length ? t.events[t.events.length - 1] : dayIdleLine()}</div>
+      ${t.rides.length ? `<div class="logSec">今天去過</div>` + t.rides.map((r, i) =>
+        `<div class="logItem"><span class="tm">${r.at}</span><span>${r.n}　<span style="color:var(--fog-dim)">${r.km} km</span><br>${t.events[i] || ""}</span></div>`).join("") : ""}
+      ${newSouv.length ? `<div class="logSec">帶回來的東西</div>` + newSouv.map(x => {
+        const it = souvOf(x.id);
+        return `<div class="logItem"><span class="tm" style="color:${it.c}">●</span><span><b style="color:var(--chalk)">${it.n}</b>　<span style="color:var(--fog-dim)">${PLACE_TYPE[it.t].name}</span></span></div>`;
+      }).join("") : ""}
+      ${types.length ? `<div class="logSec">今天的路線</div><div class="logItem"><span class="tm">▸</span><span>${types.map(x => PLACE_TYPE[x].name).join("、")}</span></div>` : ""}
+    `;
+    $("logSheet").hidden = false;
+  }
+
+  function dayIdleLine() {
+    return pick({
+      warm:  ["今天你沒出門，我把電充滿了等你。", "沒關係，有些日子就是待在家比較好。"],
+      tsun:  ["今天一趟都沒有。我沒有在等，只是紀錄一下。", "停一整天。你是不是忘了我。"],
+      sunny: ["今天沒跑！那明天要跑兩倍！", "休息也是一種訓練！我這樣說服自己！"],
+      gent:  ["今日無行程。車輛狀態良好。", "休息日。我把車內整理過了。"],
+      misty: ["空白的一天也是一頁。", "今天的日誌沒有路線，只有停在原地的光。"]
+    }[S.pers]);
+  }
+
+  function renderSouv() {
+    $("souvCount").textContent = `${souvOwned()} / ${SOUV.length}`;
+    $("souvHold").innerHTML = Object.entries(PLACE_TYPE).map(([k, v]) => {
+      const pool = SOUV.filter(x => x.t === k);
+      const own = pool.filter(x => S.souv[x.id]).length;
+      return `<div class="souvGroup">
+        <div class="souvHead"><span class="n">${v.name}</span><span class="c">${own} / ${pool.length}</span></div>
+        <div class="souvGrid">${pool.map(x => {
+          const n = S.souv[x.id] || 0;
+          if (!n) return `<div class="souvCell lock"><span class="dot2"></span></div>`;
+          const on = S.equip.includes(x.id);
+          return `<button class="souvCell" data-sv="${x.id}" aria-pressed="${on}" title="${x.n}">
+                    ${souvGlyph(x)}
+                    ${n > 1 ? `<span class="qty">×${n}</span>` : ""}
+                  </button>`;
+        }).join("")}</div>
+        <div class="souvName">${pool.filter(x => S.souv[x.id]).map(x => x.n).join("・") || "還沒帶回任何東西"}</div>
+      </div>`;
+    }).join("");
+    $("souvHold").querySelectorAll("[data-sv]").forEach(b => b.addEventListener("click", () => {
+      const id = b.dataset.sv;
+      if (S.equip.includes(id)) S.equip = S.equip.filter(x => x !== id);
+      else { S.equip.push(id); if (S.equip.length > 2) S.equip.shift(); }
+      save(); renderSouv();
+      if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      toast(S.equip.includes(id) ? `掛上「${souvOf(id).n}」` : `收起「${souvOf(id).n}」`);
+    }));
   }
 
   function renderMap() {
@@ -2212,9 +2541,13 @@
     $("lvText").textContent = `Lv.${lv} · ${LV_NAMES[lv - 1]}`;
     $("lvNext").textContent = lv >= 6 ? "MAX" : `${prog} / 100`;
     $("lvBar").style.width = (lv >= 6 ? 100 : prog) + "%";
+    $("kmVal").textContent = S.km.toFixed(1);
+    $("rideVal").textContent = S.rides;
+    $("souvVal").textContent = souvOwned();
     const next = SKINS.find(s => s.lv > lv);
-    $("lvCap").textContent = next ? `再養到 Lv.${next.lv} 就會解鎖「${next.name}」。`
-                                  : "所有造型都解鎖了。它現在只認你一個。";
+    $("lvCap").textContent = next ? `再養到 Lv.${next.lv} 解鎖「${next.name}」——只有真的搭車才會長。`
+                                  : "所有造型都解鎖了。這些里程都是你們一起跑的。";
+    renderLogCard();
 
 
   }
@@ -2285,7 +2618,12 @@
     const total = Object.values(RARITY).reduce((a, r) => a + r.w, 0);
     let roll = Math.random() * total, rar = "N";
     for (const [k, v] of Object.entries(RARITY)) { roll -= v.w; if (roll <= 0) { rar = k; break; } }
-    const pool = PLANS.filter(p => p.r === rar);
+    const top = topPlace();
+    let pool = PLANS.filter(p => p.r === rar);
+    if (top) {
+      const near = pool.filter(p => p.pt === top);
+      if (near.length && Math.random() < 0.7) pool = near;
+    }
     return pick(pool.length ? pool : PLANS);
   }
 
@@ -2323,6 +2661,11 @@
   }
 
   function renderBox() {
+    renderSouv();
+    const top = topPlace();
+    $("boxWhere").textContent = top
+      ? `你最常去「${PLACE_TYPE[top].name}」，盲盒會從那附近長出來。`
+      : "先搭幾趟車，盲盒才知道要從哪裡長。";
     $("boxArt").innerHTML = boxSVG();
     $("boxLeftTx").textContent = S.boxLeft > 0 ? `本週剩 ${S.boxLeft} 次` : "本週用完了";
     $("boxHint").textContent = S.boxLeft > 0 ? "連點三下搖它，它就會吐一張行程給你"
@@ -2377,7 +2720,7 @@
     const T = [
       { id: "home", n: "車庫", ic: "home" }, { id: "trip", n: "行程", ic: "trip" },
       { id: "pers", n: "個性", ic: "pers" }, { id: "skin", n: "造型", ic: "skin" },
-      { id: "box", n: "盲盒", ic: "box" }
+      { id: "box", n: "收藏", ic: "box" }
     ];
     $("tabs").innerHTML = T.map(t => `
       <button class="tab" data-t="${t.id}" aria-selected="${t.id === currentTab}">
@@ -2424,25 +2767,25 @@
 
   function doAct(a) {
     if (a === "pet") {
-      S.intimacy += 6; S.mood = clamp(S.mood + 5);
+      S.mood = clamp(S.mood + 6);
       S.traits.clingy = clamp(S.traits.clingy + 1.2);
       if (Car3D.alive()) Car3D.bounce();
       else { $("carHold").classList.add("pet"); setTimeout(() => $("carHold").classList.remove("pet"), 660); }
       sparks(9, ["#FF86AE", "#C9F23A", "#FFC46B"]);
       $("bubble").textContent = pick(REACT.pet[S.pers]);
-      toast("親密度 +6");
+      toast("心情 +6");
     } else if (a === "wash") {
-      S.mood = clamp(S.mood + 12); S.intimacy += 4;
+      S.mood = clamp(S.mood + 12);
       sparks(11, ["#7DD3FC", "#EEF2F9"]);
       $("bubble").textContent = pick(REACT.wash[S.pers]);
       toast("心情 +12");
     } else if (a === "fuel") {
-      S.energy = clamp(S.energy + 25); S.intimacy += 3;
+      S.energy = clamp(S.energy + 25);
       sparks(9, ["#C9F23A", "#FFC46B"]);
       $("bubble").textContent = pick(REACT.fuel[S.pers]);
       toast("能量 +25");
     } else {
-      S.intimacy += 5; S.sync = clamp(S.sync + 2);
+      S.sync = clamp(S.sync + 2);
       S.traits.talkative = clamp(S.traits.talkative + 1);
       $("bubble").textContent = line();
       toast("默契 +2");
@@ -2469,7 +2812,7 @@
     const p = rollPlan();
     S.history.unshift({ r: p.r, title: p.title, at: `${pad(hour)}:40` });
     S.history = S.history.slice(0, 12);
-    S.intimacy += p.r === "SSR" ? 30 : p.r === "SR" ? 18 : 8;
+    S.intimacy += p.r === "SSR" ? 20 : p.r === "SR" ? 12 : 5;
     S.mood = clamp(S.mood + 6);
     save();
     renderPlan(p); renderBox(); renderTabs(); renderConsole();
@@ -2590,11 +2933,14 @@
     $("nsBtn").addEventListener("click", e => {
       e.stopPropagation();
       const { a } = nextAppt();
-      S.intimacy += 4; S.sync = clamp(S.sync + 1.5); save();
-      toast(`已叫車 · ${pinned || a.loc}`);
-      showPush(`${S.name} 出發了，${a.ride} 分鐘後到你樓下。它說它會開快一點點。`);
-      renderHome();
+      const P = PERSONAS[persona];
+      const place = pinned ? (P.places.find(x => x.n === pinned) || { n: pinned, t: "office", km: 6 })
+                           : { n: a.loc, t: a.pt || "office", km: a.km || 6 };
+      doRide(place);
     });
+
+    $("logCard").addEventListener("click", openLog);
+    $("logClose").addEventListener("click", () => { $("logSheet").hidden = true; });
 
     $("btnPush").addEventListener("click", autoPush);
     $("push").addEventListener("click", () => $("push").classList.remove("in"));
@@ -2608,9 +2954,16 @@
       S.totalVisits += w.reduce((a, b) => a + b, 0);
       S.weekendVisits += 14;
       S.sync = clamp(S.sync + 18);
-      S.intimacy += 60;
-      save(); renderConsole(); if (currentTab === "home") renderHome();
-      toast("灌入一週使用紀錄");
+      // 真的跑幾趟，讓里程、紀念品與日誌一起長出來
+      const P = PERSONAS[persona];
+      const hs = [8, 12, 16, 20];
+      P.places.slice(0, 4).forEach((pl, i) => takeRide(pl, hs[i]));
+      save(); renderConsole();
+      if (currentTab === "home") renderHome();
+      if (currentTab === "trip") renderTrip();
+      if (currentTab === "box") renderBox();
+      if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      toast(`跑了 4 趟 · 共 ${S.km.toFixed(1)} km`);
     });
 
     $("btnReset").addEventListener("click", () => {
@@ -2618,6 +2971,7 @@
       onbStep = 1; shakeCount = 0;
       $("onbName").value = "小綠";
       $("onb").hidden = false;
+      $("logSheet").hidden = true;
       renderOnb(); renderPlan(null); go("home"); renderConsole();
       toast("已清空，重養一台");
     });
