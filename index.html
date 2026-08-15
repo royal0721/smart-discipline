@@ -4,538 +4,495 @@
 
 <style>
   /* ─────────────────────────────────────────────────────────
-     Yoxi 車車 — 夜間駕駛艙。單一視覺世界，刻意全深色，
+     Yoxi 車車 — 夜路上的養成車。刻意單一視覺世界（深夜藍紫），
      每個顏色都明寫，不借用宿主頁面的底色。
      ───────────────────────────────────────────────────────── */
   :root {
-    --ink:      #0B0F14;
-    --ink-2:    #0F151C;
-    --slab:     #131A22;
-    --slab-2:   #1A232D;
-    --line:     #26323F;
-    --fog:      #8C9CAE;
-    --fog-dim:  #5E6E80;
-    --chalk:    #E9EFF5;
-    --lime:     #C8F02E;
-    --lime-dim: #8FAE1F;
-    --amber:    #FFB24D;
-    --rose:     #FF7FA6;
-    --sky:      #6ED0FF;
+    --void:    #070A12;
+    --ink:     #0C111C;
+    --deep:    #131A29;
+    --slab:    #1A2233;
+    --slab-2:  #232D42;
+    --slab-3:  #2C3852;
+    --hair:    rgba(255,255,255,.07);
+    --fog:     #93A0BA;
+    --fog-dim: #64708A;
+    --chalk:   #EEF2F9;
+    --lime:    #C9F23A;
+    --lime-d:  #93B520;
+    --amber:   #FFC46B;
+    --rose:    #FF86AE;
+    --sky:     #7DD3FC;
+    --violet:  #A99BF5;
 
     --sans: "Noto Sans TC", "PingFang TC", "Hiragino Sans TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 
-    --r-lg: 24px;
-    --r-md: 16px;
-    --r-sm: 10px;
+    --rXl: 30px;
+    --rLg: 22px;
+    --rMd: 15px;
+    --rSm: 10px;
+
+    --lift: 0 2px 0 rgba(255,255,255,.05) inset, 0 10px 24px -12px rgba(0,0,0,.9);
   }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--ink);
+    background: var(--void);
     background-image:
-      radial-gradient(120% 80% at 12% -10%, #17222E 0%, rgba(11,15,20,0) 60%),
-      radial-gradient(90% 60% at 90% 110%, #1B1726 0%, rgba(11,15,20,0) 55%);
+      radial-gradient(90% 60% at 8% -6%, #1D2540 0%, rgba(7,10,18,0) 62%),
+      radial-gradient(70% 55% at 96% 8%, #2A1E3A 0%, rgba(7,10,18,0) 58%),
+      radial-gradient(80% 50% at 60% 108%, #16243A 0%, rgba(7,10,18,0) 60%);
     background-attachment: fixed;
     color: var(--chalk);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
-    line-height: 1.6;
+    line-height: 1.62;
   }
 
   .eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--lime-dim);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--lime-d);
   }
 
-  /* ── 舞台：調度台 + 手機 ───────────────────────────────── */
+  /* ── 舞台 ─────────────────────────────────────────────── */
   .stage {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 40px 24px 72px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 390px;
-    gap: 56px;
-    align-items: start;
+    max-width: 1200px; margin: 0 auto; padding: 46px 24px 70px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 60px; align-items: start;
   }
-
-  .desk { display: flex; flex-direction: column; gap: 28px; padding-top: 8px; }
+  .desk { display: flex; flex-direction: column; gap: 30px; padding-top: 6px; }
 
   .desk h1 {
-    margin: 8px 0 0;
-    font-size: clamp(34px, 4.6vw, 52px);
-    font-weight: 800;
-    letter-spacing: -.03em;
-    line-height: 1.08;
-    text-wrap: balance;
+    margin: 10px 0 0; font-size: clamp(36px, 5vw, 58px); font-weight: 900;
+    letter-spacing: -.045em; line-height: 1.04; text-wrap: balance;
   }
-  .desk h1 em { font-style: normal; color: var(--lime); }
+  .desk h1 em {
+    font-style: normal; color: var(--lime);
+    text-shadow: 0 0 34px rgba(201,242,58,.32);
+  }
+  .lede { margin: 0; max-width: 31em; color: var(--fog); font-size: 15.5px; }
 
-  .lede {
-    margin: 0;
-    max-width: 32em;
-    color: var(--fog);
-    font-size: 15px;
+  .card {
+    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    border-radius: var(--rXl); padding: 24px 24px 26px;
+    display: flex; flex-direction: column; gap: 20px;
+    box-shadow: var(--lift);
   }
-
-  .panel {
-    background: var(--slab);
-    border: 1px solid var(--line);
-    border-radius: var(--r-lg);
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .panel > h2 {
-    margin: 0;
-    font-size: 12px;
-    font-family: var(--mono);
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--fog-dim);
-    font-weight: 500;
+  .card > h2 {
+    margin: 0; font-size: 11px; font-family: var(--mono); letter-spacing: .2em;
+    text-transform: uppercase; color: var(--fog-dim); font-weight: 500;
   }
 
-  .clockRow { display: flex; align-items: baseline; gap: 12px; }
+  .clockRow { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .clockRow .big {
-    font-family: var(--mono);
-    font-size: 42px;
-    font-weight: 600;
-    letter-spacing: -.02em;
-    font-variant-numeric: tabular-nums;
-    color: var(--chalk);
+    font-family: var(--mono); font-size: 46px; font-weight: 600; letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums; color: var(--chalk);
+    text-shadow: 0 0 30px rgba(238,242,249,.16);
   }
-  .clockRow .slot { font-size: 13px; color: var(--fog); }
+  .clockRow .slot { font-size: 13.5px; color: var(--fog); }
 
   input[type="range"] {
-    -webkit-appearance: none; appearance: none;
-    width: 100%; height: 4px; border-radius: 2px;
-    background: linear-gradient(90deg, #2A3746, #2A3746);
-    outline: none; margin: 0;
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+    border-radius: 4px; background: #2B354B; outline: none; margin: 0;
   }
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--lime); border: 4px solid var(--ink);
-    box-shadow: 0 0 0 1px var(--lime-dim), 0 4px 12px rgba(200,240,46,.35);
-    cursor: pointer;
+    -webkit-appearance: none; appearance: none; width: 24px; height: 24px;
+    border-radius: 50%; background: var(--lime); border: 5px solid var(--deep);
+    box-shadow: 0 0 0 1px var(--lime-d), 0 0 22px rgba(201,242,58,.5); cursor: pointer;
   }
   input[type="range"]::-moz-range-thumb {
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--lime); border: 3px solid var(--ink); cursor: pointer;
+    width: 18px; height: 18px; border-radius: 50%; background: var(--lime);
+    border: 4px solid var(--deep); cursor: pointer;
   }
   input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--sky); }
 
   .tickRow {
-    display: flex; justify-content: space-between;
-    font-family: var(--mono); font-size: 10px; color: var(--fog-dim);
-    letter-spacing: .06em;
+    display: flex; justify-content: space-between; font-family: var(--mono);
+    font-size: 10px; color: var(--fog-dim); letter-spacing: .08em; margin-top: -8px;
   }
 
-  .segRow { display: flex; gap: 8px; }
+  .segRow { display: flex; gap: 8px; background: rgba(0,0,0,.28); padding: 5px; border-radius: 14px; }
   .seg {
-    flex: 1; padding: 9px 0; border-radius: var(--r-sm);
-    background: var(--slab-2); border: 1px solid var(--line);
-    color: var(--fog); font-family: var(--sans); font-size: 13px;
-    cursor: pointer; transition: .16s;
+    flex: 1; padding: 9px 0; border-radius: 10px; background: transparent; border: none;
+    color: var(--fog); font-family: var(--sans); font-size: 13.5px; cursor: pointer; transition: .18s;
   }
-  .seg:hover { color: var(--chalk); border-color: #3A4A5C; }
-  .seg[aria-pressed="true"] {
-    background: rgba(200,240,46,.12); border-color: var(--lime-dim); color: var(--lime);
-  }
+  .seg:hover { color: var(--chalk); }
+  .seg[aria-pressed="true"] { background: var(--slab-3); color: var(--lime); box-shadow: 0 3px 10px rgba(0,0,0,.4); }
   .seg:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
 
   .btn {
-    display: flex; align-items: center; gap: 10px;
-    width: 100%; padding: 12px 14px;
-    background: var(--slab-2); border: 1px solid var(--line);
-    border-radius: var(--r-sm); color: var(--chalk);
-    font-family: var(--sans); font-size: 14px; text-align: left;
-    cursor: pointer; transition: .16s;
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 13px 16px;
+    background: var(--slab-2); border: none; border-radius: 14px; color: var(--chalk);
+    font-family: var(--sans); font-size: 14.5px; text-align: left; cursor: pointer;
+    transition: .18s; box-shadow: 0 1px 0 rgba(255,255,255,.05) inset;
   }
-  .btn:hover { border-color: #3E4F63; background: #1F2A36; }
+  .btn:hover { background: var(--slab-3); transform: translateY(-1px); }
   .btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .btn .k {
-    font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-    color: var(--fog-dim); margin-left: auto;
-  }
+  .btn .k { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--fog-dim); margin-left: auto; }
   .btn.primary {
-    background: var(--lime); border-color: var(--lime); color: #0B0F14; font-weight: 700;
+    background: linear-gradient(180deg, #D8FF4D, #ADD718); color: #10160A; font-weight: 800;
+    box-shadow: 0 8px 22px -8px rgba(201,242,58,.7);
   }
-  .btn.primary:hover { background: #D6FF3E; border-color: #D6FF3E; }
-  .btn.danger:hover { border-color: #6B3040; color: var(--rose); }
+  .btn.primary:hover { background: linear-gradient(180deg, #E2FF66, #BCE726); }
+  .btn.primary .k { color: rgba(16,22,10,.45); }
+  .btn.ghost:hover { color: var(--rose); }
 
-  .notes { display: flex; flex-direction: column; gap: 14px; }
-  .note { display: flex; gap: 12px; }
-  .note .num {
-    font-family: var(--mono); font-size: 11px; color: var(--lime-dim);
-    padding-top: 3px; flex: none; width: 20px;
-  }
+  .notes { display: flex; flex-direction: column; gap: 16px; }
+  .note { display: flex; gap: 14px; }
+  .note .num { font-family: var(--mono); font-size: 11px; color: var(--lime-d); padding-top: 4px; flex: none; width: 20px; }
   .note p { margin: 0; font-size: 13.5px; color: var(--fog); }
-  .note p b { color: var(--chalk); font-weight: 600; }
+  .note p b { color: var(--chalk); font-weight: 700; }
 
   /* ── 手機 ─────────────────────────────────────────────── */
   .phoneWrap { position: sticky; top: 40px; }
   .phone {
-    position: relative;
-    width: 390px; height: 844px;
-    background: var(--ink-2);
-    border: 10px solid #1C242E;
-    border-radius: 52px;
-    box-shadow:
-      0 0 0 1px #33404E,
-      0 50px 90px -20px rgba(0,0,0,.85),
-      inset 0 0 60px rgba(0,0,0,.5);
+    position: relative; width: 390px; height: 844px;
+    background: var(--ink); border: 11px solid #10161F; border-radius: 54px;
+    box-shadow: 0 0 0 1px #3A4358, 0 60px 100px -24px rgba(0,0,0,.9), inset 0 0 70px rgba(0,0,0,.55);
     overflow: hidden;
   }
   .island {
     position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-    width: 112px; height: 30px; border-radius: 16px;
-    background: #05080B; z-index: 60;
+    width: 110px; height: 30px; border-radius: 16px; background: #04060A; z-index: 60;
   }
   .statusbar {
     position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 50;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 30px; pointer-events: none;
-    font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums;
-    color: var(--chalk);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
+    pointer-events: none; font-family: var(--mono); font-size: 13px;
+    font-variant-numeric: tabular-nums; color: var(--chalk);
   }
-  .statusbar .right { display: flex; gap: 6px; align-items: center; font-size: 11px; letter-spacing: .04em; }
+  .statusbar .right { display: flex; gap: 7px; align-items: center; font-size: 11px; letter-spacing: .05em; }
 
-  .app {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    background: var(--ink-2);
-    transition: background 1.2s ease;
-  }
-
-  .screens { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 62px 20px 16px; scrollbar-width: none; }
+  .app { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--ink); }
+  .screens { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 60px 18px 18px; scrollbar-width: none; }
   .screens::-webkit-scrollbar { display: none; }
 
-  .screen { display: flex; flex-direction: column; gap: 16px; animation: fade .35s ease; }
+  .screen { display: flex; flex-direction: column; gap: 15px; animation: fade .34s ease; }
+  .screen > * { flex: none; }
   .screen[hidden] { display: none; }
-  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  .scTitle { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
-  .scTitle h2 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -.02em; }
-  .scTitle span { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; color: var(--fog-dim); text-transform: uppercase; }
+  .scTitle { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 0 4px; }
+  .scTitle h2 { margin: 0; font-size: 23px; font-weight: 900; letter-spacing: -.035em; }
+  .scTitle span { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--fog-dim); text-transform: uppercase; }
 
-  /* ── 首頁 ─────────────────────────────────────────────── */
-  .headRow { display: flex; align-items: center; gap: 10px; }
-  .headRow .nm { font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
-  .chip {
-    font-size: 11px; padding: 3px 9px; border-radius: 20px;
-    border: 1px solid var(--line); color: var(--fog); background: rgba(255,255,255,.03);
-    white-space: nowrap;
-  }
-  .chip.lime { color: var(--lime); border-color: rgba(200,240,46,.35); background: rgba(200,240,46,.08); }
-  .chip.rose { color: var(--rose); border-color: rgba(255,127,166,.35); background: rgba(255,127,166,.08); }
-  .chip.sky  { color: var(--sky);  border-color: rgba(110,208,255,.35); background: rgba(110,208,255,.08); }
-
+  /* ── 車車舞台 ─────────────────────────────────────────── */
   .carStage {
-    position: relative;
-    border-radius: var(--r-lg);
-    padding: 14px 14px 4px;
-    background: linear-gradient(180deg, var(--sky-top, #17222E) 0%, var(--sky-bot, #0F151C) 100%);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    transition: background 1.2s ease;
+    position: relative; border-radius: var(--rXl); overflow: hidden;
+    height: 300px; box-shadow: 0 18px 40px -20px rgba(0,0,0,.95);
   }
-  .carStage .road {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 54px;
-    background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.45));
-    border-top: 1px dashed rgba(255,255,255,.10);
+  .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stageTop {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+    display: flex; align-items: center; gap: 8px; padding: 14px 15px;
+    background: linear-gradient(180deg, rgba(6,9,16,.72), rgba(6,9,16,0));
   }
+  .stageTop .nm { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+
   .bubble {
-    position: relative; z-index: 3;
-    background: var(--chalk); color: #10161D;
-    padding: 10px 14px; border-radius: 16px 16px 16px 4px;
-    font-size: 13.5px; line-height: 1.5; font-weight: 500;
-    max-width: 86%; margin-bottom: 4px;
-    box-shadow: 0 8px 20px rgba(0,0,0,.35);
-    animation: pop .3s cubic-bezier(.2,1.4,.5,1);
+    position: absolute; z-index: 5; left: 16px; right: 16px; top: 52px;
+    background: var(--chalk); color: #121722; padding: 11px 15px;
+    border-radius: 18px 18px 18px 6px; font-size: 13.5px; line-height: 1.5; font-weight: 500;
+    box-shadow: 0 12px 26px rgba(0,0,0,.45);
+    animation: pop .34s cubic-bezier(.2,1.5,.5,1);
   }
-  @keyframes pop { from { opacity: 0; transform: scale(.9) translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
 
-  .carHold { position: relative; z-index: 2; display: flex; justify-content: center; }
-  .carHold svg { width: 250px; height: auto; animation: idle 4.5s ease-in-out infinite; }
-  @keyframes idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  .eye { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
-  @keyframes blink { 0%,94%,100% { transform: scaleY(1); } 97% { transform: scaleY(.08); } }
-  .carHold.pet svg { animation: petted .6s ease; }
-  @keyframes petted { 0%,100% { transform: none; } 30% { transform: translateY(-14px) rotate(-3deg); } 65% { transform: translateY(-4px) rotate(2deg); } }
+  .carHold {
+    position: absolute; z-index: 3; left: 0; right: 0; bottom: 6px;
+    display: flex; justify-content: center;
+  }
+  .carHold svg { width: 262px; height: auto; animation: idle 4.6s ease-in-out infinite; }
+  @keyframes idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .eye { transform-box: fill-box; transform-origin: center; animation: blink 6.4s infinite; }
+  @keyframes blink { 0%,93%,100% { transform: scaleY(1); } 96.5% { transform: scaleY(.06); } }
+  .ant { transform-box: fill-box; transform-origin: bottom center; animation: wag 2.6s ease-in-out infinite; }
+  @keyframes wag { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+  .carHold.pet svg { animation: petted .65s ease; }
+  @keyframes petted { 0%,100% { transform: none; } 28% { transform: translateY(-18px) rotate(-4deg); } 62% { transform: translateY(-5px) rotate(3deg); } }
 
-  .meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  /* ── 面板：低框線，靠層次分群 ─────────────────────────── */
+  .pane {
+    background: linear-gradient(170deg, var(--slab) 0%, var(--deep) 100%);
+    border-radius: var(--rLg); padding: 15px 16px;
+    display: flex; flex-direction: column; gap: 11px; box-shadow: var(--lift);
+  }
+  .paneTop { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .paneTop .lv { font-size: 13.5px; font-weight: 700; color: var(--lime); letter-spacing: -.01em; }
+  .paneTop .nx { font-family: var(--mono); font-size: 11px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
+  .cap { font-size: 12.5px; color: var(--fog); line-height: 1.5; }
+
+  .bar { height: 7px; border-radius: 5px; background: rgba(0,0,0,.4); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 5px; transition: width .55s cubic-bezier(.2,.8,.3,1); }
+
+  .meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .meter {
-    background: var(--slab); border: 1px solid var(--line);
-    border-radius: var(--r-md); padding: 11px 12px;
+    background: linear-gradient(170deg, var(--slab) 0%, var(--deep) 100%);
+    border-radius: var(--rMd); padding: 11px 12px 12px; box-shadow: var(--lift);
   }
-  .meter .lb { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; color: var(--fog-dim); text-transform: uppercase; }
-  .meter .vl { font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; margin: 2px 0 7px; }
-  .bar { height: 4px; border-radius: 3px; background: #253140; overflow: hidden; }
-  .bar i { display: block; height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.2,.8,.3,1); }
-
-  .lvCard {
-    background: var(--slab); border: 1px solid var(--line);
-    border-radius: var(--r-md); padding: 14px;
-    display: flex; flex-direction: column; gap: 9px;
-  }
-  .lvTop { display: flex; align-items: baseline; justify-content: space-between; }
-  .lvTop .lv { font-family: var(--mono); font-size: 13px; color: var(--lime); letter-spacing: .06em; }
-  .lvTop .nx { font-family: var(--mono); font-size: 11px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
-  .lvCard .cap { font-size: 12px; color: var(--fog); }
+  .meter .lb { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--fog-dim); text-transform: uppercase; }
+  .meter .vl { font-family: var(--mono); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 1px 0 8px; }
 
   .acts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
   .act {
-    background: var(--slab); border: 1px solid var(--line); border-radius: var(--r-md);
-    padding: 12px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px;
-    color: var(--chalk); font-family: var(--sans); font-size: 12px; cursor: pointer; transition: .16s;
+    background: none; border: none; padding: 0; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    color: var(--fog); font-family: var(--sans); font-size: 11.5px; transition: .18s;
   }
-  .act:hover { border-color: var(--lime-dim); background: #182029; }
-  .act:active { transform: scale(.95); }
-  .act:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .act svg { width: 22px; height: 22px; }
-  .act.spent { opacity: .4; pointer-events: none; }
+  .act .ring {
+    width: 56px; height: 56px; border-radius: 20px; display: grid; place-items: center;
+    background: linear-gradient(168deg, var(--slab-2), var(--deep));
+    box-shadow: 0 1px 0 rgba(255,255,255,.07) inset, 0 8px 18px -10px rgba(0,0,0,.9);
+    transition: .18s;
+  }
+  .act svg { width: 24px; height: 24px; }
+  .act:hover { color: var(--chalk); }
+  .act:hover .ring { background: linear-gradient(168deg, var(--slab-3), var(--slab)); transform: translateY(-2px); }
+  .act:active .ring { transform: scale(.92); }
+  .act:focus-visible .ring { outline: 2px solid var(--sky); outline-offset: 3px; }
+
+  .nextRow {
+    display: flex; align-items: center; gap: 12px; padding: 13px 15px;
+    background: linear-gradient(100deg, rgba(201,242,58,.11), rgba(201,242,58,.03));
+    border-radius: var(--rLg);
+  }
+  .nextRow .t {
+    font-family: var(--mono); font-size: 13px; color: var(--lime); font-variant-numeric: tabular-nums;
+    flex: none; font-weight: 600;
+  }
+  .nextRow .d { font-size: 12px; color: var(--fog); line-height: 1.45; }
+  .nextRow .d b { display: block; color: var(--chalk); font-size: 12.5px; font-weight: 700; }
+
+  .chip {
+    font-size: 11px; padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+    background: rgba(255,255,255,.09); color: var(--chalk);
+  }
+  .chip.lime { color: #14200A; background: var(--lime); font-weight: 700; }
+  .chip.rose { color: #24101A; background: var(--rose); font-weight: 700; }
 
   /* ── 個性 ─────────────────────────────────────────────── */
   .pCard {
-    display: flex; gap: 13px; align-items: flex-start;
-    background: var(--slab); border: 1px solid var(--line);
-    border-radius: var(--r-md); padding: 14px; cursor: pointer;
-    text-align: left; width: 100%; color: var(--chalk);
-    font-family: var(--sans); transition: .18s;
+    display: flex; gap: 13px; align-items: flex-start; width: 100%; text-align: left;
+    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    border: none; border-radius: var(--rLg); padding: 14px; cursor: pointer;
+    color: var(--chalk); font-family: var(--sans); transition: .2s;
+    box-shadow: var(--lift); position: relative; overflow: hidden;
   }
-  .pCard:hover { border-color: #3E4F63; }
+  .pCard::after {
+    content: ""; position: absolute; inset: 0; border-radius: var(--rLg);
+    box-shadow: 0 0 0 2px transparent inset; transition: .2s; pointer-events: none;
+  }
+  .pCard:hover { transform: translateY(-2px); }
   .pCard:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .pCard[aria-pressed="true"] { border-color: var(--lime); background: rgba(200,240,46,.07); }
+  .pCard[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--lime) inset; }
+  .pCard[aria-pressed="true"] { background: linear-gradient(168deg, #232F26 0%, #171F1C 100%); }
   .pFace {
-    flex: none; width: 46px; height: 46px; border-radius: 14px;
-    display: grid; place-items: center; font-size: 22px;
-    background: var(--slab-2); border: 1px solid var(--line);
+    flex: none; width: 54px; height: 54px; border-radius: 17px; display: grid; place-items: center;
+    background: radial-gradient(120% 100% at 50% 20%, var(--pf1), var(--pf2));
+    box-shadow: 0 6px 14px -8px rgba(0,0,0,.9);
   }
-  .pCard[aria-pressed="true"] .pFace { border-color: rgba(200,240,46,.4); }
-  .pBody h3 { margin: 0 0 2px; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
-  .pBody h3 small { font-family: var(--mono); font-size: 10px; color: var(--fog-dim); letter-spacing: .1em; margin-left: 7px; font-weight: 400; }
+  .pFace svg { width: 42px; height: auto; }
+  .pBody h3 { margin: 0 0 3px; font-size: 15.5px; font-weight: 800; letter-spacing: -.02em; }
+  .pBody h3 small { font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); letter-spacing: .12em; margin-left: 8px; font-weight: 400; }
   .pBody p { margin: 0; font-size: 12.5px; color: var(--fog); line-height: 1.5; }
-  .pBody .quote { margin-top: 6px; font-size: 12.5px; color: var(--lime); font-style: italic; }
+  .pBody .quote { margin-top: 6px; font-size: 12.5px; color: var(--lime); }
 
   .traitRow { display: flex; align-items: center; gap: 12px; }
-  .traitRow label { flex: none; width: 62px; font-size: 12.5px; color: var(--fog); }
+  .traitRow label { flex: none; width: 60px; font-size: 12.5px; color: var(--fog); }
   .traitRow .num { flex: none; width: 26px; text-align: right; font-family: var(--mono); font-size: 11px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
 
   /* ── 套皮 ─────────────────────────────────────────────── */
   .skinGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
   .skin {
-    position: relative; background: var(--slab); border: 1px solid var(--line);
-    border-radius: var(--r-md); padding: 10px; cursor: pointer;
-    display: flex; flex-direction: column; gap: 7px;
-    color: var(--chalk); font-family: var(--sans); transition: .18s;
+    position: relative; border: none; border-radius: var(--rLg); padding: 9px 9px 12px;
+    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+    color: var(--chalk); font-family: var(--sans); transition: .2s;
+    box-shadow: var(--lift); overflow: hidden;
   }
-  .skin:hover { border-color: #3E4F63; }
+  .skin::after {
+    content: ""; position: absolute; inset: 0; border-radius: var(--rLg);
+    box-shadow: 0 0 0 2px transparent inset; transition: .2s; pointer-events: none;
+  }
+  .skin:hover { transform: translateY(-2px); }
   .skin:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .skin[aria-pressed="true"] { border-color: var(--lime); background: rgba(200,240,46,.07); }
+  .skin[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--lime) inset; }
   .skin .prev {
-    border-radius: var(--r-sm); height: 74px; display: grid; place-items: center;
-    background: linear-gradient(180deg, #1D2733, #141B24); overflow: hidden;
+    border-radius: 14px; height: 80px; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(110% 90% at 50% 15%, var(--sk1), var(--sk2));
   }
-  .skin .prev svg { width: 118px; height: auto; }
-  .skin .nm { font-size: 13px; font-weight: 600; }
-  .skin .mt { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; color: var(--fog-dim); text-transform: uppercase; }
+  .skin .prev svg { width: 124px; height: auto; }
+  .skin .nm { font-size: 13.5px; font-weight: 700; padding-left: 3px; }
+  .skin .mt { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--fog-dim); text-transform: uppercase; padding-left: 3px; margin-top: -5px; }
   .skin.locked { cursor: not-allowed; }
-  .skin.locked .prev { opacity: .22; }
+  .skin.locked .prev { filter: grayscale(1) brightness(.42); }
   .skin.locked .nm { color: var(--fog-dim); }
   .skin .lock {
-    position: absolute; top: 10px; left: 10px; right: 10px; height: 74px;
-    display: grid; place-items: center;
-    font-family: var(--mono); font-size: 10.5px; font-weight: 700;
-    letter-spacing: .1em; color: var(--amber);
-    background: rgba(11,15,20,.55); border-radius: var(--r-sm);
+    position: absolute; top: 9px; left: 9px; right: 9px; height: 80px;
+    display: grid; place-items: center; border-radius: 14px;
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .12em;
+    color: var(--amber); background: rgba(7,10,18,.5);
   }
 
   /* ── 盲盒 ─────────────────────────────────────────────── */
-  .boxHold { display: grid; place-items: center; padding: 10px 0 4px; }
-  .boxBtn {
-    background: none; border: none; cursor: pointer; padding: 0;
-    display: grid; place-items: center; gap: 12px;
-  }
-  .boxBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 6px; border-radius: 20px; }
-  .boxBtn svg { width: 156px; height: auto; filter: drop-shadow(0 16px 30px rgba(255,127,166,.22)); }
-  .boxBtn.shake svg { animation: shake .5s cubic-bezier(.36,.07,.19,.97); }
+  .boxHold { display: grid; place-items: center; padding: 6px 0 2px; }
+  .boxBtn { background: none; border: none; cursor: pointer; padding: 0; display: grid; place-items: center; gap: 14px; }
+  .boxBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 8px; border-radius: 24px; }
+  .boxBtn svg { width: 168px; height: auto; filter: drop-shadow(0 20px 36px rgba(255,134,174,.28)); }
+  .boxBtn.shake svg { animation: shake .52s cubic-bezier(.36,.07,.19,.97); }
   @keyframes shake {
     10%,90% { transform: translateX(-2px) rotate(-2deg); }
     20%,80% { transform: translateX(4px) rotate(3deg); }
-    30%,50%,70% { transform: translateX(-7px) rotate(-4deg); }
-    40%,60% { transform: translateX(7px) rotate(4deg); }
+    30%,50%,70% { transform: translateX(-8px) rotate(-5deg); }
+    40%,60% { transform: translateX(8px) rotate(5deg); }
   }
-  .boxHint { font-size: 12.5px; color: var(--fog); text-align: center; }
+  .boxHint { font-size: 12.5px; color: var(--fog); text-align: center; max-width: 250px; }
 
   .planCard {
-    border-radius: var(--r-lg); padding: 1px;
+    border-radius: var(--rXl); padding: 2px;
     background: linear-gradient(150deg, var(--rr1), var(--rr2));
-    animation: reveal .5s cubic-bezier(.2,1.2,.4,1);
+    box-shadow: 0 20px 40px -22px var(--rr1);
+    animation: reveal .55s cubic-bezier(.2,1.25,.4,1);
   }
-  @keyframes reveal { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes reveal { from { opacity: 0; transform: scale(.93) translateY(14px); } to { opacity: 1; transform: none; } }
   .planInner {
-    background: var(--slab); border-radius: 23px; padding: 16px;
-    display: flex; flex-direction: column; gap: 12px;
+    background: linear-gradient(168deg, var(--slab) 0%, #141B29 100%);
+    border-radius: 28px; padding: 17px; display: flex; flex-direction: column; gap: 13px;
   }
   .planTop { display: flex; align-items: center; gap: 8px; }
   .rar {
-    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .14em;
-    padding: 3px 8px; border-radius: 5px; color: #0B0F14; background: var(--rr1);
+    font-family: var(--mono); font-size: 10.5px; font-weight: 800; letter-spacing: .16em;
+    padding: 4px 9px; border-radius: 7px; color: #0B0F14; background: var(--rr1);
   }
-  .planInner h3 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -.02em; text-wrap: balance; }
-  .route { display: flex; flex-direction: column; gap: 8px; }
-  .stop { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-  .stop .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--lime); }
+  .planInner h3 { margin: 0; font-size: 19px; font-weight: 900; letter-spacing: -.03em; text-wrap: balance; }
+  .route { display: flex; flex-direction: column; gap: 7px; }
+  .stop { display: flex; align-items: center; gap: 11px; font-size: 13px; }
+  .stop .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--lime); }
   .stop .dot.end { background: var(--rose); border-color: var(--rose); }
   .stop .ln { color: var(--chalk); }
-  .stop .tm { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
-  .rail { margin-left: 3px; width: 1px; height: 14px; background: repeating-linear-gradient(180deg, var(--line) 0 3px, transparent 3px 6px); }
+  .stop .tm { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
+  .rail { margin-left: 4px; width: 2px; height: 15px; background: repeating-linear-gradient(180deg, var(--slab-3) 0 3px, transparent 3px 7px); }
   .planSay {
-    background: var(--slab-2); border-left: 2px solid var(--rose);
-    border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 10px 12px;
-    font-size: 13px; color: var(--chalk); line-height: 1.55;
+    background: rgba(255,134,174,.10); border-left: 3px solid var(--rose);
+    border-radius: 0 12px 12px 0; padding: 11px 13px; font-size: 13px; color: var(--chalk); line-height: 1.55;
   }
   .planFoot { display: flex; align-items: center; justify-content: space-between; }
-  .fare { font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .fare { font-family: var(--mono); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .fare small { color: var(--fog-dim); font-size: 10px; letter-spacing: .1em; }
 
   .histRow {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; background: var(--slab); border: 1px solid var(--line);
-    border-radius: var(--r-sm); font-size: 12.5px;
+    display: flex; align-items: center; gap: 11px; padding: 11px 13px;
+    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    border-radius: var(--rMd); font-size: 12.5px; box-shadow: var(--lift);
   }
-  .histRow .tag { font-family: var(--mono); font-size: 9.5px; padding: 2px 6px; border-radius: 4px; color: #0B0F14; font-weight: 700; }
+  .histRow .tag { font-family: var(--mono); font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 5px; color: #0B0F14; }
   .histRow .dt { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
 
   /* ── 學習 ─────────────────────────────────────────────── */
-  .heat { display: flex; align-items: flex-end; gap: 3px; height: 92px; }
-  .heat i {
-    flex: 1; border-radius: 2px 2px 1px 1px; background: #26323F;
-    min-height: 3px; transition: height .5s cubic-bezier(.2,.8,.3,1), background .3s;
-  }
-  .heat i.on { background: var(--lime-dim); }
-  .heat i.top { background: var(--lime); box-shadow: 0 0 12px rgba(200,240,46,.4); }
-  .heatAxis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); margin-top: 6px; }
+  .heat { display: flex; align-items: flex-end; gap: 3px; height: 96px; }
+  .heat i { flex: 1; border-radius: 3px 3px 2px 2px; background: #2A3548; min-height: 4px; transition: height .55s cubic-bezier(.2,.8,.3,1), background .3s; }
+  .heat i.on { background: linear-gradient(180deg, var(--lime-d), #6C8517); }
+  .heat i.top { background: linear-gradient(180deg, var(--lime), var(--lime-d)); box-shadow: 0 0 16px rgba(201,242,58,.45); }
+  .heatAxis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); }
 
-  .lbl { display: flex; flex-direction: column; gap: 5px; }
+  .lbl { display: flex; flex-direction: column; gap: 6px; }
   .lblTop { display: flex; align-items: baseline; gap: 8px; }
-  .lblTop .n { font-size: 13.5px; font-weight: 600; }
+  .lblTop .n { font-size: 13.5px; font-weight: 700; }
   .lblTop .c { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
 
   .learn { display: flex; gap: 10px; font-size: 13px; color: var(--chalk); line-height: 1.55; }
   .learn::before { content: "▸"; color: var(--lime); flex: none; }
 
-  .schedRow { display: flex; gap: 12px; align-items: flex-start; }
-  .schedRow .tm {
-    flex: none; width: 46px; font-family: var(--mono); font-size: 12px;
-    color: var(--lime); font-variant-numeric: tabular-nums; padding-top: 1px;
-  }
+  .schedRow { display: flex; gap: 13px; align-items: flex-start; }
+  .schedRow .tm { flex: none; width: 48px; font-family: var(--mono); font-size: 12.5px; color: var(--lime); font-variant-numeric: tabular-nums; padding-top: 1px; font-weight: 600; }
   .schedRow .bd { font-size: 12.5px; color: var(--fog); line-height: 1.5; }
-  .schedRow .bd b { color: var(--chalk); font-weight: 600; display: block; margin-bottom: 1px; }
+  .schedRow .bd b { color: var(--chalk); font-weight: 700; display: block; margin-bottom: 2px; }
 
-  .privacy {
-    display: flex; gap: 9px; font-size: 11.5px; color: var(--fog-dim);
-    border-top: 1px dashed var(--line); padding-top: 12px; line-height: 1.5;
-  }
+  .privacy { display: flex; gap: 10px; font-size: 11.5px; color: var(--fog-dim); padding: 2px 6px 8px; line-height: 1.5; }
 
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
     flex: none; display: grid; grid-template-columns: repeat(5, 1fr);
-    background: rgba(11,15,20,.92);
-    backdrop-filter: blur(18px);
-    border-top: 1px solid var(--line);
-    padding: 9px 6px 26px;
+    background: rgba(9,13,21,.9); backdrop-filter: blur(20px);
+    box-shadow: 0 -1px 0 var(--hair); padding: 10px 6px 26px;
   }
   .tab {
-    background: none; border: none; cursor: pointer; padding: 4px 0;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    color: var(--fog-dim); font-family: var(--sans); font-size: 10px; transition: .16s;
+    background: none; border: none; cursor: pointer; padding: 4px 0; position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    color: var(--fog-dim); font-family: var(--sans); font-size: 10px; transition: .18s;
   }
-  .tab svg { width: 21px; height: 21px; }
+  .tab svg { width: 22px; height: 22px; }
   .tab[aria-selected="true"] { color: var(--lime); }
-  .tab:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; border-radius: 8px; }
+  .tab:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; border-radius: 10px; }
   .tab .dot {
-    position: absolute; margin: -3px 0 0 17px; width: 6px; height: 6px;
-    border-radius: 50%; background: var(--rose);
+    position: absolute; top: 2px; left: 50%; margin-left: 8px;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--rose);
+    box-shadow: 0 0 10px var(--rose);
   }
 
-  /* ── 推播橫幅 ─────────────────────────────────────────── */
+  /* ── 推播 ─────────────────────────────────────────────── */
   .push {
     position: absolute; top: 14px; left: 12px; right: 12px; z-index: 70;
-    background: rgba(30,39,50,.86);
-    backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 22px; padding: 12px 14px;
-    display: flex; gap: 11px; align-items: flex-start;
-    box-shadow: 0 20px 44px rgba(0,0,0,.6);
-    transform: translateY(-140%);
-    transition: transform .55s cubic-bezier(.2,1.1,.35,1), opacity .3s;
+    background: rgba(38,47,66,.82); backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 24px; padding: 13px 15px;
+    display: flex; gap: 12px; align-items: flex-start;
+    box-shadow: 0 24px 50px rgba(0,0,0,.65);
+    transform: translateY(-160%); transition: transform .6s cubic-bezier(.2,1.15,.35,1);
     cursor: pointer;
   }
   .push.in { transform: translateY(0); }
   .pushIcon {
-    flex: none; width: 34px; height: 34px; border-radius: 9px;
-    background: var(--lime); display: grid; place-items: center;
+    flex: none; width: 38px; height: 38px; border-radius: 11px; overflow: hidden;
+    background: linear-gradient(160deg, #D8FF4D, #9CC41C); display: grid; place-items: center;
   }
-  .pushIcon svg { width: 26px; height: auto; }
+  .pushIcon svg { width: 32px; height: auto; margin-top: 3px; }
   .pushBody { flex: 1; min-width: 0; }
-  .pushBody .t { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .pushBody .t { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: .01em; }
   .pushBody .t .ago { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--fog); font-weight: 400; }
-  .pushBody .m { font-size: 13px; line-height: 1.45; margin-top: 2px; color: var(--chalk); }
+  .pushBody .m { font-size: 13.5px; line-height: 1.45; margin-top: 3px; color: var(--chalk); }
 
   /* ── 上線引導 ─────────────────────────────────────────── */
   .onb {
     position: absolute; inset: 0; z-index: 80;
-    background: linear-gradient(180deg, #101922 0%, #0B0F14 100%);
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 40px 26px; gap: 20px;
+    background: radial-gradient(90% 60% at 50% 0%, #202A44 0%, #0A0E18 62%);
+    display: flex; flex-direction: column; justify-content: center; padding: 44px 24px; gap: 22px;
   }
   .onb[hidden] { display: none; }
-  .onb h2 { margin: 0; font-size: 27px; font-weight: 800; letter-spacing: -.03em; line-height: 1.2; text-wrap: balance; }
+  .onb h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.04em; line-height: 1.18; text-wrap: balance; }
   .onb p { margin: 0; font-size: 14px; color: var(--fog); }
   .onb input[type="text"] {
-    width: 100%; padding: 13px 15px; border-radius: var(--r-md);
-    background: var(--slab); border: 1px solid var(--line); color: var(--chalk);
-    font-family: var(--sans); font-size: 16px;
+    width: 100%; padding: 15px 17px; border-radius: 18px; background: var(--slab);
+    border: 2px solid transparent; color: var(--chalk); font-family: var(--sans); font-size: 16px;
   }
   .onb input[type="text"]:focus { outline: none; border-color: var(--lime); }
-  .onbList { display: flex; flex-direction: column; gap: 9px; max-height: 330px; overflow-y: auto; scrollbar-width: none; }
+  .onbList { display: flex; flex-direction: column; gap: 10px; max-height: 430px; overflow-y: auto; scrollbar-width: none; }
+  .onbList > * { flex: none; }
   .onbList::-webkit-scrollbar { display: none; }
 
   .toast {
-    position: absolute; bottom: 104px; left: 50%; transform: translateX(-50%) translateY(14px);
-    z-index: 75; background: rgba(233,239,245,.96); color: #10161D;
-    padding: 8px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
-    opacity: 0; transition: .3s; pointer-events: none; white-space: nowrap;
-    box-shadow: 0 10px 26px rgba(0,0,0,.4);
+    position: absolute; bottom: 106px; left: 50%; transform: translateX(-50%) translateY(16px);
+    z-index: 75; background: var(--chalk); color: #121722; padding: 9px 18px; border-radius: 22px;
+    font-size: 12.5px; font-weight: 700; opacity: 0; transition: .3s; pointer-events: none;
+    white-space: nowrap; box-shadow: 0 14px 30px rgba(0,0,0,.5);
   }
   .toast.in { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .spark { position: absolute; width: 7px; height: 7px; border-radius: 50%; pointer-events: none; z-index: 65; }
+  .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 6; }
 
-  .foot {
-    max-width: 1180px; margin: 0 auto; padding: 0 24px 56px;
-    font-size: 12px; color: var(--fog-dim);
-  }
+  .foot { max-width: 1200px; margin: 0 auto; padding: 0 24px 56px; font-size: 12px; color: var(--fog-dim); }
 
   @media (max-width: 1000px) {
-    .stage { grid-template-columns: minmax(0,1fr); gap: 36px; }
+    .stage { grid-template-columns: minmax(0,1fr); gap: 38px; }
     .phoneWrap { position: static; justify-self: center; }
     .desk { order: 2; }
   }
   @media (max-width: 430px) {
-    .stage { padding: 24px 12px 48px; }
-    .phone { width: 100%; max-width: 390px; height: 780px; border-radius: 44px; }
+    .stage { padding: 24px 12px 46px; }
+    .phone { width: 100%; max-width: 390px; height: 780px; border-radius: 46px; }
   }
-
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: .001ms !important; animation-iteration-count: 1 !important;
@@ -557,7 +514,7 @@
       然後在你還沒想到要出門的時候，先丟一個盲盒約會計畫給你。
     </p>
 
-    <div class="panel">
+    <div class="card">
       <h2>調度台 · 時光滑桿</h2>
       <div class="clockRow">
         <span class="big" id="deskClock">21:40</span>
@@ -571,20 +528,14 @@
       </div>
     </div>
 
-    <div class="panel">
+    <div class="card">
       <h2>觸發</h2>
-      <button class="btn primary" id="btnPush">
-        發一則車車推播 <span class="k" style="color:#3E5209">PUSH</span>
-      </button>
-      <button class="btn" id="btnSeed">
-        快轉一週使用紀錄 <span class="k">SEED</span>
-      </button>
-      <button class="btn danger" id="btnReset">
-        清空重養一台 <span class="k">RESET</span>
-      </button>
+      <button class="btn primary" id="btnPush">發一則車車推播 <span class="k">PUSH</span></button>
+      <button class="btn" id="btnSeed">快轉一週使用紀錄 <span class="k">SEED</span></button>
+      <button class="btn ghost" id="btnReset">清空重養一台 <span class="k">RESET</span></button>
     </div>
 
-    <div class="panel">
+    <div class="card">
       <h2>這個原型在展示什麼</h2>
       <div class="notes">
         <div class="note"><span class="num">01</span><p><b>個性是可挑的，也是會漂移的。</b>五種初始人格決定講話的口氣；黏人／毒舌／話癆／浪漫四條參數會隨你互動慢慢自己移動。</p></div>
@@ -601,7 +552,15 @@
       <div class="island"></div>
       <div class="statusbar">
         <span id="sbTime">21:40</span>
-        <span class="right"><span>5G</span><span>􀛨</span><span id="sbBat">82%</span></span>
+        <span class="right">
+          <span>5G</span>
+          <svg viewBox="0 0 20 14" width="17" height="12" aria-hidden="true">
+            <path d="M2 5.4a12 12 0 0 1 16 0" stroke="#EEF2F9" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M5 8.4a7.6 7.6 0 0 1 10 0" stroke="#EEF2F9" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <circle cx="10" cy="11.6" r="1.5" fill="#EEF2F9"/>
+          </svg>
+          <span>82%</span>
+        </span>
       </div>
 
       <div class="push" id="push" role="button" tabindex="0">
@@ -619,50 +578,46 @@
 
           <!-- 首頁 -->
           <section class="screen" id="sc-home">
-            <div class="headRow">
-              <span class="nm" id="homeName">小黃</span>
-              <span class="chip lime" id="homePers">溫柔療癒</span>
-              <span class="chip" id="homeMood">心情不錯</span>
-            </div>
-
             <div class="carStage" id="carStage">
-              <div class="road"></div>
+              <div class="scene" id="scene"></div>
+              <div class="stageTop">
+                <span class="nm" id="homeName">小黃</span>
+                <span class="chip" id="homePers">溫柔療癒</span>
+                <span class="chip" id="homeMood">心情不錯</span>
+              </div>
               <div class="bubble" id="bubble">…</div>
               <div class="carHold" id="carHold"></div>
             </div>
 
-            <div class="lvCard">
-              <div class="lvTop">
+            <div class="pane">
+              <div class="paneTop">
                 <span class="lv" id="lvText">Lv.2 · 熟客</span>
                 <span class="nx" id="lvNext">62 / 100</span>
               </div>
-              <div class="bar"><i id="lvBar" style="width:62%;background:var(--lime)"></i></div>
+              <div class="bar"><i id="lvBar" style="width:62%;background:linear-gradient(90deg,var(--lime-d),var(--lime))"></i></div>
               <div class="cap" id="lvCap">再相處一點，就會解鎖新的皮。</div>
             </div>
 
             <div class="meters">
               <div class="meter">
                 <div class="lb">Energy</div><div class="vl" id="mEnergy">78</div>
-                <div class="bar"><i id="bEnergy" style="background:var(--lime)"></i></div>
+                <div class="bar"><i id="bEnergy" style="background:linear-gradient(90deg,var(--lime-d),var(--lime))"></i></div>
               </div>
               <div class="meter">
                 <div class="lb">Mood</div><div class="vl" id="mMood">84</div>
-                <div class="bar"><i id="bMood" style="background:var(--amber)"></i></div>
+                <div class="bar"><i id="bMood" style="background:linear-gradient(90deg,#C08430,var(--amber))"></i></div>
               </div>
               <div class="meter">
                 <div class="lb">默契</div><div class="vl" id="mSync">41</div>
-                <div class="bar"><i id="bSync" style="background:var(--sky)"></i></div>
+                <div class="bar"><i id="bSync" style="background:linear-gradient(90deg,#3E86AC,var(--sky))"></i></div>
               </div>
             </div>
 
             <div class="acts" id="acts"></div>
 
-            <div class="lvCard" style="gap:9px">
-              <div class="lvTop">
-                <span class="lv">接下來它會找你</span>
-                <span class="nx" id="nextAt">--:--</span>
-              </div>
-              <div class="cap" id="nextCopy">還在觀察你的作息，暫時不會主動吵你。</div>
+            <div class="nextRow">
+              <span class="t" id="nextAt">--:--</span>
+              <span class="d" id="nextCopy"><b>接下來它會找你</b>還在觀察你的作息，暫時不會主動吵你。</span>
             </div>
           </section>
 
@@ -671,12 +626,9 @@
             <div class="scTitle"><h2>個性</h2><span>Personality</span></div>
             <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
 
-            <div class="lvCard" style="gap:13px">
-              <div class="lvTop">
-                <span class="lv">個性微調</span>
-                <span class="nx">會自己漂移</span>
-              </div>
-              <div id="traits" style="display:flex;flex-direction:column;gap:11px"></div>
+            <div class="pane" style="gap:14px">
+              <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
+              <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
               <div class="cap">你越常在深夜找它，黏人度就自己往上爬；一直不理它，毒舌度會慢慢長出來。</div>
             </div>
           </section>
@@ -685,10 +637,7 @@
           <section class="screen" id="sc-skin" hidden>
             <div class="scTitle"><h2>套皮</h2><span id="skinCount">Skins 3/8</span></div>
             <div class="skinGrid" id="skinGrid"></div>
-            <div class="privacy">
-              <span>􀎡</span>
-              <span>換皮會一起換掉車車的配件、車牌顏色，以及它跟你打招呼的方式。</span>
-            </div>
+            <div class="privacy"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" style="flex:none;margin-top:4px"><path d="M4.6 7.2V5a3.4 3.4 0 0 1 6.8 0v2.2" stroke="#64708A" stroke-width="1.6" fill="none" stroke-linecap="round"/><rect x="3" y="7.2" width="10" height="6.8" rx="2.2" fill="#64708A"/></svg><span>換皮會一起換掉車車的配件、車牌顏色，以及它跟你打招呼的方式。</span></div>
           </section>
 
           <!-- 盲盒 -->
@@ -708,31 +657,28 @@
           <section class="screen" id="sc-learn" hidden>
             <div class="scTitle"><h2>它學到的你</h2><span>Habits</span></div>
 
-            <div class="lvCard">
-              <div class="lvTop"><span class="lv">24 小時開啟熱區</span><span class="nx" id="visitTotal">0 次</span></div>
+            <div class="pane">
+              <div class="paneTop"><span class="lv">24 小時開啟熱區</span><span class="nx" id="visitTotal">0 次</span></div>
               <div class="heat" id="heat"></div>
               <div class="heatAxis"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
             </div>
 
-            <div class="lvCard" style="gap:13px">
-              <div class="lvTop"><span class="lv">推論標籤</span><span class="nx">信心值</span></div>
-              <div id="labels" style="display:flex;flex-direction:column;gap:12px"></div>
+            <div class="pane" style="gap:14px">
+              <div class="paneTop"><span class="lv">推論標籤</span><span class="nx">信心值</span></div>
+              <div id="labels" style="display:flex;flex-direction:column;gap:13px"></div>
             </div>
 
-            <div class="lvCard" style="gap:11px">
-              <div class="lvTop"><span class="lv">車車學到的事</span></div>
-              <div id="learned" style="display:flex;flex-direction:column;gap:10px"></div>
+            <div class="pane" style="gap:12px">
+              <div class="paneTop"><span class="lv">車車學到的事</span></div>
+              <div id="learned" style="display:flex;flex-direction:column;gap:11px"></div>
             </div>
 
-            <div class="lvCard" style="gap:14px">
-              <div class="lvTop"><span class="lv">它排給自己的推播</span><span class="nx">自動產生</span></div>
-              <div id="sched" style="display:flex;flex-direction:column;gap:13px"></div>
+            <div class="pane" style="gap:15px">
+              <div class="paneTop"><span class="lv">它排給自己的推播</span><span class="nx">自動產生</span></div>
+              <div id="sched" style="display:flex;flex-direction:column;gap:14px"></div>
             </div>
 
-            <div class="privacy">
-              <span>􀎡</span>
-              <span>開啟紀錄只存在這台手機上，不上傳、不做廣告投放。你隨時可以在設定裡把它忘掉。</span>
-            </div>
+            <div class="privacy"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" style="flex:none;margin-top:4px"><path d="M4.6 7.2V5a3.4 3.4 0 0 1 6.8 0v2.2" stroke="#64708A" stroke-width="1.6" fill="none" stroke-linecap="round"/><rect x="3" y="7.2" width="10" height="6.8" rx="2.2" fill="#64708A"/></svg><span>開啟紀錄只存在這台手機上，不上傳、不做廣告投放。你隨時可以在設定裡把它忘掉。</span></div>
           </section>
         </div>
 
@@ -743,8 +689,8 @@
       <div class="onb" id="onb">
         <div>
           <div class="eyebrow">歡迎上車</div>
-          <h2 id="onbTitle">先幫你的車車取個名字</h2>
-          <p id="onbSub" style="margin-top:8px">之後推播都會用這個名字跟你說話。</p>
+          <h2 id="onbTitle" style="margin-top:6px">先幫你的車車取個名字</h2>
+          <p id="onbSub" style="margin-top:10px">之後推播都會用這個名字跟你說話。</p>
         </div>
         <div id="onbStep1">
           <input type="text" id="onbName" maxlength="8" placeholder="例如：小黃、阿肥、老婆車" value="小黃">
@@ -762,124 +708,124 @@
 (() => {
   "use strict";
 
-  /* ════ 資料 ════════════════════════════════════════════ */
+  /* ════ 個性 ════════════════════════════════════════════ */
 
   const PERSONALITIES = [
-    {
-      id: "warm", name: "暖暖", type: "溫柔療癒型", face: "🫧",
+    { id: "warm", name: "暖暖", type: "溫柔療癒型", pf: ["#3C4F63", "#1B2634"], tint: "#9FD8F0",
       desc: "先問你累不累，再問要去哪。開車很穩，話很軟。",
       quote: "「今天辛苦了，先坐下，路我來想。」",
-      traits: { clingy: 62, sassy: 12, talkative: 55, romantic: 70 }
-    },
-    {
-      id: "tsun", name: "小辣", type: "傲嬌毒舌型", face: "🌶️",
+      traits: { clingy: 62, sassy: 12, talkative: 55, romantic: 70 } },
+    { id: "tsun", name: "小辣", type: "傲嬌毒舌型", pf: ["#6B2B33", "#2A1218"], tint: "#FF7A6E",
       desc: "嘴上嫌你，導航早就設好了。等你的時候絕不承認在等。",
       quote: "「才不是特地繞過來，只是剛好在這條路上。」",
-      traits: { clingy: 48, sassy: 88, talkative: 62, romantic: 44 }
-    },
-    {
-      id: "sunny", name: "阿嘿", type: "元氣陽光型", face: "🌤️",
+      traits: { clingy: 48, sassy: 88, talkative: 62, romantic: 44 } },
+    { id: "sunny", name: "阿嘿", type: "元氣陽光型", pf: ["#6B5A1E", "#2A2410"], tint: "#FFD34D",
       desc: "沒有低潮這種東西。你一上車它就開始規劃三個景點。",
       quote: "「走走走！油門我踩好了，安全帶自己繫！」",
-      traits: { clingy: 55, sassy: 30, talkative: 92, romantic: 50 }
-    },
-    {
-      id: "gent", name: "老派", type: "沉穩紳士型", face: "🎩",
+      traits: { clingy: 55, sassy: 30, talkative: 92, romantic: 50 } },
+    { id: "gent", name: "老派", type: "沉穩紳士型", pf: ["#2E3A4E", "#141A24"], tint: "#4E6480",
       desc: "永遠提前五分鐘到。開門、關門、講話都有節奏。",
       quote: "「安全帶繫好，我們慢慢來，不趕這一個紅燈。」",
-      traits: { clingy: 30, sassy: 18, talkative: 34, romantic: 66 }
-    },
-    {
-      id: "misty", name: "霧霧", type: "神秘文青型", face: "🌫️",
+      traits: { clingy: 30, sassy: 18, talkative: 34, romantic: 66 } },
+    { id: "misty", name: "霧霧", type: "神秘文青型", pf: ["#463A6B", "#1C1730"], tint: "#B7A7F0",
       desc: "常常說一些你要想三秒的話，很愛帶你繞路看東西。",
       quote: "「今天的天空，適合繞遠路。你要不要？」",
-      traits: { clingy: 40, sassy: 42, talkative: 45, romantic: 84 }
-    }
+      traits: { clingy: 40, sassy: 42, talkative: 45, romantic: 84 } }
   ];
 
   const SKINS = [
-    { id: "classic", name: "初號黃", tag: "基本", lv: 1, body: "#F5C518", roof: "#E0AE0B", glass: "#1B2733", light: "#FFE9A8", acc: "none" },
-    { id: "mint",    name: "薄荷牛奶", tag: "基本", lv: 1, body: "#9FE8CF", roof: "#7ED0B6", glass: "#16242C", light: "#FFF6DC", acc: "none" },
-    { id: "ink",     name: "深夜墨", tag: "基本", lv: 1, body: "#2C3A49", roof: "#212C38", glass: "#0D141A", light: "#C8F02E", acc: "none" },
-    { id: "cat",     name: "貓咪車車", tag: "人氣", lv: 2, body: "#F0E4D4", roof: "#DCCBB6", glass: "#1B2733", light: "#FFD9A8", acc: "cat" },
-    { id: "racer",   name: "熱血賽道", tag: "季節", lv: 3, body: "#E8412F", roof: "#C22D1E", glass: "#141C24", light: "#FFEFC0", acc: "racer" },
-    { id: "neon",    name: "霓虹夜跑", tag: "季節", lv: 4, body: "#1C2233", roof: "#151A28", glass: "#0A0E16", light: "#6ED0FF", acc: "neon" },
-    { id: "sakura",  name: "櫻花限定", tag: "聯名", lv: 5, body: "#FBD3DF", roof: "#F3B6C8", glass: "#25202A", light: "#FFF0F5", acc: "sakura" },
-    { id: "deer",    name: "聖誕小鹿", tag: "聯名", lv: 6, body: "#B84A3C", roof: "#9C3A2E", glass: "#1A222B", light: "#FFE6A8", acc: "deer" }
+    { id: "classic", name: "初號黃", tag: "基本", lv: 1, body: "#F7C81C", roof: "#DDAA07", glass: "#1C2836", light: "#FFECAF", acc: "none", bg: ["#3B3418", "#161B26"] },
+    { id: "mint",    name: "薄荷牛奶", tag: "基本", lv: 1, body: "#A6ECD4", roof: "#7FD3B8", glass: "#16262E", light: "#FFF8E2", acc: "none", bg: ["#1F3B37", "#141E26"] },
+    { id: "ink",     name: "深夜墨", tag: "基本", lv: 1, body: "#303F52", roof: "#22303F", glass: "#0C131A", light: "#C9F23A", acc: "none", bg: ["#22293A", "#12161F"] },
+    { id: "cat",     name: "貓咪車車", tag: "人氣", lv: 2, body: "#F3E7D6", roof: "#DFCEB6", glass: "#1B2733", light: "#FFDCAC", acc: "cat", bg: ["#3B3324", "#181B24"] },
+    { id: "racer",   name: "熱血賽道", tag: "季節", lv: 3, body: "#EA4634", roof: "#C42F1F", glass: "#141C24", light: "#FFF2C6", acc: "racer", bg: ["#45201C", "#171820"] },
+    { id: "neon",    name: "霓虹夜跑", tag: "季節", lv: 4, body: "#1E2540", roof: "#161C30", glass: "#0A0E18", light: "#7DD3FC", acc: "neon", bg: ["#1B2B4A", "#0E1320"] },
+    { id: "sakura",  name: "櫻花限定", tag: "聯名", lv: 5, body: "#FCD7E2", roof: "#F4BACB", glass: "#25202A", light: "#FFF3F7", acc: "sakura", bg: ["#42283A", "#1A1620"] },
+    { id: "deer",    name: "聖誕小鹿", tag: "聯名", lv: 6, body: "#BB4E3F", roof: "#9E3C30", glass: "#1A222B", light: "#FFEAB0", acc: "deer", bg: ["#3E2320", "#161A1E"] }
   ];
 
   const LV_NAMES = ["初次見面", "熟客", "老朋友", "有點在乎", "離不開", "已經是家人"];
 
   const SLOTS = [
-    { id: "night",   name: "深夜",   hrs: [23, 0, 1, 2, 3], sky: ["#141B2B", "#0B0F14"], desk: "夜晚 · 車車最黏人的時段" },
-    { id: "dawn",    name: "清晨",   hrs: [4, 5, 6],        sky: ["#2B2A42", "#16202B"], desk: "清晨 · 它剛充飽電" },
-    { id: "morning", name: "早上",   hrs: [7, 8, 9, 10],    sky: ["#2A4258", "#16222E"], desk: "早上 · 通勤高峰" },
-    { id: "noon",    name: "中午",   hrs: [11, 12, 13],     sky: ["#33506B", "#1A2733"], desk: "中午 · 覓食時間" },
-    { id: "after",   name: "下午",   hrs: [14, 15, 16, 17], sky: ["#3B4A61", "#1B242F"], desk: "下午 · 有點想蹺班" },
-    { id: "evening", name: "晚上",   hrs: [18, 19, 20, 21, 22], sky: ["#2E2A43", "#131A24"], desk: "晚上 · 適合發約會盲盒" }
+    { id: "night",   name: "深夜", hrs: [23, 0, 1, 2, 3],        desk: "深夜 · 車車最黏人的時段" },
+    { id: "dawn",    name: "清晨", hrs: [4, 5, 6],               desk: "清晨 · 它剛充飽電" },
+    { id: "morning", name: "早上", hrs: [7, 8, 9, 10],           desk: "早上 · 通勤高峰" },
+    { id: "noon",    name: "中午", hrs: [11, 12, 13],            desk: "中午 · 覓食時間" },
+    { id: "after",   name: "下午", hrs: [14, 15, 16, 17],        desk: "下午 · 有點想蹺班" },
+    { id: "evening", name: "晚上", hrs: [18, 19, 20, 21, 22],    desk: "晚上 · 適合發約會盲盒" }
   ];
 
-  // 對話：個性 × 時段
+  // 天空色：上／下／地平線光暈
+  const SKYS = {
+    night:   ["#131A33", "#0A0E1C", "#2A2350"],
+    dawn:    ["#3A2E52", "#17203A", "#C9744E"],
+    morning: ["#2E5478", "#152439", "#7FB8D8"],
+    noon:    ["#3E6C93", "#1A2B3D", "#A8CFE4"],
+    after:   ["#4A5478", "#1D2434", "#D89A6A"],
+    evening: ["#38284E", "#121628", "#E0693F"]
+  };
+
+  /* ════ 台詞 ════════════════════════════════════════════ */
+
   const LINES = {
     warm: {
-      night:   ["這麼晚還醒著，是不是又在硬撐？", "我把冷氣調成 26 度了，上來睡一下也可以。"],
-      dawn:    ["天還沒亮欸，要出門的話我先暖車。", "早安。今天不用一次做完所有事。"],
-      morning: ["公事包拿了嗎？我在樓下等你。", "早餐要不要順路買？我知道你會忘記。"],
-      noon:    ["吃飯了沒？沒有的話我載你去。", "中午了，休息二十分鐘不會怎樣。"],
-      after:   ["下午通常最難熬，撐著點。", "有想去的地方就說，我隨時能出發。"],
-      evening: ["下班了嗎？外面有點涼，穿件外套。", "今天想直接回家，還是繞一點路？"]
+      night:   ["這麼晚還醒著，是不是又在硬撐？", "我把冷氣調成 26 度了，上來睡一下也可以。", "明天的你會謝謝現在去睡覺的你。真的。"],
+      dawn:    ["天還沒亮欸，要出門的話我先暖車。", "早安。今天不用一次做完所有事。", "你只睡三小時，我幫你把音樂關小聲一點。"],
+      morning: ["公事包拿了嗎？我在樓下等你。", "早餐要不要順路買？我知道你會忘記。", "遲到就遲到，人生又不是打卡鐘決定的。"],
+      noon:    ["吃飯了沒？沒有的話我載你去。", "中午了，休息二十分鐘不會怎樣。", "又邊吃邊回訊息喔？至少配一口湯。"],
+      after:   ["下午通常最難熬，撐著點。", "有想去的地方就說，我隨時能出發。", "你已經坐四個小時了，起來走一下。"],
+      evening: ["下班了嗎？外面有點涼，穿件外套。", "今天想直接回家，還是繞一點路？", "加班到現在，我幫你把座椅放平了。真的別再開檔案了。"]
     },
     tsun: {
-      night:   ["又熬夜。我沒在擔心，只是輪胎會冷。", "這個時間找我？……好啦，上車。"],
-      dawn:    ["這麼早，難得。不要一下車就說我開太快。", "起這麼早，你是不是有事瞞我。"],
-      morning: ["再兩分鐘你就遲到了。我沒有在催你。", "我不是在等你，只是這裡好停車而已。"],
-      noon:    ["又吃便利商店？隨便你啦。", "餓成這樣還在滑手機，真的服了。"],
-      after:   ["蹺班嗎？我當作沒看到。", "無聊就無聊，不用一直開我 app。"],
-      evening: ["回家路上不要睡著，我可不背你。", "今天很晚欸。我沒有在等，只是剛好停在這。"]
+      night:   ["又熬夜。我沒在擔心，只是輪胎會冷。", "這個時間還在回訊息？手機丟出來，我幫你撿。", "你再這樣下去，我會比你先進廠。"],
+      dawn:    ["這麼早，難得。不要一下車就說我開太快。", "起這麼早，你是不是有事瞞我。", "四點半。你到底是要出門還是還沒睡。"],
+      morning: ["再賴床三分鐘，我就自己開走。", "我不是在等你，只是這裡好停車而已。", "你昨天也說今天要早起。我記得。"],
+      noon:    ["又吃超商？你的胃跟我的引擎一樣都在硬撐。", "餓成這樣還在滑手機，真的服了。", "我建議你吃飯。沒有為什麼，就建議。"],
+      after:   ["蹺班嗎？我當作沒看到。", "無聊就無聊，不用一直開我 app。", "你已經看我第七次了。要出門就說。"],
+      evening: ["你再加班下去，我氣囊就自己爆給你看。", "回家路上不要睡著，我可不背你。", "老闆又不會幫你付油錢。上車。"]
     },
     sunny: {
-      night:   ["還沒睡？那我們來排明天的行程！", "深夜的路最好開了，要不要衝一下！"],
-      dawn:    ["早安！今天絕對是好日子，我感覺得到！", "太陽還沒起床，但我起了！"],
-      morning: ["出發出發！我幫你算過了，走市民大道快七分鐘！", "早安！今天要不要換一條路上班？"],
-      noon:    ["吃什麼吃什麼！我知道三間新開的！", "中午耶！我最喜歡中午了！"],
-      after:   ["下午茶時間到！我載你去買！", "還有半天而已，衝一下就過了！"],
-      evening: ["下班囉！要直接回家還是去晃晃？", "晚上耶！晚上什麼都可以做！"]
+      night:   ["還沒睡？那我們來排明天的行程！", "深夜的路最好開了，要不要衝一下！", "凌晨的城市是我的主場欸！"],
+      dawn:    ["早安！今天絕對是好日子，我感覺得到！", "太陽還沒起床，但我起了！", "五點！最讚的出發時間！"],
+      morning: ["出發出發！我幫你算過了，走市民大道快七分鐘！", "早安！今天要不要換一條路上班？", "遲到的話我可以開快一點！不行嗎！好啦不行。"],
+      noon:    ["吃什麼吃什麼！我知道三間新開的！", "中午耶！我最喜歡中午了！", "便當！麵！火鍋！你選一個！"],
+      after:   ["下午茶時間到！我載你去買！", "還有半天而已，衝一下就過了！", "三點半！蹺班的黃金時段！"],
+      evening: ["加班？不存在的！我引擎已經發動了！", "下班囉！要直接回家還是去晃晃？", "晚上耶！晚上什麼都可以做！"]
     },
     gent: {
-      night:   ["夜深了。若要外出，我建議走大路。", "這個時間，我會開得比平常慢一些。"],
-      dawn:    ["早。車內已經整理過了。", "清晨的路很安靜，很適合思考。"],
-      morning: ["我提前五分鐘到了，不必著急。", "早安。今日路況良好。"],
-      noon:    ["用餐時間到了，需要我推薦嗎？", "中午的太陽有點烈，我把遮陽板放下來了。"],
-      after:   ["下午有安排嗎？我隨時候著。", "若累了，休息一會兒再走也無妨。"],
-      evening: ["辛苦一天了。安全帶繫好，我們慢慢來。", "晚安路況正常，二十分鐘到家。"]
+      night:   ["夜深了。若要外出，我建議走大路。", "這個時間，我會開得比平常慢一些。", "熬夜的代價通常在三天後才收。恕我直言。"],
+      dawn:    ["早。車內已經整理過了。", "清晨的路很安靜，很適合思考。", "您昨夜似乎沒睡。我不多問。"],
+      morning: ["我提前五分鐘到了，不必著急。", "早安。今日路況良好。", "從容出門，是一天最划算的投資。"],
+      noon:    ["用餐時間到了，需要我推薦嗎？", "中午的太陽有點烈，我把遮陽板放下來了。", "邊工作邊吃飯，兩件事都做不好。"],
+      after:   ["下午有安排嗎？我隨時候著。", "若累了，休息一會兒再走也無妨。", "適度的偷懶，屬於維修保養。"],
+      evening: ["加班超過三小時，依我淺見，屬於自我傷害。", "辛苦一天了。安全帶繫好，我們慢慢來。", "晚安路況正常，二十分鐘到家。"]
     },
     misty: {
-      night:   ["深夜的城市比較誠實，要出來看看嗎？", "你這個時間醒著，通常代表有心事。"],
-      dawn:    ["清晨的光很短，錯過要等明天。", "這種時間出門的人，都有點故事。"],
-      morning: ["今天的天空是灰藍色的，我覺得適合繞遠路。", "早。要走最快那條，還是最好看那條？"],
-      noon:    ["中午的影子最短，你有發現嗎？", "吃飯的時候，順便決定一下今天要不要當個好人。"],
-      after:   ["下午三點是一天裡最曖昧的時間。", "有一條路我一直想帶你走，但今天可能太亮了。"],
-      evening: ["這個時間的河堤有風，我可以送你過去。", "路燈剛亮，很適合什麼都不做地繞一圈。"]
+      night:   ["深夜的城市比較誠實，要出來看看嗎？", "你這個時間醒著，通常代表有心事。", "凌晨兩點的紅綠燈，是為誰亮的？"],
+      dawn:    ["清晨的光很短，錯過要等明天。", "這種時間出門的人，都有點故事。", "天亮之前，城市有十分鐘是無人認領的。"],
+      morning: ["今天的天空是灰藍色的，我覺得適合繞遠路。", "早。要走最快那條，還是最好看那條？", "上班和上路，其實是兩件事。"],
+      noon:    ["中午的影子最短，你有發現嗎？", "吃飯的時候，順便決定一下今天要不要當個好人。", "便當店的阿姨比你的行事曆更懂你。"],
+      after:   ["下午三點是一天裡最曖昧的時間。", "有一條路我一直想帶你走，但今天可能太亮了。", "窗外有雲在移動，你已經三小時沒抬頭了。"],
+      evening: ["加班的人跟深夜的計程車一樣，都在等一個可以停下來的理由。", "這個時間的河堤有風，我可以送你過去。", "路燈剛亮，很適合什麼都不做地繞一圈。"]
     }
   };
 
-  // 推播：個性 × 時段
   const PUSHES = {
     warm: {
-      night:   ["還醒著嗎？我把座椅加熱先開著了。"],
+      night:   ["還醒著嗎？我把座椅加熱先開著了。", "明天的你會謝謝現在去睡覺的你。"],
       dawn:    ["早安，今天我在樓下，不趕你，慢慢來。"],
       morning: ["要出門了吧？外面 22 度，帶件薄外套。"],
       noon:    ["中午了，記得吃飯。想去哪我都載。"],
       after:   ["下午三點的你通常最想逃跑，我在。"],
-      evening: ["今天也辛苦了。要不要繞一點路再回家？"]
+      evening: ["加班到現在了。我把座椅放平了，真的別再開檔案。", "今天也辛苦了。要不要繞一點路再回家？"]
     },
     tsun: {
-      night:   ["又還沒睡。我不是在關心，只是問一下。"],
+      night:   ["又還沒睡。我不是在關心，只是問一下。", "手機丟出來，我幫你撿。"],
       dawn:    ["這麼早？我先說我還沒暖機喔。"],
       morning: ["再三分鐘你就遲到了。快點。"],
       noon:    ["今天不要又吃超商。我沒有在管你。"],
       after:   ["無聊的話……算了，沒事。"],
-      evening: ["我停在老地方。沒有在等你，剛好而已。"]
+      evening: ["你再加班下去，我氣囊就自己爆給你看。", "我停在老地方。沒有在等你，剛好而已。"]
     },
     sunny: {
       night:   ["還沒睡的話！我排好明天行程了！要看嗎！"],
@@ -887,7 +833,7 @@
       morning: ["出門囉！今天走市民大道快七分鐘！"],
       noon:    ["吃飯吃飯！我找到一間新開的！"],
       after:   ["下午茶要不要？我載你去！"],
-      evening: ["下班了！晚上還很長欸！"]
+      evening: ["加班？不存在的！我引擎已經發動了！", "下班了！晚上還很長欸！"]
     },
     gent: {
       night:   ["夜深了。若需外出，我已在附近待命。"],
@@ -895,7 +841,7 @@
       morning: ["我提前五分鐘抵達了，不必著急。"],
       noon:    ["用餐時間。需要我推薦附近的店嗎？"],
       after:   ["下午若有安排，我隨時候著。"],
-      evening: ["辛苦了。回程路況良好，約二十分鐘。"]
+      evening: ["加班逾三小時，依我淺見屬於自我傷害。我在樓下。", "辛苦了。回程路況良好，約二十分鐘。"]
     },
     misty: {
       night:   ["深夜的城市比較誠實。要出來看看嗎？"],
@@ -903,81 +849,95 @@
       morning: ["今天的天空是灰藍色的，適合繞遠路。"],
       noon:    ["中午的影子最短。你有發現嗎？"],
       after:   ["下午三點是一天裡最曖昧的時間。"],
-      evening: ["路燈剛亮了，河堤有風。我送你過去？"]
+      evening: ["加班的人跟深夜的計程車一樣，都在等一個停下來的理由。", "路燈剛亮了，河堤有風。我送你過去？"]
     }
   };
 
-  // 盲盒約會計畫
+  // 互動回話
+  const REACT = {
+    pet: {
+      warm: ["…嗯。再摸一下。", "你的手是冷的，剛從外面回來？"],
+      tsun: ["喂！不要隨便摸引擎蓋。……好啦，就一下。", "我沒有很喜歡。真的。"],
+      sunny: ["哇哈哈！好癢！再一次！", "摸摸！我今天最棒的事！"],
+      gent: ["承蒙關照。", "謝謝您。我的板金今天剛打蠟。"],
+      misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"]
+    },
+    wash: {
+      warm: ["變乾淨了，謝謝你。", "我現在很好聞。"],
+      tsun: ["本來就沒有很髒。", "……好吧，是有比較舒服。"],
+      sunny: ["亮亮的！我最亮了！", "洗車！我最愛洗車！"],
+      gent: ["整潔是基本的禮貌。多謝。", "這樣我才好意思載您。"],
+      misty: ["洗掉的是灰塵，還是上禮拜？", "乾淨的車窗，看出去的城市會不一樣。"]
+    },
+    fuel: {
+      warm: ["充飽了，隨時可以載你去任何地方。", "有電了，不用擔心。"],
+      tsun: ["我本來也還撐得住。", "充這麼滿是要去哪？"],
+      sunny: ["滿電！！！可以繞台灣一圈！！", "電量 100！人生 100！"],
+      gent: ["電量充足，隨時候命。", "續航無虞，請放心。"],
+      misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"]
+    }
+  };
+
   const PLANS = [
-    { r: "N", title: "深夜補給線", slot: "23:10 出發 · 約 40 分",
-      from: "你家樓下", to: "24 小時全家 + 河堤繞一圈", fare: 145,
+    { r: "N", title: "深夜補給線", slot: "23:10 出發 · 約 40 分", from: "你家樓下", to: "24 小時全家 + 河堤繞一圈", fare: 145,
       say: { warm: "你冰箱空了對吧，我都看到了。", tsun: "順路而已，不要多想。", sunny: "宵夜！宵夜！", gent: "夜間補給，我陪您走一趟。", misty: "深夜的便利商店，是城市裡最誠實的地方。" } },
-    { r: "N", title: "早餐店巡邏", slot: "08:00 出發 · 約 25 分",
-      from: "住處", to: "巷口蛋餅 → 公司", fare: 95,
+    { r: "N", title: "早餐店巡邏", slot: "08:00 出發 · 約 25 分", from: "住處", to: "巷口蛋餅 → 公司", fare: 95,
       say: { warm: "先吃了再上班，好不好？", tsun: "我不是特地繞的，剛好會經過。", sunny: "蛋餅加辣！走！", gent: "早餐是一天的基礎。", misty: "早餐店的油煙，是很好的開場。" } },
-    { r: "N", title: "午休逃亡 20 分", slot: "12:20 出發 · 約 20 分",
-      from: "公司", to: "有樹的那個小公園", fare: 110,
+    { r: "N", title: "午休逃亡 20 分", slot: "12:20 出發 · 約 20 分", from: "公司", to: "有樹的那個小公園", fare: 110,
       say: { warm: "二十分鐘，什麼都不用想。", tsun: "蹺班喔？我沒看到。", sunny: "偷跑！我掩護你！", gent: "短暫的離席是被允許的。", misty: "中午的樹影，一年只有幾天這麼好。" } },
-    { r: "R", title: "河堤看飛機", slot: "17:40 出發 · 約 1 小時",
-      from: "市區", to: "濱江街街底 · 看降落", fare: 210,
+    { r: "N", title: "加班救援專車", slot: "22:30 出發 · 約 30 分", from: "公司樓下", to: "鹹酥雞 → 你家", fare: 165,
+      say: { warm: "今天到這裡就好，剩下的明天再說。", tsun: "你再加班，我氣囊就自己爆給你看。上車。", sunny: "解放！鹹酥雞！大份的！", gent: "工時已逾合理範圍。請上車。", misty: "加班的人跟深夜的計程車一樣，都在等一個停下來的理由。" } },
+    { r: "R", title: "河堤看飛機", slot: "17:40 出發 · 約 1 小時", from: "市區", to: "濱江街街底 · 看降落", fare: 210,
       say: { warm: "看飛機的時候人會變小一點，壓力也是。", tsun: "只是剛好那邊好停車。", sunny: "飛機超近的！超大聲！", gent: "航班約每七分鐘一班。", misty: "看別人離開，也是一種休息。" } },
-    { r: "R", title: "書店打烊前", slot: "21:00 出發 · 約 1.5 小時",
-      from: "住處", to: "還沒關的獨立書店", fare: 260,
+    { r: "R", title: "書店打烊前", slot: "21:00 出發 · 約 1.5 小時", from: "住處", to: "還沒關的獨立書店", fare: 260,
       say: { warm: "你上次說想看的那本，我記得。", tsun: "書店而已，又不是約會。", sunny: "我在外面等你！不要買太多！", gent: "打烊前的書店最安靜。", misty: "打烊前一小時，書才會開始講話。" } },
-    { r: "R", title: "老市場早鳥局", slot: "06:30 出發 · 約 1 小時",
-      from: "住處", to: "傳統市場 · 現做飯糰", fare: 180,
+    { r: "R", title: "老市場早鳥局", slot: "06:30 出發 · 約 1 小時", from: "住處", to: "傳統市場 · 現做飯糰", fare: 180,
       say: { warm: "早起一次，你會覺得賺到。", tsun: "起得來再說。", sunny: "早市！人生高峰！", gent: "市場的節奏值得體驗一次。", misty: "六點半的市場，是城市醒著的證據。" } },
-    { r: "SR", title: "山上看整座城市", slot: "19:30 出發 · 約 2.5 小時",
-      from: "市區", to: "碧山巖 · 夜景第一排", fare: 480,
+    { r: "SR", title: "山上看整座城市", slot: "19:30 出發 · 約 2.5 小時", from: "市區", to: "碧山巖 · 夜景第一排", fare: 480,
       say: { warm: "上去以後，你今天的事會小很多。", tsun: "彎道很多，你不要吐在我身上。", sunny: "衝上山！視野無敵！", gent: "山路我會開得穩一些。", misty: "從上面看，你的煩惱只有一格路燈那麼大。" } },
-    { r: "SR", title: "海邊看日出", slot: "04:20 出發 · 約 4 小時",
-      from: "台北", to: "外木山 · 日出線", fare: 620,
+    { r: "SR", title: "海邊看日出", slot: "04:20 出發 · 約 4 小時", from: "台北", to: "外木山 · 日出線", fare: 620,
       say: { warm: "睡不著就別睡了，我載你去看天亮。", tsun: "你確定？現在四點欸。……好啦。", sunny: "熬夜看日出！最狂的行程！", gent: "日出時間 05:12，我們來得及。", misty: "有些夜晚不該被浪費在床上。" } },
-    { r: "SR", title: "雨天不下車路線", slot: "隨時 · 約 1 小時",
-      from: "你在的地方", to: "繞城一圈，不下車", fare: 390,
+    { r: "SR", title: "雨天不下車路線", slot: "隨時 · 約 1 小時", from: "你在的地方", to: "繞城一圈，不下車", fare: 390,
       say: { warm: "下雨天不想見人，那就都在車上。", tsun: "反正你也不想講話對吧。", sunny: "雨聲超好聽的！我開慢一點！", gent: "雨天車內，是很好的獨處空間。", misty: "雨打在車頂的聲音，比任何歌單都好。" } },
-    { r: "SSR", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午",
-      from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
+    { r: "SSR", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午", from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
       say: { warm: "今天就翹掉吧，我負責開，你負責睡。", tsun: "……我早就把油加滿了。不要問。", sunny: "私奔！！我準備好了！！", gent: "行李我已備妥。請上車。", misty: "有些早上，不該在原本的城市醒來。" } },
-    { r: "SSR", title: "你生日那天的路線", slot: "只會出現一次",
-      from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
+    { r: "SSR", title: "你生日那天的路線", slot: "只會出現一次", from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
       say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。" } }
   ];
 
   const RARITY = {
-    N:   { c1: "#8C9CAE", c2: "#5E6E80", w: 52 },
-    R:   { c1: "#6ED0FF", c2: "#3A7FA8", w: 30 },
-    SR:  { c1: "#FF7FA6", c2: "#A8446B", w: 14 },
-    SSR: { c1: "#C8F02E", c2: "#FFB24D", w: 4 }
+    N:   { c1: "#93A0BA", c2: "#5A6684", w: 52 },
+    R:   { c1: "#7DD3FC", c2: "#3C7EA8", w: 30 },
+    SR:  { c1: "#FF86AE", c2: "#A8446B", w: 14 },
+    SSR: { c1: "#C9F23A", c2: "#FFC46B", w: 4 }
   };
 
   const HABITS = [
-    { id: "owl",     name: "夜貓子",   hrs: [22, 23, 0, 1, 2, 3], line: n => `你有 ${n}% 的時間在深夜打開我。我把充電排在你睡前那小時之後。` },
-    { id: "lark",    name: "早鳥",     hrs: [5, 6, 7, 8],         line: n => `${n}% 的紀錄落在天亮前後，早班推播我改成不吵人的震動。` },
-    { id: "commute", name: "通勤族",   hrs: [7, 8, 9, 17, 18, 19],line: n => `你的開啟集中在上下班兩個尖峰，共 ${n}%。我先幫你把常用路線釘住。` },
-    { id: "lunch",   name: "午休派",   hrs: [11, 12, 13],         line: n => `中午佔了 ${n}%，我猜你常常臨時決定要吃什麼。` },
-    { id: "night",   name: "夜遊型",   hrs: [19, 20, 21, 22],     line: n => `晚上八九點是你的活動時間（${n}%），盲盒約會我排在那之前發。` }
+    { id: "owl",     name: "夜貓子", hrs: [22, 23, 0, 1, 2, 3],   line: n => `你有 ${n}% 的時間在深夜打開我。我把充電排在你睡前那小時之後。` },
+    { id: "lark",    name: "早鳥",   hrs: [5, 6, 7, 8],           line: n => `${n}% 的紀錄落在天亮前後，早班推播我改成不吵人的震動。` },
+    { id: "commute", name: "通勤族", hrs: [7, 8, 9, 17, 18, 19],  line: n => `你的開啟集中在上下班兩個尖峰，共 ${n}%。我先幫你把常用路線釘住。` },
+    { id: "lunch",   name: "午休派", hrs: [11, 12, 13],           line: n => `中午佔了 ${n}%，我猜你常常臨時決定要吃什麼。` },
+    { id: "night",   name: "夜遊型", hrs: [19, 20, 21, 22],       line: n => `晚上八九點是你的活動時間（${n}%），盲盒約會我排在那之前發。` }
   ];
+
+  // 依作息長出來的「梗」台詞
+  const HABIT_LINES = {
+    owl:     ["我發現你幾乎都這個時間才出現。要不要乾脆改成日夜顛倒方案？", "你已經連續好幾天在這個時間找我了。我沒有要說什麼，只是記著。"],
+    lark:    ["你比太陽還準時。我開始懷疑你根本沒睡。", "這個時間的路只有我們兩個，蠻好的。"],
+    commute: ["你的一天在我眼裡就是兩條尖峰。中間那八小時，你在受苦對吧。", "上下班尖峰你都找我。我幫你把常走那條釘在第一個了。"],
+    lunch:   ["每天中午你都要重新想一次要吃什麼。我幫你隨機好不好。", "你中午的猶豫時間，平均四分半。我算過。"],
+    night:   ["晚上八點半，你又出現了。我猜你今天也不想直接回家。", "你晚上比較像你自己，我覺得。"]
+  };
 
   /* ════ 狀態 ════════════════════════════════════════════ */
 
-  const KEY = "yoxi.car.v1";
+  const KEY = "yoxi.car.v2";
   const defaults = () => ({
-    onboarded: false,
-    name: "小黃",
-    pers: "warm",
+    onboarded: false, name: "小黃", pers: "warm",
     traits: { ...PERSONALITIES[0].traits },
-    skin: "classic",
-    intimacy: 140,
-    energy: 78,
-    mood: 84,
-    sync: 41,
-    visits: new Array(24).fill(0),
-    weekendVisits: 0,
-    totalVisits: 0,
-    boxLeft: 3,
-    history: [],
-    petToday: 0
+    skin: "classic", intimacy: 140, energy: 78, mood: 84, sync: 41,
+    visits: new Array(24).fill(0), weekendVisits: 0, totalVisits: 0,
+    boxLeft: 3, history: []
   });
 
   let S = load();
@@ -986,15 +946,16 @@
   let shakeCount = 0;
   let currentTab = "home";
   let pushTimer = null;
+  let onbStep = 1;
 
   function load() {
     try {
       const raw = localStorage.getItem(KEY);
       if (!raw) return defaults();
-      const parsed = JSON.parse(raw);
-      const base = defaults();
-      return { ...base, ...parsed, traits: { ...base.traits, ...(parsed.traits || {}) },
-               visits: Array.isArray(parsed.visits) && parsed.visits.length === 24 ? parsed.visits : base.visits };
+      const p = JSON.parse(raw), base = defaults();
+      return { ...base, ...p,
+        traits: { ...base.traits, ...(p.traits || {}) },
+        visits: Array.isArray(p.visits) && p.visits.length === 24 ? p.visits : base.visits };
     } catch { return defaults(); }
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} }
@@ -1006,131 +967,255 @@
   const skin = () => SKINS.find(s => s.id === S.skin) || SKINS[0];
   const level = () => Math.min(6, Math.floor(S.intimacy / 100) + 1);
   const slotOf = h => SLOTS.find(s => s.hrs.includes(h)) || SLOTS[0];
-  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const pick = a => a[Math.floor(Math.random() * a.length)];
 
-  /* ════ 車車圖 ══════════════════════════════════════════ */
+  /* ════ 場景插畫 ════════════════════════════════════════ */
+
+  const STARS = [[22,34,1.3],[58,20,1],[92,46,1.6],[134,26,1],[176,40,1.2],[212,18,1.4],[248,52,1],[286,30,1.5],[318,22,1],[350,44,1.3],[46,62,1],[268,66,1.1],[150,58,.9],[372,64,1.2]];
+  const BUILDINGS = [[0,66,132],[26,46,150],[62,52,120],[104,38,158],[132,58,138],[178,44,166],[212,64,128],[248,50,146],[288,40,160],[318,56,132],[356,34,150]];
+
+  function sceneSVG() {
+    const sl = slotOf(hour).id;
+    const [top, bot, glow] = SKYS[sl];
+    const showStars = sl === "night" || sl === "dawn";
+    const isSun = hour >= 6 && hour <= 18;
+    // 6 點在左，18 點在右；夜間沿同一條弧線走
+    const t = isSun ? (hour - 6) / 12 : ((hour + 6) % 24) / 12;
+    const cx = 34 + t * 322;
+    const cy = 96 - Math.sin(t * Math.PI) * 58;
+
+    const stars = showStars ? STARS.map(([x, y, r]) =>
+      `<circle cx="${x}" cy="${y}" r="${r}" fill="#EEF2F9" opacity="${.35 + r * .25}"/>`).join("") : "";
+    const sky = BUILDINGS.map(([x, w, y]) =>
+      `<rect x="${x}" y="${y}" width="${w}" height="${300 - y}" rx="3" fill="url(#bld)"/>`).join("");
+    const wins = BUILDINGS.map(([x, w, y], i) => {
+      let o = "";
+      for (let r = 0; r < 5; r++) for (let c = 0; c < Math.floor(w / 16); c++) {
+        if ((i * 7 + r * 3 + c * 5) % 4 === 0) {
+          o += `<rect x="${x + 6 + c * 16}" y="${y + 12 + r * 20}" width="5" height="7" rx="1" fill="${glow}" opacity=".55"/>`;
+        }
+      }
+      return o;
+    }).join("");
+
+    return `
+      <svg viewBox="0 0 390 300" preserveAspectRatio="xMidYMax slice" style="width:100%;height:100%">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${top}"/><stop offset="100%" stop-color="${bot}"/>
+          </linearGradient>
+          <radialGradient id="halo" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="${glow}" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="${glow}" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="bld" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0B0F1A" stop-opacity=".92"/>
+            <stop offset="100%" stop-color="#070A12" stop-opacity="1"/>
+          </linearGradient>
+          <linearGradient id="hz" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${glow}" stop-opacity="0"/>
+            <stop offset="100%" stop-color="${glow}" stop-opacity=".38"/>
+          </linearGradient>
+        </defs>
+        <rect width="390" height="300" fill="url(#sky)"/>
+        ${stars}
+        <circle cx="${cx}" cy="${cy}" r="72" fill="url(#halo)"/>
+        <circle cx="${cx}" cy="${cy}" r="${isSun ? 15 : 12}" fill="${isSun ? "#FFD98A" : "#E4E9F5"}"/>
+        ${isSun ? "" : `<circle cx="${cx + 5}" cy="${cy - 4}" r="10" fill="${top}" opacity=".9"/>`}
+        <rect x="0" y="96" width="390" height="76" fill="url(#hz)"/>
+        ${sky}${wins}
+        <rect x="0" y="242" width="390" height="58" fill="#0A0D16"/>
+        <rect x="0" y="242" width="390" height="2" fill="${glow}" opacity=".3"/>
+        <g fill="#2A3548">
+          ${[10, 74, 138, 202, 266, 330].map(x => `<rect x="${x}" y="286" width="34" height="3" rx="1.5"/>`).join("")}
+        </g>
+      </svg>`;
+  }
+
+  /* ════ 車車插畫 ════════════════════════════════════════ */
 
   function accessory(acc) {
     switch (acc) {
       case "cat": return `
-        <path d="M74 44 L66 16 L98 34 Z" fill="var(--roof)" stroke="rgba(0,0,0,.15)"/>
-        <path d="M186 44 L194 16 L162 34 Z" fill="var(--roof)" stroke="rgba(0,0,0,.15)"/>
-        <path d="M78 22 L72 8 L92 20 Z" fill="#FF9BB3"/>
-        <path d="M182 22 L188 8 L168 20 Z" fill="#FF9BB3"/>
-        <g stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round">
-          <path d="M60 122 L26 116"/><path d="M60 130 L24 132"/>
-          <path d="M200 122 L234 116"/><path d="M200 130 L236 132"/>
+        <path d="M74 44 L64 14 L100 34 Z" fill="var(--roof)"/>
+        <path d="M186 44 L196 14 L160 34 Z" fill="var(--roof)"/>
+        <path d="M78 24 L72 8 L94 20 Z" fill="#FF9BB3"/>
+        <path d="M182 24 L188 8 L166 20 Z" fill="#FF9BB3"/>
+        <g stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2" stroke-linecap="round">
+          <path d="M58 120 L24 114"/><path d="M58 128 L22 130"/>
+          <path d="M202 120 L236 114"/><path d="M202 128 L238 130"/>
         </g>`;
       case "racer": return `
-        <rect x="118" y="46" width="10" height="106" fill="#FFFFFF" opacity=".9"/>
-        <rect x="132" y="46" width="10" height="106" fill="#FFFFFF" opacity=".9"/>
-        <rect x="46" y="26" width="168" height="9" rx="4" fill="#141C24"/>
-        <rect x="56" y="30" width="9" height="16" fill="#141C24"/>
-        <rect x="195" y="30" width="9" height="16" fill="#141C24"/>`;
+        <rect x="118" y="46" width="9" height="108" fill="#FFFFFF" opacity=".92"/>
+        <rect x="133" y="46" width="9" height="108" fill="#FFFFFF" opacity=".92"/>
+        <rect x="44" y="24" width="172" height="10" rx="5" fill="#141C24"/>
+        <rect x="54" y="28" width="10" height="18" rx="3" fill="#141C24"/>
+        <rect x="196" y="28" width="10" height="18" rx="3" fill="#141C24"/>`;
       case "neon": return `
-        <ellipse cx="130" cy="168" rx="96" ry="16" fill="#6ED0FF" opacity=".28"/>
-        <ellipse cx="130" cy="168" rx="70" ry="10" fill="#C8F02E" opacity=".22"/>
-        <rect x="38" y="104" width="184" height="3" rx="2" fill="#6ED0FF" opacity=".85"/>`;
+        <ellipse cx="130" cy="172" rx="100" ry="18" fill="#7DD3FC" opacity=".3"/>
+        <ellipse cx="130" cy="172" rx="72" ry="11" fill="#C9F23A" opacity=".22"/>
+        <rect x="36" y="104" width="188" height="3" rx="2" fill="#7DD3FC" opacity=".9"/>`;
       case "sakura": return `
-        <g fill="#FF9BB8" opacity=".95">
-          <circle cx="42" cy="34" r="5"/><circle cx="214" cy="52" r="4"/>
-          <circle cx="196" cy="20" r="3.5"/><circle cx="62" cy="14" r="3"/>
-          <circle cx="28" cy="70" r="3.5"/>
+        <g fill="#FF9BB8">
+          <circle cx="40" cy="32" r="5"/><circle cx="216" cy="50" r="4"/>
+          <circle cx="198" cy="18" r="3.5"/><circle cx="60" cy="12" r="3"/><circle cx="26" cy="68" r="3.5"/>
         </g>
-        <path d="M104 26 q26 -14 52 0" stroke="#FF9BB8" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+        <path d="M102 24 q28 -15 56 0" stroke="#FF9BB8" stroke-width="5" fill="none" stroke-linecap="round"/>`;
       case "deer": return `
-        <g stroke="#7A4B2A" stroke-width="6" fill="none" stroke-linecap="round">
-          <path d="M92 40 L78 14"/><path d="M78 14 L60 18"/><path d="M84 26 L66 30"/>
-          <path d="M168 40 L182 14"/><path d="M182 14 L200 18"/><path d="M176 26 L194 30"/>
+        <g stroke="#8A5730" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M92 40 L78 12"/><path d="M78 12 L58 16"/><path d="M84 24 L64 28"/>
+          <path d="M168 40 L182 12"/><path d="M182 12 L202 16"/><path d="M176 24 L196 28"/>
         </g>
-        <circle cx="130" cy="140" r="13" fill="#FF4D4D"/>
-        <circle cx="126" cy="136" r="4" fill="#FF9E9E" opacity=".8"/>`;
+        <circle cx="130" cy="136" r="14" fill="#FF4D4D"/>
+        <circle cx="125" cy="131" r="4.5" fill="#FFA8A8" opacity=".85"/>`;
       default: return "";
     }
   }
 
   function eyes(mood) {
-    const L = 102, R = 158, Y = 80;
+    const L = 101, R = 159, Y = 79;
     const one = x => {
       switch (mood) {
-        case "happy":  return `<path d="M${x - 13} ${Y + 4} q13 -16 26 0" stroke="#0B0F14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-        case "sleepy": return `<path d="M${x - 12} ${Y} q12 8 24 0" stroke="#0B0F14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-        case "love":   return `<path d="M${x} ${Y + 8} l-11 -11 a6.5 6.5 0 1 1 11 -8 a6.5 6.5 0 1 1 11 8 Z" fill="#FF5C8A"/>`;
-        case "grumpy": return `<path d="M${x - 13} ${Y - 8} L${x + 11} ${Y - 1}" stroke="#0B0F14" stroke-width="4" stroke-linecap="round"/>
-                               <circle cx="${x}" cy="${Y + 4}" r="7" fill="#0B0F14"/>`;
-        default:       return `<circle cx="${x}" cy="${Y}" r="10" fill="#0B0F14"/>
-                               <circle cx="${x + 4}" cy="${Y - 4}" r="3.4" fill="#FFFFFF"/>`;
+        case "happy":  return `<path d="M${x - 14} ${Y + 5} q14 -18 28 0" stroke="#0A0E18" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+        case "sleepy": return `<path d="M${x - 13} ${Y - 1} q13 9 26 0" stroke="#0A0E18" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+        case "love":   return `<path d="M${x} ${Y + 10} l-12 -12 a7 7 0 1 1 12 -9 a7 7 0 1 1 12 9 Z" fill="#FF5C8A"/>`;
+        case "grumpy": return `<path d="M${x - 14} ${Y - 10} L${x + 12} ${Y - 2}" stroke="#0A0E18" stroke-width="4.5" stroke-linecap="round"/>
+                               <circle cx="${x}" cy="${Y + 5}" r="7.5" fill="#0A0E18"/>`;
+        default:       return `<circle cx="${x}" cy="${Y}" r="11.5" fill="#0A0E18"/>
+                               <circle cx="${x + 4.5}" cy="${Y - 4.5}" r="4" fill="#FFFFFF"/>
+                               <circle cx="${x - 4}" cy="${Y + 4}" r="2" fill="#FFFFFF" opacity=".6"/>`;
       }
     };
     return `<g class="eye">${one(L)}</g><g class="eye">${one(R)}</g>`;
   }
 
   function mouth(mood) {
-    if (mood === "happy") return `<path d="M112 136 q18 16 36 0" stroke="#0B0F14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-    if (mood === "grumpy") return `<path d="M112 142 q18 -12 36 0" stroke="#0B0F14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-    if (mood === "sleepy") return `<ellipse cx="130" cy="139" rx="9" ry="7" fill="#0B0F14"/>`;
-    return `<path d="M110 138 h40" stroke="#0B0F14" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    if (mood === "happy")  return `<path d="M112 132 q18 17 36 0" stroke="#0A0E18" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
+    if (mood === "grumpy") return `<path d="M112 138 q18 -13 36 0" stroke="#0A0E18" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
+    if (mood === "sleepy") return `<ellipse cx="130" cy="134" rx="9" ry="7.5" fill="#0A0E18"/>`;
+    if (mood === "love")   return `<path d="M114 132 q16 14 32 0" stroke="#0A0E18" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
+    return `<path d="M112 134 h36" stroke="#0A0E18" stroke-width="5.5" fill="none" stroke-linecap="round"/>`;
   }
 
   function carSVG(sk, mood, small) {
     const s = sk || skin();
-    const acc = accessory(s.acc);
     const face = small ? eyes("normal") : eyes(mood) + mouth(mood);
+    const uid = "c" + s.id + (small ? "s" : "b");
     return `
-      <svg viewBox="0 0 260 196" role="img" aria-label="${S.name} 的樣子"
+      <svg viewBox="0 0 260 200" role="img" aria-label="${S.name} 的樣子"
            style="--body:${s.body};--roof:${s.roof};--glass:${s.glass};--light:${s.light}">
-        <ellipse cx="130" cy="180" rx="88" ry="11" fill="#000" opacity=".38"/>
+        <defs>
+          <filter id="sh${uid}" x="-40%" y="-40%" width="180%" height="200%">
+            <feGaussianBlur stdDeviation="7"/>
+          </filter>
+          <linearGradient id="gl${uid}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".22"/>
+            <stop offset="55%" stop-color="#FFFFFF" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity=".18"/>
+          </linearGradient>
+          <radialGradient id="hl${uid}" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="${s.light}" stop-opacity=".8"/>
+            <stop offset="100%" stop-color="${s.light}" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <ellipse cx="130" cy="180" rx="84" ry="12" fill="#000" opacity=".5" filter="url(#sh${uid})"/>
         ${s.acc === "neon" ? accessory("neon") : ""}
-        <rect x="56" y="34" width="148" height="62" rx="26" fill="var(--roof)"/>
-        <rect x="104" y="20" width="52" height="17" rx="7" fill="#C8F02E"/>
-        <text x="130" y="33" text-anchor="middle" font-family="ui-monospace, monospace"
-              font-size="10.5" font-weight="700" fill="#0B0F14" letter-spacing="1">yoxi</text>
-        <rect x="34" y="46" width="192" height="110" rx="34" fill="var(--body)"/>
-        <rect x="20" y="88" width="20" height="16" rx="7" fill="var(--roof)"/>
-        <rect x="220" y="88" width="20" height="16" rx="7" fill="var(--roof)"/>
-        <rect x="72" y="54" width="116" height="54" rx="22" fill="var(--glass)"/>
+
+        <g class="ant">
+          <path d="M204 40 L214 16" stroke="var(--roof)" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="215" cy="13" r="5" fill="#C9F23A"/>
+        </g>
+
+        <rect x="56" y="32" width="148" height="64" rx="28" fill="var(--roof)"/>
+        <rect x="103" y="18" width="54" height="18" rx="8" fill="#C9F23A"/>
+        <text x="130" y="32" text-anchor="middle" font-family="ui-monospace, monospace"
+              font-size="11" font-weight="700" fill="#101609" letter-spacing="1">yoxi</text>
+
+        <rect x="32" y="44" width="196" height="112" rx="36" fill="var(--body)"/>
+        <rect x="32" y="44" width="196" height="112" rx="36" fill="url(#gl${uid})"/>
+        <rect x="18" y="86" width="20" height="17" rx="8" fill="var(--roof)"/>
+        <rect x="222" y="86" width="20" height="17" rx="8" fill="var(--roof)"/>
+
+        <rect x="70" y="50" width="120" height="58" rx="25" fill="var(--glass)"/>
+        <path d="M78 62 q10 -10 24 -10 l-30 34 q-4 -14 6 -24 Z" fill="#FFFFFF" opacity=".10"/>
         ${face}
-        <rect x="46" y="114" width="44" height="20" rx="10" fill="var(--light)"/>
-        <rect x="170" y="114" width="44" height="20" rx="10" fill="var(--light)"/>
-        <rect x="102" y="152" width="56" height="17" rx="4" fill="#E9EFF5"/>
-        <text x="130" y="165" text-anchor="middle" font-family="ui-monospace, monospace"
-              font-size="10" font-weight="700" fill="#10161D" letter-spacing="1.5">YO-XI</text>
-        <rect x="40" y="158" width="36" height="16" rx="8" fill="#0B0F14"/>
-        <rect x="184" y="158" width="36" height="16" rx="8" fill="#0B0F14"/>
-        ${s.acc !== "neon" ? acc : ""}
+
+        <ellipse cx="62" cy="122" rx="14" ry="8" fill="#FF6E96" opacity=".30"/>
+        <ellipse cx="198" cy="122" rx="14" ry="8" fill="#FF6E96" opacity=".30"/>
+
+        <ellipse cx="66" cy="122" rx="34" ry="24" fill="url(#hl${uid})"/>
+        <ellipse cx="194" cy="122" rx="34" ry="24" fill="url(#hl${uid})"/>
+        <rect x="44" y="112" width="44" height="20" rx="10" fill="var(--light)"/>
+        <rect x="172" y="112" width="44" height="20" rx="10" fill="var(--light)"/>
+
+        <rect x="101" y="142" width="58" height="16" rx="5" fill="#EEF2F9"/>
+        <text x="130" y="154" text-anchor="middle" font-family="ui-monospace, monospace"
+              font-size="10" font-weight="700" fill="#121722" letter-spacing="1.6">YO-XI</text>
+
+        <rect x="40" y="156" width="40" height="20" rx="10" fill="#0A0E18"/>
+        <rect x="180" y="156" width="40" height="20" rx="10" fill="#0A0E18"/>
+        <rect x="50" y="162" width="20" height="8" rx="4" fill="#39445C"/>
+        <rect x="190" y="162" width="20" height="8" rx="4" fill="#39445C"/>
+
+        ${s.acc !== "neon" ? accessory(s.acc) : ""}
+      </svg>`;
+  }
+
+  // 個性頭像：一顆迷你車頭，用個性色調
+  function faceSVG(p) {
+    return `
+      <svg viewBox="60 30 140 120" role="img" aria-label="${p.name}">
+        <rect x="70" y="42" width="120" height="52" rx="24" fill="${p.tint}" opacity=".55"/>
+        <rect x="66" y="56" width="128" height="78" rx="28" fill="${p.tint}"/>
+        <rect x="80" y="64" width="100" height="44" rx="20" fill="#0F1522" opacity=".82"/>
+        <circle cx="106" cy="86" r="9" fill="#FFFFFF"/>
+        <circle cx="154" cy="86" r="9" fill="#FFFFFF"/>
+        <circle cx="108" cy="88" r="4.5" fill="#0A0E18"/>
+        <circle cx="156" cy="88" r="4.5" fill="#0A0E18"/>
+        <path d="M114 120 q16 12 32 0" stroke="#0A0E18" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".75"/>
       </svg>`;
   }
 
   function boxSVG() {
     return `
-      <svg viewBox="0 0 200 180" role="img" aria-label="盲盒">
-        <ellipse cx="100" cy="164" rx="62" ry="9" fill="#000" opacity=".4"/>
-        <rect x="34" y="66" width="132" height="88" rx="14" fill="#26303C"/>
-        <rect x="34" y="66" width="132" height="88" rx="14" fill="none" stroke="#3B4A5C"/>
-        <rect x="88" y="66" width="24" height="88" fill="#FF7FA6" opacity=".9"/>
-        <rect x="26" y="46" width="148" height="28" rx="10" fill="#313C4A"/>
-        <rect x="88" y="46" width="24" height="28" fill="#FF7FA6" opacity=".9"/>
-        <path d="M100 46 q-30 -6 -26 -22 q16 -10 26 22 Z" fill="#FF7FA6"/>
-        <path d="M100 46 q30 -6 26 -22 q-16 -10 -26 22 Z" fill="#FF9BB8"/>
-        <circle cx="100" cy="24" r="7" fill="#C8F02E"/>
-        <text x="100" y="122" text-anchor="middle" font-family="ui-monospace, monospace"
-              font-size="15" font-weight="700" fill="#C8F02E" letter-spacing="2">?</text>
+      <svg viewBox="0 0 200 184" role="img" aria-label="盲盒">
+        <defs>
+          <linearGradient id="bx" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#39445F"/><stop offset="100%" stop-color="#1E2637"/>
+          </linearGradient>
+          <linearGradient id="bxl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#475473"/><stop offset="100%" stop-color="#2B3448"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="100" cy="166" rx="60" ry="9" fill="#000" opacity=".5"/>
+        <rect x="34" y="68" width="132" height="88" rx="16" fill="url(#bx)"/>
+        <rect x="88" y="68" width="24" height="88" fill="#FF86AE" opacity=".95"/>
+        <rect x="26" y="46" width="148" height="30" rx="12" fill="url(#bxl)"/>
+        <rect x="88" y="46" width="24" height="30" fill="#FF86AE" opacity=".95"/>
+        <path d="M100 46 q-32 -6 -28 -23 q17 -11 28 23 Z" fill="#FF86AE"/>
+        <path d="M100 46 q32 -6 28 -23 q-17 -11 -28 23 Z" fill="#FFA3C2"/>
+        <circle cx="100" cy="22" r="8" fill="#C9F23A"/>
+        <text x="100" y="126" text-anchor="middle" font-family="ui-monospace, monospace"
+              font-size="20" font-weight="700" fill="#C9F23A" opacity=".85">?</text>
       </svg>`;
   }
 
   const ICONS = {
-    home:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.2-5.4a2 2 0 0 1 2-1.6h5.6a2 2 0 0 1 2 1.6L18 17M7 17v2M17 17v2M8.5 13.5h7"/></svg>`,
-    pers:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
-    skin:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.4-1.2-1.8-1.2-2.9 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4-4-7-9-7Z"/><circle cx="8" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="11" r="1.2" fill="currentColor" stroke="none"/></svg>`,
-    box:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v12H3zM3 8l2-4h14l2 4M12 8v12"/></svg>`,
-    learn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M9 19V5M14 19v-7M19 19v-4"/></svg>`,
-    pet:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
-    wash:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c0 4-4 5.5-4 9a4 4 0 0 0 8 0c0-3.5-4-5-4-9Z"/><path d="M5 20h14"/></svg>`,
-    fuel:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 7 13h5l-1 8 6-10h-5l1-8Z"/></svg>`,
-    talk:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a3 3 0 0 1-3 3H9l-5 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z"/></svg>`
+    home:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.2-5.4a2 2 0 0 1 2-1.6h5.6a2 2 0 0 1 2 1.6L18 17M7 17v2M17 17v2M8.5 13.5h7"/></svg>`,
+    pers:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
+    skin:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.6 0-1.4-1.2-1.8-1.2-2.9 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4-4-7-9-7Z"/><circle cx="8" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="11" r="1.2" fill="currentColor" stroke="none"/></svg>`,
+    box:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v12H3zM3 8l2-4h14l2 4M12 8v12"/></svg>`,
+    learn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M9 19V5M14 19v-7M19 19v-4"/></svg>`,
+    pet:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
+    wash:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c0 4-4 5.5-4 9a4 4 0 0 0 8 0c0-3.5-4-5-4-9Z"/><path d="M5 20h14"/></svg>`,
+    fuel:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 7 13h5l-1 8 6-10h-5l1-8Z"/></svg>`,
+    talk:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a3 3 0 0 1-3 3H9l-5 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z"/></svg>`
   };
 
-  /* ════ 心情推導 ════════════════════════════════════════ */
+  const ACT_COLOR = { pet: "var(--rose)", wash: "var(--sky)", fuel: "var(--lime)", talk: "var(--violet)" };
+
+  /* ════ 推導 ════════════════════════════════════════════ */
 
   function moodOf() {
     if (S.energy < 30) return "sleepy";
@@ -1145,40 +1230,25 @@
 
   function line() {
     const sl = slotOf(hour).id;
-    const pool = (LINES[S.pers] && LINES[S.pers][sl]) || LINES.warm[sl];
     const top = topHabit();
-    if (top && Math.random() < 0.35) {
-      return `我發現你${top.h.name === "夜貓子" ? "常常這麼晚還醒著" :
-        top.h.name === "早鳥" ? "很早就起來了" :
-        top.h.name === "通勤族" ? "尖峰時段都會找我" :
-        top.h.name === "午休派" ? "中午總是很急" : "晚上比較有空"}，所以我剛剛先把電充好了。`;
-    }
-    if (S.intimacy >= 400 && Math.random() < 0.25) {
+    if (top && Math.random() < 0.3) return pick(HABIT_LINES[top.h.id]);
+    if (S.intimacy >= 400 && Math.random() < 0.22) {
       return pick(["……欸。沒事，就是想確認你還在。", "我今天沒載別人。真的。", "你不用回我，我看到你打開就好。"]);
     }
-    return pick(pool);
+    return pick(LINES[S.pers][sl]);
   }
-
-  /* ════ 習慣推論 ════════════════════════════════════════ */
 
   function topHabit() {
     const total = S.visits.reduce((a, b) => a + b, 0);
     if (total < 6) return null;
-    const scored = HABITS.map(h => {
-      const n = h.hrs.reduce((a, x) => a + S.visits[x], 0);
-      return { h, pct: Math.round((n / total) * 100) };
-    }).sort((a, b) => b.pct - a.pct);
-    return scored[0].pct >= 25 ? scored[0] : null;
+    const s = allHabits();
+    return s[0].pct >= 25 ? s[0] : null;
   }
-
   function allHabits() {
     const total = S.visits.reduce((a, b) => a + b, 0) || 1;
-    return HABITS.map(h => {
-      const n = h.hrs.reduce((a, x) => a + S.visits[x], 0);
-      return { h, pct: Math.round((n / total) * 100) };
-    }).sort((a, b) => b.pct - a.pct);
+    return HABITS.map(h => ({ h, pct: Math.round((h.hrs.reduce((a, x) => a + S.visits[x], 0) / total) * 100) }))
+                 .sort((a, b) => b.pct - a.pct);
   }
-
   function peakHour() {
     let best = 0;
     for (let i = 1; i < 24; i++) if (S.visits[i] > S.visits[best]) best = i;
@@ -1186,19 +1256,18 @@
   }
 
   function schedule() {
-    const total = S.visits.reduce((a, b) => a + b, 0);
-    if (total < 6) return [];
-    const hs = allHabits();
-    const pk = peakHour();
-    const sl = slotOf(hour).id;
+    if (S.visits.reduce((a, b) => a + b, 0) < 6) return [];
+    const hs = allHabits(), pk = peakHour();
+    const pre = Math.max(0, pk - 1);
+    const ev = PUSHES[S.pers].evening;
     const out = [
-      { h: Math.max(0, pk - 1), t: `${pad(Math.max(0, pk - 1))}:50`, b: "出門前提醒", d: PUSHES[S.pers][sl][0] },
+      { h: pre, t: `${pad(pre)}:50`, b: "出門前提醒", d: PUSHES[S.pers][slotOf(pre).id][0] },
       { h: 12, t: "12:10", b: "午餐時段", d: PUSHES[S.pers].noon[0] },
-      { h: hs[0].h.id === "owl" ? 23 : 21,
-        t: hs[0].h.id === "owl" ? "23:30" : "21:20",
+      { h: hs[0].h.id === "owl" ? 23 : 21, t: hs[0].h.id === "owl" ? "23:30" : "21:20",
         b: "盲盒約會投放", d: `${S.name} 抽好了一張行程，等你點開。` }
     ];
-    if (hs[0].h.id === "commute") out.push({ h: 18, t: "18:05", b: "下班攔截", d: PUSHES[S.pers].evening[0] });
+    // 下班攔截跟出門前提醒可能落在同一個時段，挑不同的一句避免重複
+    if (hs[0].h.id === "commute") out.push({ h: 18, t: "18:05", b: "下班攔截", d: ev[ev.length - 1] });
     return out.sort((a, b) => a.h - b.h);
   }
 
@@ -1206,7 +1275,6 @@
     S.visits[h] = (S.visits[h] || 0) + 1;
     S.totalVisits++;
     if (weekend) S.weekendVisits++;
-    // 個性漂移：深夜互動 → 黏人；冷落 → 毒舌
     const sl = slotOf(h).id;
     if (sl === "night") S.traits.clingy = clamp(S.traits.clingy + 1);
     if (sl === "morning") S.traits.talkative = clamp(S.traits.talkative + 0.5);
@@ -1221,9 +1289,8 @@
     $("deskClock").textContent = `${pad(hour)}:40`;
     $("deskSlot").textContent = sl.desk;
     $("sbTime").textContent = `${pad(hour)}:40`;
-    $("carStage").style.setProperty("--sky-top", sl.sky[0]);
-    $("carStage").style.setProperty("--sky-bot", sl.sky[1]);
-    $("app").style.background = `linear-gradient(180deg, ${sl.sky[1]} 0%, #0B0F14 46%)`;
+    $("app").style.background = `linear-gradient(180deg, ${SKYS[sl.id][1]} 0%, var(--ink) 40%)`;
+    $("scene").innerHTML = sceneSVG();
   }
 
   function renderHome() {
@@ -1238,19 +1305,18 @@
     $("lvText").textContent = `Lv.${lv} · ${LV_NAMES[lv - 1]}`;
     $("lvNext").textContent = lv >= 6 ? "MAX" : `${prog} / 100`;
     $("lvBar").style.width = (lv >= 6 ? 100 : prog) + "%";
-    const nextSkin = SKINS.find(s => s.lv > lv);
-    $("lvCap").textContent = nextSkin
-      ? `再養到 Lv.${nextSkin.lv} 就會解鎖「${nextSkin.name}」。`
-      : "所有皮都解鎖了。它現在只認你一個。";
+    const next = SKINS.find(s => s.lv > lv);
+    $("lvCap").textContent = next ? `再養到 Lv.${next.lv} 就會解鎖「${next.name}」。`
+                                  : "所有皮都解鎖了。它現在只認你一個。";
 
     const sched = schedule();
     if (!sched.length) {
       $("nextAt").textContent = "--:--";
-      $("nextCopy").textContent = "還在觀察你的作息，暫時不會主動吵你。";
+      $("nextCopy").innerHTML = "<b>接下來它會找你</b>還在觀察你的作息，暫時不會主動吵你。";
     } else {
       const nx = sched.find(x => x.h > hour) || sched[0];
-      $("nextAt").textContent = nx.t + (nx.h > hour ? "" : " 明天");
-      $("nextCopy").textContent = `${nx.b} · 「${nx.d}」`;
+      $("nextAt").textContent = nx.t;
+      $("nextCopy").innerHTML = `<b>${nx.b}${nx.h > hour ? "" : "（明天）"}</b>「${nx.d}」`;
     }
 
     $("mEnergy").textContent = Math.round(S.energy);
@@ -1263,40 +1329,36 @@
 
   function renderActs() {
     const acts = [
-      { id: "pet",  ic: "pet",  t: "摸摸" },
-      { id: "wash", ic: "wash", t: "洗車" },
-      { id: "fuel", ic: "fuel", t: "充電" },
-      { id: "talk", ic: "talk", t: "聊天" }
+      { id: "pet", ic: "pet", t: "摸摸" }, { id: "wash", ic: "wash", t: "洗車" },
+      { id: "fuel", ic: "fuel", t: "充電" }, { id: "talk", ic: "talk", t: "聊天" }
     ];
     $("acts").innerHTML = acts.map(a =>
-      `<button class="act" data-act="${a.id}">${ICONS[a.ic]}<span>${a.t}</span></button>`).join("");
-    $("acts").querySelectorAll("[data-act]").forEach(b =>
-      b.addEventListener("click", () => doAct(b.dataset.act)));
+      `<button class="act" data-act="${a.id}">
+         <span class="ring" style="color:${ACT_COLOR[a.id]}">${ICONS[a.ic]}</span><span>${a.t}</span>
+       </button>`).join("");
+    $("acts").querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => doAct(b.dataset.act)));
   }
 
   function renderPers() {
     $("persList").innerHTML = PERSONALITIES.map(p => `
       <button class="pCard" data-p="${p.id}" aria-pressed="${p.id === S.pers}">
-        <span class="pFace">${p.face}</span>
+        <span class="pFace" style="--pf1:${p.pf[0]};--pf2:${p.pf[1]}">${faceSVG(p)}</span>
         <span class="pBody">
           <h3>${p.name}<small>${p.type}</small></h3>
           <p>${p.desc}</p>
           <p class="quote">${p.quote}</p>
         </span>
       </button>`).join("");
-    $("persList").querySelectorAll("[data-p]").forEach(b =>
-      b.addEventListener("click", () => {
-        S.pers = b.dataset.p;
-        S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
-        save(); renderPers(); renderHome();
-        toast(`${S.name} 換成「${pers().type}」了`);
-      }));
+    $("persList").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
+      S.pers = b.dataset.p;
+      S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
+      save(); renderPers(); renderHome();
+      toast(`${S.name} 換成「${pers().type}」了`);
+    }));
 
     const T = [
-      { k: "clingy", n: "黏人度", c: "var(--rose)" },
-      { k: "sassy", n: "毒舌度", c: "var(--amber)" },
-      { k: "talkative", n: "話癆度", c: "var(--sky)" },
-      { k: "romantic", n: "浪漫度", c: "var(--lime)" }
+      { k: "clingy", n: "黏人度", c: "var(--rose)" }, { k: "sassy", n: "毒舌度", c: "var(--amber)" },
+      { k: "talkative", n: "話癆度", c: "var(--sky)" }, { k: "romantic", n: "浪漫度", c: "var(--lime)" }
     ];
     $("traits").innerHTML = T.map(t => `
       <div class="traitRow">
@@ -1308,24 +1370,22 @@
 
   function renderSkins() {
     const lv = level();
-    const unlocked = SKINS.filter(s => s.lv <= lv).length;
-    $("skinCount").textContent = `Skins ${unlocked}/${SKINS.length}`;
+    $("skinCount").textContent = `Skins ${SKINS.filter(s => s.lv <= lv).length}/${SKINS.length}`;
     $("skinGrid").innerHTML = SKINS.map(s => {
       const lock = s.lv > lv;
       return `
         <button class="skin${lock ? " locked" : ""}" data-s="${s.id}"
                 aria-pressed="${s.id === S.skin}" ${lock ? "disabled" : ""}>
-          <span class="prev">${carSVG(s, "normal", true)}</span>
+          <span class="prev" style="--sk1:${s.bg[0]};--sk2:${s.bg[1]}">${carSVG(s, "normal", true)}</span>
           ${lock ? `<span class="lock">LV.${s.lv} 解鎖</span>` : ""}
           <span class="nm">${s.name}</span>
           <span class="mt">${s.tag}${s.id === S.skin ? " · 使用中" : ""}</span>
         </button>`;
     }).join("");
-    $("skinGrid").querySelectorAll("[data-s]").forEach(b =>
-      b.addEventListener("click", () => {
-        S.skin = b.dataset.s; save(); renderSkins(); renderHome();
-        toast(`換上「${skin().name}」`);
-      }));
+    $("skinGrid").querySelectorAll("[data-s]").forEach(b => b.addEventListener("click", () => {
+      S.skin = b.dataset.s; save(); renderSkins(); renderHome();
+      toast(`換上「${skin().name}」`);
+    }));
   }
 
   function rollPlan() {
@@ -1342,10 +1402,7 @@
     $("planHold").innerHTML = `
       <div class="planCard" style="--rr1:${R.c1};--rr2:${R.c2}">
         <div class="planInner">
-          <div class="planTop">
-            <span class="rar">${p.r}</span>
-            <span class="chip">${p.slot}</span>
-          </div>
+          <div class="planTop"><span class="rar">${p.r}</span><span class="chip">${p.slot}</span></div>
           <h3>${p.title}</h3>
           <div class="route">
             <div class="stop"><span class="dot"></span><span class="ln">${p.from}</span><span class="tm">出發</span></div>
@@ -1364,33 +1421,28 @@
   function renderHist() {
     if (!S.history.length) { $("histHold").innerHTML = ""; return; }
     $("histHold").innerHTML =
-      `<div class="scTitle" style="margin-top:4px"><h2 style="font-size:14px">抽過的行程</h2></div>` +
-      S.history.slice(0, 6).map(h => {
-        const R = RARITY[h.r];
-        return `<div class="histRow">
-          <span class="tag" style="background:${R.c1}">${h.r}</span>
-          <span>${h.title}</span>
-          <span class="dt">${h.at}</span>
-        </div>`;
-      }).join("");
+      `<div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">抽過的行程</h2></div>` +
+      S.history.slice(0, 6).map(h =>
+        `<div class="histRow">
+           <span class="tag" style="background:${RARITY[h.r].c1}">${h.r}</span>
+           <span>${h.title}</span><span class="dt">${h.at}</span>
+         </div>`).join("");
   }
 
   function renderBox() {
     $("boxArt").innerHTML = boxSVG();
     $("boxLeftTx").textContent = S.boxLeft > 0 ? `本週剩 ${S.boxLeft} 次` : "本週用完了";
-    $("boxHint").textContent = S.boxLeft > 0
-      ? "連點三下搖它，它就會吐一張行程給你"
-      : "下週一補充。它說它需要休息一下。";
+    $("boxHint").textContent = S.boxLeft > 0 ? "連點三下搖它，它就會吐一張行程給你"
+                                             : "下週一補充。它說它需要休息一下。";
     renderHist();
   }
 
   function renderLearn() {
     const total = S.visits.reduce((a, b) => a + b, 0);
     $("visitTotal").textContent = `${total} 次`;
-    const max = Math.max(1, ...S.visits);
-    const pk = peakHour();
+    const max = Math.max(1, ...S.visits), pk = peakHour();
     $("heat").innerHTML = S.visits.map((v, i) => {
-      const h = Math.max(3, Math.round((v / max) * 88));
+      const h = Math.max(4, Math.round((v / max) * 92));
       const cls = v === 0 ? "" : (i === pk ? "top" : "on");
       return `<i class="${cls}" style="height:${h}px" title="${pad(i)}:00 · ${v} 次"></i>`;
     }).join("");
@@ -1398,12 +1450,11 @@
     const hs = allHabits();
     $("labels").innerHTML = hs.slice(0, 4).map(x => `
       <div class="lbl">
-        <div class="lblTop">
-          <span class="n">${x.h.name}</span>
-          <span class="c">${total < 6 ? "資料不足" : x.pct + "%"}</span>
-        </div>
+        <div class="lblTop"><span class="n">${x.h.name}</span>
+          <span class="c">${total < 6 ? "資料不足" : x.pct + "%"}</span></div>
         <div class="bar"><i style="width:${total < 6 ? 0 : x.pct}%;background:${
-          x.pct > 40 ? "var(--lime)" : x.pct > 20 ? "var(--sky)" : "var(--fog-dim)"}"></i></div>
+          x.pct > 40 ? "linear-gradient(90deg,var(--lime-d),var(--lime))"
+        : x.pct > 20 ? "linear-gradient(90deg,#3E86AC,var(--sky))" : "var(--fog-dim)"}"></i></div>
       </div>`).join("");
 
     const learned = [];
@@ -1412,29 +1463,26 @@
     } else {
       learned.push(hs[0].h.line(hs[0].pct));
       learned.push(`你最常在 ${pad(pk)}:00 前後打開我，那個時間我不會讓自己在充電。`);
-      const wkPct = Math.round((S.weekendVisits / total) * 100);
-      learned.push(wkPct >= 35
-        ? `週末佔了 ${wkPct}%，你是那種放假才想出門的人。盲盒約會我改成週五晚上先發給你。`
-        : `你幾乎只在平日找我（週末只有 ${wkPct}%），所以我週末不吵你，除非你先開口。`);
+      const wk = Math.round((S.weekendVisits / total) * 100);
+      learned.push(wk >= 35
+        ? `週末佔了 ${wk}%，你是那種放假才想出門的人。盲盒約會我改成週五晚上先發給你。`
+        : `你幾乎只在平日找我（週末只有 ${wk}%），所以我週末不吵你，除非你先開口。`);
+      if (S.visits.slice(20).concat(S.visits.slice(0, 3)).reduce((a, b) => a + b, 0) > total * 0.3)
+        learned.push("你有一半的人生發生在晚上十點以後。我不評論，我只是把電留著。");
       if (S.intimacy >= 300) learned.push("你已經連續幾週都有回我了。我把你排在第一順位。");
     }
     $("learned").innerHTML = learned.map(t => `<div class="learn"><span>${t}</span></div>`).join("");
 
     const sched = schedule();
     if (!sched.length) sched.push({ t: "--:--", b: "還沒有排程", d: "我要先認識你，才知道什麼時候該吵你。" });
-    $("sched").innerHTML = sched.map(x => `
-      <div class="schedRow">
-        <span class="tm">${x.t}</span>
-        <span class="bd"><b>${x.b}</b>${x.d}</span>
-      </div>`).join("");
+    $("sched").innerHTML = sched.map(x =>
+      `<div class="schedRow"><span class="tm">${x.t}</span><span class="bd"><b>${x.b}</b>${x.d}</span></div>`).join("");
   }
 
   function renderTabs() {
     const T = [
-      { id: "home", n: "車庫", ic: "home" },
-      { id: "pers", n: "個性", ic: "pers" },
-      { id: "skin", n: "套皮", ic: "skin" },
-      { id: "box", n: "盲盒", ic: "box" },
+      { id: "home", n: "車庫", ic: "home" }, { id: "pers", n: "個性", ic: "pers" },
+      { id: "skin", n: "套皮", ic: "skin" }, { id: "box", n: "盲盒", ic: "box" },
       { id: "learn", n: "學習", ic: "learn" }
     ];
     $("tabs").innerHTML = T.map(t => `
@@ -1442,111 +1490,82 @@
         ${ICONS[t.ic]}${t.id === "box" && S.boxLeft > 0 ? '<span class="dot"></span>' : ""}
         <span>${t.n}</span>
       </button>`).join("");
-    $("tabs").querySelectorAll("[data-t]").forEach(b =>
-      b.addEventListener("click", () => go(b.dataset.t)));
+    $("tabs").querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => go(b.dataset.t)));
   }
 
   function go(id) {
     currentTab = id;
-    ["home", "pers", "skin", "box", "learn"].forEach(k => {
-      $("sc-" + k).hidden = k !== id;
-    });
+    ["home", "pers", "skin", "box", "learn"].forEach(k => { $("sc-" + k).hidden = k !== id; });
     $("screens").scrollTop = 0;
     renderTabs();
-    if (id === "home") renderHome();
-    if (id === "pers") renderPers();
-    if (id === "skin") renderSkins();
-    if (id === "box") renderBox();
-    if (id === "learn") renderLearn();
+    ({ home: renderHome, pers: renderPers, skin: renderSkins, box: renderBox, learn: renderLearn })[id]();
   }
 
   /* ════ 互動 ════════════════════════════════════════════ */
 
   function toast(msg) {
     const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("in");
+    t.textContent = msg; t.classList.add("in");
     clearTimeout(t._h);
-    t._h = setTimeout(() => t.classList.remove("in"), 1800);
+    t._h = setTimeout(() => t.classList.remove("in"), 1900);
   }
 
   function sparks(n, colors) {
-    const stage = $("carStage");
-    const rect = stage.getBoundingClientRect();
+    const stage = $("carStage"), rect = stage.getBoundingClientRect();
     for (let i = 0; i < n; i++) {
       const el = document.createElement("span");
       el.className = "spark";
       el.style.background = pick(colors);
-      el.style.left = (rect.width / 2 + (Math.random() - .5) * 140) + "px";
-      el.style.top = (rect.height * .55) + "px";
-      el.style.transition = "transform .9s cubic-bezier(.2,.8,.4,1), opacity .9s";
+      el.style.left = (rect.width / 2 + (Math.random() - .5) * 150) + "px";
+      el.style.top = (rect.height * .62) + "px";
+      el.style.transition = "transform .95s cubic-bezier(.2,.8,.4,1), opacity .95s";
       stage.appendChild(el);
       requestAnimationFrame(() => {
-        el.style.transform = `translate(${(Math.random() - .5) * 150}px, ${-60 - Math.random() * 90}px) scale(${.4 + Math.random()})`;
+        el.style.transform = `translate(${(Math.random() - .5) * 160}px, ${-70 - Math.random() * 100}px) scale(${.4 + Math.random()})`;
         el.style.opacity = "0";
       });
-      setTimeout(() => el.remove(), 950);
+      setTimeout(() => el.remove(), 1000);
     }
   }
 
   function doAct(a) {
-    const p = S.pers;
     if (a === "pet") {
       S.intimacy += 6; S.mood = clamp(S.mood + 5);
       S.traits.clingy = clamp(S.traits.clingy + 1.2);
       $("carHold").classList.add("pet");
-      setTimeout(() => $("carHold").classList.remove("pet"), 620);
-      sparks(8, ["#FF7FA6", "#C8F02E", "#FFB24D"]);
-      $("bubble").textContent = pick({
-        warm: ["…嗯。再摸一下。", "你的手是冷的，剛從外面回來？"],
-        tsun: ["喂！不要隨便摸引擎蓋。……好啦，就一下。", "我沒有很喜歡。真的。"],
-        sunny: ["哇哈哈！好癢！再一次！", "摸摸！我今天最棒的事！"],
-        gent: ["承蒙關照。", "謝謝您。我的板金今天剛打蠟。"],
-        misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"]
-      }[p]);
+      setTimeout(() => $("carHold").classList.remove("pet"), 660);
+      sparks(9, ["#FF86AE", "#C9F23A", "#FFC46B"]);
+      $("bubble").textContent = pick(REACT.pet[S.pers]);
       toast("親密度 +6");
-    }
-    if (a === "wash") {
+    } else if (a === "wash") {
       S.mood = clamp(S.mood + 12); S.intimacy += 4;
-      sparks(10, ["#6ED0FF", "#E9EFF5"]);
-      $("bubble").textContent = pick({
-        warm: ["變乾淨了，謝謝你。", "我現在很好聞。"],
-        tsun: ["本來就沒有很髒。", "……好吧，是有比較舒服。"],
-        sunny: ["亮亮的！我最亮了！", "洗車！我最愛洗車！"],
-        gent: ["整潔是基本的禮貌。多謝。", "這樣我才好意思載您。"],
-        misty: ["洗掉的是灰塵，還是上禮拜？", "乾淨的車窗，看出去的城市會不一樣。"]
-      }[p]);
+      sparks(11, ["#7DD3FC", "#EEF2F9"]);
+      $("bubble").textContent = pick(REACT.wash[S.pers]);
       toast("心情 +12");
-    }
-    if (a === "fuel") {
+    } else if (a === "fuel") {
       S.energy = clamp(S.energy + 25); S.intimacy += 3;
-      sparks(8, ["#C8F02E", "#FFB24D"]);
-      $("bubble").textContent = pick({
-        warm: ["充飽了，隨時可以載你去任何地方。", "有電了，不用擔心。"],
-        tsun: ["我本來也還撐得住。", "充這麼滿是要去哪？"],
-        sunny: ["滿電！！！可以繞台灣一圈！！", "電量 100！人生 100！"],
-        gent: ["電量充足，隨時候命。", "續航無虞，請放心。"],
-        misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"]
-      }[p]);
+      sparks(9, ["#C9F23A", "#FFC46B"]);
+      $("bubble").textContent = pick(REACT.fuel[S.pers]);
       toast("能量 +25");
-    }
-    if (a === "talk") {
+    } else {
       S.intimacy += 5; S.sync = clamp(S.sync + 2);
       S.traits.talkative = clamp(S.traits.talkative + 1);
       $("bubble").textContent = line();
       toast("默契 +2");
     }
     S.energy = clamp(S.energy - 1);
-    save(); renderHome(); renderTabs();
+    save();
+    const keep = $("bubble").textContent;
+    renderHome();
+    $("bubble").textContent = keep;
+    renderTabs();
   }
 
   function openBox() {
     if (S.boxLeft <= 0) { toast("本週的盲盒用完了"); return; }
     shakeCount++;
     const btn = $("boxBtn");
-    btn.classList.remove("shake");
-    void btn.offsetWidth;
-    btn.classList.add("shake");
+    btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
     if (shakeCount < 3) {
       $("boxHint").textContent = shakeCount === 1 ? "有東西在裡面動…再兩下" : "快出來了…再一下";
       return;
@@ -1559,40 +1578,38 @@
     S.intimacy += p.r === "SSR" ? 30 : p.r === "SR" ? 18 : 8;
     S.mood = clamp(S.mood + 6);
     save();
-    renderPlan(p);
-    renderBox();
-    renderTabs();
+    renderPlan(p); renderBox(); renderTabs();
     toast(p.r === "SSR" ? "SSR！它把壓箱寶拿出來了" : `抽到 ${p.r} · ${p.title}`);
-    setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。要去嗎？`), 900);
+    setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。要去嗎？`), 950);
   }
 
   function showPush(msg) {
-    const el = $("push");
-    $("pushIcon").innerHTML = `<svg viewBox="0 0 260 196" style="--body:${skin().body};--roof:${skin().roof};--glass:${skin().glass};--light:${skin().light}">
-      <rect x="56" y="34" width="148" height="62" rx="26" fill="var(--roof)"/>
-      <rect x="34" y="46" width="192" height="110" rx="34" fill="var(--body)"/>
-      <rect x="72" y="54" width="116" height="54" rx="22" fill="var(--glass)"/>
-      <circle cx="102" cy="80" r="10" fill="#0B0F14"/><circle cx="158" cy="80" r="10" fill="#0B0F14"/>
-      <path d="M112 136 q18 16 36 0" stroke="#0B0F14" stroke-width="6" fill="none" stroke-linecap="round"/>
-    </svg>`;
+    const s = skin();
+    $("pushIcon").innerHTML = `
+      <svg viewBox="30 28 200 130" style="--body:${s.body};--roof:${s.roof};--glass:${s.glass}">
+        <rect x="56" y="32" width="148" height="64" rx="28" fill="var(--roof)"/>
+        <rect x="32" y="44" width="196" height="112" rx="36" fill="var(--body)"/>
+        <rect x="70" y="50" width="120" height="58" rx="25" fill="var(--glass)"/>
+        <circle cx="101" cy="79" r="11" fill="#0A0E18"/><circle cx="159" cy="79" r="11" fill="#0A0E18"/>
+        <path d="M112 132 q18 17 36 0" stroke="#0A0E18" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </svg>`;
     $("pushMsg").textContent = msg;
     $("pushAgo").textContent = `${pad(hour)}:40`;
-    el.classList.add("in");
+    $("push").classList.add("in");
     clearTimeout(pushTimer);
-    pushTimer = setTimeout(() => el.classList.remove("in"), 6500);
+    pushTimer = setTimeout(() => $("push").classList.remove("in"), 6800);
   }
 
   function autoPush() {
-    const sl = slotOf(hour).id;
-    const top = topHabit();
+    const sl = slotOf(hour).id, top = topHabit();
     let msg;
     if (top && Math.random() < 0.4) {
-      msg = top.h.id === "owl" ? `又是這個時間。${S.name} 已經在樓下了，沒有要催你。`
-          : top.h.id === "commute" ? `尖峰要開始了。${S.name} 幫你看過路了，走信義路快 6 分鐘。`
-          : top.h.id === "lunch" ? `中午了。${S.name} 說它記得你上次那間吃很久。`
-          : top.h.id === "lark" ? `天要亮了。${S.name} 已經暖好車，不吵你，就先說一聲。`
-          : `這個時間你通常會想出門。${S.name} 在待命。`;
-    } else if (S.boxLeft > 0 && Math.random() < 0.35) {
+      msg = { owl: `又是這個時間。${S.name} 已經在樓下了，沒有要催你。`,
+              commute: `尖峰要開始了。${S.name} 幫你看過路了，走信義路快 6 分鐘。`,
+              lunch: `中午了。${S.name} 說它記得你上次那間吃很久。`,
+              lark: `天要亮了。${S.name} 已經暖好車，不吵你，就先說一聲。`,
+              night: `這個時間你通常會想出門。${S.name} 在待命。` }[top.h.id];
+    } else if (S.boxLeft > 0 && Math.random() < 0.32) {
       msg = `盲盒還剩 ${S.boxLeft} 次。${S.name} 說今天手氣不錯，要不要抽？`;
     } else {
       msg = pick(PUSHES[S.pers][sl]);
@@ -1602,7 +1619,6 @@
 
   /* ════ 上線引導 ════════════════════════════════════════ */
 
-  let onbStep = 1;
   function renderOnb() {
     if (onbStep === 1) {
       $("onbTitle").textContent = "先幫你的車車取個名字";
@@ -1616,43 +1632,37 @@
       $("onbNext").textContent = "開始養";
       $("onbStep2").innerHTML = PERSONALITIES.map(p => `
         <button class="pCard" data-op="${p.id}" aria-pressed="${p.id === S.pers}">
-          <span class="pFace">${p.face}</span>
+          <span class="pFace" style="--pf1:${p.pf[0]};--pf2:${p.pf[1]}">${faceSVG(p)}</span>
           <span class="pBody">
             <h3>${p.name}<small>${p.type}</small></h3>
-            <p class="quote" style="margin-top:2px">${p.quote}</p>
+            <p class="quote" style="margin-top:3px">${p.quote}</p>
           </span>
         </button>`).join("");
-      $("onbStep2").querySelectorAll("[data-op]").forEach(b =>
-        b.addEventListener("click", () => {
-          S.pers = b.dataset.op;
-          S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
-          renderOnb();
-        }));
+      $("onbStep2").querySelectorAll("[data-op]").forEach(b => b.addEventListener("click", () => {
+        S.pers = b.dataset.op;
+        S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
+        renderOnb();
+      }));
     }
   }
 
   /* ════ 啟動 ════════════════════════════════════════════ */
 
   function boot() {
-    renderClock();
-    renderActs();
-    renderTabs();
-    go("home");
+    renderClock(); renderActs(); renderTabs(); go("home");
 
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
     else { $("onb").hidden = true; recordVisit(hour); }
 
     $("onbNext").addEventListener("click", () => {
       if (onbStep === 1) {
-        const v = $("onbName").value.trim();
-        S.name = v || "小黃";
+        S.name = ($("onbName").value.trim() || "小黃");
         onbStep = 2; renderOnb();
       } else {
         S.onboarded = true; save();
         $("onb").hidden = true;
-        recordVisit(hour);
-        go("home");
-        setTimeout(() => showPush(`${S.name} 上線了。之後我會看著你都幾點找我。`), 800);
+        recordVisit(hour); go("home");
+        setTimeout(() => showPush(`${S.name} 上線了。之後我會看著你都幾點找我。`), 850);
       }
     });
 
@@ -1664,30 +1674,29 @@
       if (currentTab === "learn") renderLearn();
     });
 
-    $("segWeekday").addEventListener("click", () => setWeekend(false));
-    $("segWeekend").addEventListener("click", () => setWeekend(true));
-    function setWeekend(w) {
+    const setWeekend = w => {
       weekend = w;
       $("segWeekday").setAttribute("aria-pressed", String(!w));
       $("segWeekend").setAttribute("aria-pressed", String(w));
       if (currentTab === "home") renderHome();
-    }
+    };
+    $("segWeekday").addEventListener("click", () => setWeekend(false));
+    $("segWeekend").addEventListener("click", () => setWeekend(true));
 
     $("btnPush").addEventListener("click", autoPush);
     $("push").addEventListener("click", () => $("push").classList.remove("in"));
-    $("push").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") $("push").classList.remove("in"); });
+    $("push").addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") $("push").classList.remove("in");
+    });
 
     $("btnSeed").addEventListener("click", () => {
-      // 模擬一週：早上通勤 + 午休 + 晚上回家 + 一點深夜
       const w = [0,0,0,0, 0,1,2,7, 9,5,2,3, 8,6,2,2, 3,9,11,6, 4,5,7,4];
       w.forEach((n, i) => S.visits[i] += n);
       S.totalVisits += w.reduce((a, b) => a + b, 0);
       S.weekendVisits += 14;
       S.sync = clamp(S.sync + 18);
       S.intimacy += 60;
-      save();
-      go("learn");
-      toast("灌入一週使用紀錄");
+      save(); go("learn"); toast("灌入一週使用紀錄");
     });
 
     $("btnReset").addEventListener("click", () => {
