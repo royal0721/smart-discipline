@@ -8,23 +8,24 @@
      每個顏色都明寫，不借用宿主頁面的底色。
      ───────────────────────────────────────────────────────── */
   :root {
-    --void:    #070A12;
-    --ink:     #0C111C;
-    --deep:    #131A29;
-    --slab:    #1A2233;
-    --slab-2:  #232D42;
-    --slab-3:  #2C3852;
-    --hair:    rgba(255,255,255,.07);
-    --fog:     #93A0BA;
-    --fog-dim: #64708A;
-    --chalk:   #EEF2F9;
-    --grass:   #5CB947;
-    --lime:    #C9F23A;
-    --lime-d:  #93B520;
-    --amber:   #FFC46B;
-    --rose:    #FF86AE;
-    --sky:     #7DD3FC;
-    --violet:  #A99BF5;
+    /* 亮色：帶一點綠味的暖白，讓 yoxi 綠看起來是選過的而不是撞上去的 */
+    --void:    #EAEEE6;
+    --ink:     #F7F9F4;
+    --deep:    #FFFFFF;
+    --slab:    #FFFFFF;
+    --slab-2:  #F0F3EB;
+    --slab-3:  #E3EADB;
+    --hair:    rgba(22,32,26,.10);
+    --fog:     #6E7C72;
+    --fog-dim: #93A099;
+    --chalk:   #17211B;
+    --grass:   #4CA53A;
+    --lime:    #3F9430;
+    --lime-d:  #2F7A23;
+    --amber:   #C9761A;
+    --rose:    #D4507F;
+    --sky:     #2C7FBF;
+    --violet:  #6E5BD0;
 
     --sans: "Noto Sans TC", "PingFang TC", "Hiragino Sans TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -34,7 +35,7 @@
     --rMd: 15px;
     --rSm: 10px;
 
-    --lift: 0 2px 0 rgba(255,255,255,.05) inset, 0 10px 24px -12px rgba(0,0,0,.9);
+    --lift: 0 1px 2px rgba(22,32,26,.05), 0 8px 20px -14px rgba(22,32,26,.35);
   }
 
   * { box-sizing: border-box; }
@@ -43,9 +44,8 @@
     margin: 0;
     background: var(--void);
     background-image:
-      radial-gradient(90% 60% at 8% -6%, #1D2540 0%, rgba(7,10,18,0) 62%),
-      radial-gradient(70% 55% at 96% 8%, #2A1E3A 0%, rgba(7,10,18,0) 58%),
-      radial-gradient(80% 50% at 60% 108%, #16243A 0%, rgba(7,10,18,0) 60%);
+      radial-gradient(90% 60% at 6% -8%, #DCEBD2 0%, rgba(234,238,230,0) 60%),
+      radial-gradient(70% 55% at 98% 4%, #EDE7DA 0%, rgba(234,238,230,0) 56%);
     background-attachment: fixed;
     color: var(--chalk);
     font-family: var(--sans);
@@ -70,11 +70,11 @@
     margin: 10px 0 0; font-size: clamp(36px, 5vw, 58px); font-weight: 900;
     letter-spacing: -.045em; line-height: 1.04; text-wrap: balance;
   }
-  .desk h1 em { font-style: normal; color: var(--lime); text-shadow: 0 0 34px rgba(201,242,58,.32); }
+  .desk h1 em { font-style: normal; color: var(--grass); }
   .lede { margin: 0; max-width: 31em; color: var(--fog); font-size: 15.5px; }
 
   .card {
-    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    background: #FFFFFF; border: 1px solid var(--hair);
     border-radius: var(--rXl); padding: 24px 24px 26px;
     display: flex; flex-direction: column; gap: 20px; box-shadow: var(--lift);
   }
@@ -87,21 +87,20 @@
   .clockRow .big {
     font-family: var(--mono); font-size: 46px; font-weight: 600; letter-spacing: -.03em;
     font-variant-numeric: tabular-nums; color: var(--chalk);
-    text-shadow: 0 0 30px rgba(238,242,249,.16);
   }
   .clockRow .slot { font-size: 13.5px; color: var(--fog); }
 
   input[type="range"] {
     -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
-    border-radius: 4px; background: #2B354B; outline: none; margin: 0;
+    border-radius: 4px; background: #D9E0D2; outline: none; margin: 0;
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none; width: 24px; height: 24px;
-    border-radius: 50%; background: var(--lime); border: 5px solid var(--deep);
-    box-shadow: 0 0 0 1px var(--lime-d), 0 0 22px rgba(201,242,58,.5); cursor: pointer;
+    border-radius: 50%; background: var(--grass); border: 5px solid var(--deep);
+    box-shadow: 0 0 0 1px var(--lime-d), 0 4px 12px rgba(76,165,58,.45); cursor: pointer;
   }
   input[type="range"]::-moz-range-thumb {
-    width: 18px; height: 18px; border-radius: 50%; background: var(--lime);
+    width: 18px; height: 18px; border-radius: 50%; background: var(--grass);
     border: 4px solid var(--deep); cursor: pointer;
   }
   input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--sky); }
@@ -111,30 +110,30 @@
     font-size: 10px; color: var(--fog-dim); letter-spacing: .08em; margin-top: -8px;
   }
 
-  .segRow { display: flex; gap: 8px; background: rgba(0,0,0,.28); padding: 5px; border-radius: 14px; }
+  .segRow { display: flex; gap: 8px; background: var(--slab-2); padding: 5px; border-radius: 14px; }
   .seg {
     flex: 1; padding: 9px 0; border-radius: 10px; background: transparent; border: none;
     color: var(--fog); font-family: var(--sans); font-size: 13.5px; cursor: pointer; transition: .18s;
   }
   .seg:hover { color: var(--chalk); }
-  .seg[aria-pressed="true"] { background: var(--slab-3); color: var(--lime); box-shadow: 0 3px 10px rgba(0,0,0,.4); }
+  .seg[aria-pressed="true"] { background: #FFFFFF; color: var(--lime); font-weight: 700; box-shadow: 0 1px 3px rgba(22,32,26,.14); }
   .seg:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
 
   .btn {
     display: flex; align-items: center; gap: 10px; width: 100%; padding: 13px 16px;
     background: var(--slab-2); border: none; border-radius: 14px; color: var(--chalk);
     font-family: var(--sans); font-size: 14.5px; text-align: left; cursor: pointer;
-    transition: .18s; box-shadow: 0 1px 0 rgba(255,255,255,.05) inset;
+    transition: .18s;
   }
   .btn:hover { background: var(--slab-3); transform: translateY(-1px); }
   .btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .btn .k { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--fog-dim); margin-left: auto; }
   .btn.primary {
-    background: linear-gradient(180deg, #D8FF4D, #ADD718); color: #10160A; font-weight: 800;
-    box-shadow: 0 8px 22px -8px rgba(201,242,58,.7);
+    background: linear-gradient(180deg, #59BC44, #3F9430); color: #FFFFFF; font-weight: 800;
+    box-shadow: 0 8px 20px -10px rgba(63,148,48,.75);
   }
-  .btn.primary:hover { background: linear-gradient(180deg, #E2FF66, #BCE726); }
-  .btn.primary .k { color: rgba(16,22,10,.45); }
+  .btn.primary:hover { background: linear-gradient(180deg, #66CC4F, #47A337); }
+  .btn.primary .k { color: rgba(255,255,255,.6); }
   .btn.ghost:hover { color: var(--rose); }
 
   .notes { display: flex; flex-direction: column; gap: 16px; }
@@ -163,9 +162,9 @@
   }
 
   .heat { display: flex; align-items: flex-end; gap: 4px; height: 88px; }
-  .heat i { flex: 1; border-radius: 3px 3px 2px 2px; background: #2A3548; min-height: 4px; transition: height .55s cubic-bezier(.2,.8,.3,1), background .3s; }
-  .heat i.on { background: linear-gradient(180deg, var(--lime-d), #6C8517); }
-  .heat i.top { background: linear-gradient(180deg, var(--lime), var(--lime-d)); box-shadow: 0 0 16px rgba(201,242,58,.45); }
+  .heat i { flex: 1; border-radius: 3px 3px 2px 2px; background: #DEE5D8; min-height: 4px; transition: height .55s cubic-bezier(.2,.8,.3,1), background .3s; }
+  .heat i.on { background: linear-gradient(180deg, #7CC168, #4CA53A); }
+  .heat i.top { background: linear-gradient(180deg, #4CA53A, #2F7A23); }
   .heatAxis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); margin-top: -4px; }
 
   .lbl { display: flex; flex-direction: column; gap: 6px; }
@@ -183,26 +182,27 @@
   .schedRow .bd b { color: var(--chalk); font-weight: 700; display: block; margin-bottom: 3px; font-size: 12.5px; }
   .schedRow .bd q { color: var(--chalk); quotes: "「" "」"; }
 
-  .bar { height: 7px; border-radius: 5px; background: rgba(0,0,0,.4); overflow: hidden; }
+  .bar { height: 7px; border-radius: 5px; background: #E4E9DE; overflow: hidden; }
   .bar i { display: block; height: 100%; border-radius: 5px; transition: width .55s cubic-bezier(.2,.8,.3,1); }
 
   /* ── 手機 ─────────────────────────────────────────────── */
   .phoneWrap { position: sticky; top: 40px; }
   .phone {
     position: relative; width: 390px; height: 844px;
-    background: var(--ink); border: 11px solid #10161F; border-radius: 54px;
-    box-shadow: 0 0 0 1px #3A4358, 0 60px 100px -24px rgba(0,0,0,.9), inset 0 0 70px rgba(0,0,0,.55);
+    background: var(--ink); border: 11px solid #2B3630; border-radius: 54px;
+    box-shadow: 0 0 0 1px rgba(22,32,26,.25), 0 50px 90px -30px rgba(22,32,26,.45);
     overflow: hidden;
   }
   .island {
     position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-    width: 110px; height: 30px; border-radius: 16px; background: #04060A; z-index: 60;
+    width: 110px; height: 30px; border-radius: 16px; background: #101813; z-index: 60;
   }
   .statusbar {
     position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 50;
     display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
     pointer-events: none; font-family: var(--mono); font-size: 13px;
     font-variant-numeric: tabular-nums; color: var(--chalk);
+    background: linear-gradient(180deg, rgba(255,255,255,.95) 46%, rgba(255,255,255,0));
   }
   .statusbar .right { display: flex; gap: 7px; align-items: center; font-size: 11px; letter-spacing: .05em; }
 
@@ -222,30 +222,30 @@
   /* ── 地圖舞台：路線紀錄 + 車車 ─────────────────────────── */
   .carStage {
     position: relative; border-radius: var(--rXl); overflow: hidden;
-    height: 344px; box-shadow: 0 18px 40px -20px rgba(0,0,0,.95);
-    background: #0D1420; cursor: pointer;
+    height: 344px; box-shadow: 0 10px 26px -16px rgba(22,32,26,.5);
+    background: #E9EFE2; cursor: pointer;
   }
   .carStage:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
   .scene svg { width: 100%; height: 100%; display: block; }
   .veil {
     position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; height: 132px;
-    background: linear-gradient(180deg, rgba(9,13,22,0) 0%, rgba(9,13,22,.55) 50%, rgba(9,13,22,.9) 100%);
+    background: linear-gradient(180deg, rgba(247,249,244,0) 0%, rgba(247,249,244,.35) 55%, rgba(247,249,244,.72) 100%);
     pointer-events: none;
   }
   .stageTop {
     position: absolute; top: 0; left: 0; right: 0; z-index: 5;
     display: flex; align-items: center; gap: 8px; padding: 14px 15px;
-    background: linear-gradient(180deg, rgba(6,9,16,.78), rgba(6,9,16,0));
+    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,0));
   }
   .stageTop .nm { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
 
   .routeChip {
     position: absolute; z-index: 5; left: 14px; bottom: 14px;
     display: flex; align-items: center; gap: 10px;
-    background: rgba(12,18,28,.88); backdrop-filter: blur(14px);
+    background: rgba(255,255,255,.92); backdrop-filter: blur(14px);
     border-radius: 14px; padding: 9px 12px; max-width: 58%;
-    box-shadow: 0 8px 20px rgba(0,0,0,.55);
+    box-shadow: 0 4px 14px rgba(22,32,26,.18);
   }
   .routeChip .sw { width: 9px; height: 9px; border-radius: 3px; flex: none; }
   .routeChip .tx { font-size: 12px; line-height: 1.35; min-width: 0; }
@@ -253,22 +253,22 @@
   .routeChip .tx span { font-family: var(--mono); font-size: 10px; color: var(--fog-dim); }
   .routeChip .cyc {
     flex: none; width: 22px; height: 22px; border-radius: 8px; display: grid; place-items: center;
-    background: rgba(255,255,255,.08); color: var(--fog); font-size: 12px;
+    background: var(--slab-2); color: var(--fog); font-size: 12px;
   }
 
   .bubble {
     position: absolute; z-index: 6; left: 16px; right: 16px; top: 54px;
-    background: var(--chalk); color: #121722; padding: 11px 15px;
+    background: #17211B; color: #F4F7F1; padding: 11px 15px;
     border-radius: 18px 18px 18px 6px; font-size: 13.5px; line-height: 1.5; font-weight: 500;
-    box-shadow: 0 12px 26px rgba(0,0,0,.45);
+    box-shadow: 0 10px 24px -8px rgba(22,32,26,.45);
     animation: pop .34s cubic-bezier(.2,1.5,.5,1);
   }
   @keyframes pop { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
 
   .carHold {
-    position: absolute; z-index: 4; right: 10px; bottom: 2px;
+    position: absolute; z-index: 4; right: 4px; bottom: 12px;
     display: flex; justify-content: flex-end;
-    filter: drop-shadow(0 16px 26px rgba(0,0,0,.6));
+    filter: drop-shadow(0 14px 22px rgba(22,32,26,.28));
   }
   .carHold svg { width: 148px; height: auto; animation: idle 4.6s ease-in-out infinite; }
   @keyframes idle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
@@ -279,7 +279,7 @@
 
   /* ── 面板 ─────────────────────────────────────────────── */
   .pane {
-    background: linear-gradient(170deg, var(--slab) 0%, var(--deep) 100%);
+    background: #FFFFFF; border: 1px solid var(--hair);
     border-radius: var(--rLg); padding: 15px 16px;
     display: flex; flex-direction: column; gap: 11px; box-shadow: var(--lift);
   }
@@ -290,7 +290,7 @@
 
   .meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .meter {
-    background: linear-gradient(170deg, var(--slab) 0%, var(--deep) 100%);
+    background: #FFFFFF; border: 1px solid var(--hair);
     border-radius: var(--rMd); padding: 11px 12px 12px; box-shadow: var(--lift);
   }
   .meter .lb { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--fog-dim); text-transform: uppercase; }
@@ -304,13 +304,13 @@
   }
   .act .ring {
     width: 56px; height: 56px; border-radius: 20px; display: grid; place-items: center;
-    background: linear-gradient(168deg, var(--slab-2), var(--deep));
-    box-shadow: 0 1px 0 rgba(255,255,255,.07) inset, 0 8px 18px -10px rgba(0,0,0,.9);
+    background: linear-gradient(168deg, #FFFFFF, var(--slab-2));
+    box-shadow: var(--lift);
     transition: .18s;
   }
   .act svg { width: 24px; height: 24px; }
   .act:hover { color: var(--chalk); }
-  .act:hover .ring { background: linear-gradient(168deg, var(--slab-3), var(--slab)); transform: translateY(-2px); }
+  .act:hover .ring { background: linear-gradient(168deg, #FFFFFF, var(--slab-3)); transform: translateY(-2px); }
   .act:active .ring { transform: scale(.92); }
   .act:focus-visible .ring { outline: 2px solid var(--sky); outline-offset: 3px; }
 
@@ -318,31 +318,31 @@
   .nextStop {
     display: flex; flex-direction: column; gap: 12px; padding: 16px;
     border-radius: var(--rLg); box-shadow: var(--lift);
-    background: linear-gradient(152deg, #1D2A24 0%, #141B29 62%);
+    background: linear-gradient(152deg, #EDF6E7 0%, #FFFFFF 66%);
   }
   .nsTop { display: flex; align-items: center; gap: 10px; }
   .nsTag {
     font-family: var(--mono); font-size: 9.5px; letter-spacing: .18em;
-    text-transform: uppercase; color: #8FD07C;
+    text-transform: uppercase; color: var(--lime-d);
   }
   .nsCount {
     margin-left: auto; font-family: var(--mono); font-size: 12.5px; font-weight: 600;
     color: var(--amber); font-variant-numeric: tabular-nums;
   }
-  .nsCount.tight { color: #FF8A7A; }
+  .nsCount.tight { color: #C63B2E; }
   .nsTitle { margin: 0; font-size: 19px; font-weight: 900; letter-spacing: -.03em; }
   .nsMeta { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--fog); }
   .nsMeta b { color: var(--chalk); font-weight: 600; font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .nsSay {
     font-size: 12.5px; color: var(--chalk); line-height: 1.55;
-    background: rgba(255,255,255,.055); border-radius: 13px; padding: 11px 13px;
+    background: #FFFFFF; border: 1px solid var(--hair); border-radius: 13px; padding: 11px 13px;
   }
   .nsBtn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 13px; border: none; border-radius: 15px; cursor: pointer;
-    background: linear-gradient(180deg, #6ACB53, #4CA53A); color: #08160A;
+    background: linear-gradient(180deg, #59BC44, #3F9430); color: #FFFFFF;
     font-family: var(--sans); font-size: 14.5px; font-weight: 800;
-    box-shadow: 0 10px 22px -10px rgba(92,185,71,.9); transition: .18s;
+    box-shadow: 0 10px 20px -10px rgba(63,148,48,.8); transition: .18s;
   }
   .nsBtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .nsBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
@@ -357,14 +357,14 @@
   .place:hover { background: var(--slab-3); color: var(--chalk); }
   .place:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .place[aria-pressed="true"] {
-    color: #9FE28C; background: rgba(92,185,71,.16);
-    box-shadow: 0 0 0 1px rgba(92,185,71,.45) inset;
+    color: var(--lime-d); background: #E3F3DC; font-weight: 700;
+    box-shadow: 0 0 0 1px rgba(76,165,58,.4) inset;
   }
 
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .stat {
     text-align: center; padding: 13px 6px 12px; border-radius: var(--rMd);
-    background: linear-gradient(170deg, var(--slab) 0%, var(--deep) 100%); box-shadow: var(--lift);
+    background: #FFFFFF; border: 1px solid var(--hair); box-shadow: var(--lift);
   }
   .stat b {
     display: block; font-family: var(--mono); font-size: 20px; font-weight: 600;
@@ -375,27 +375,26 @@
   .trip {
     display: flex; align-items: center; gap: 11px; padding: 11px 13px;
     border-radius: var(--rMd); font-size: 12.5px; cursor: pointer;
-    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
-    box-shadow: var(--lift); border: none; color: var(--chalk);
+    background: #FFFFFF; box-shadow: var(--lift); border: 1px solid var(--hair); color: var(--chalk);
     font-family: var(--sans); text-align: left; width: 100%; transition: .16s;
   }
   .trip:hover { transform: translateX(2px); }
   .trip:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .trip[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 1px var(--lime) inset; }
+  .trip[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
   .trip .idx {
     flex: none; width: 20px; height: 20px; border-radius: 7px; display: grid; place-items: center;
-    font-family: var(--mono); font-size: 10px; font-weight: 800; color: #0B0F14;
+    font-family: var(--mono); font-size: 10px; font-weight: 800; color: #FFFFFF;
   }
   .trip .km { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); font-variant-numeric: tabular-nums; }
 
-  .chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; white-space: nowrap; background: rgba(255,255,255,.09); color: var(--chalk); }
-  .chip.lime { color: #14200A; background: var(--lime); font-weight: 700; }
+  .chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; white-space: nowrap; background: var(--slab-2); color: var(--fog); }
+  .chip.lime { color: #FFFFFF; background: var(--grass); font-weight: 700; }
 
   /* ── 個性 ─────────────────────────────────────────────── */
   .pCard {
     display: flex; gap: 13px; align-items: flex-start; width: 100%; text-align: left;
-    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
-    border: none; border-radius: var(--rLg); padding: 14px; cursor: pointer;
+    background: #FFFFFF; border: 1px solid var(--hair);
+    border-radius: var(--rLg); padding: 14px; cursor: pointer;
     color: var(--chalk); font-family: var(--sans); transition: .2s;
     box-shadow: var(--lift); position: relative; overflow: hidden;
   }
@@ -405,14 +404,15 @@
   }
   .pCard:hover { transform: translateY(-2px); }
   .pCard:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .pCard[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--lime) inset; }
-  .pCard[aria-pressed="true"] { background: linear-gradient(168deg, #232F26 0%, #171F1C 100%); }
+  .pCard[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--grass) inset; }
+  .pCard[aria-pressed="true"] { background: linear-gradient(168deg, #EFF8EA 0%, #FFFFFF 100%); }
   .pFace {
     flex: none; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center;
     background: radial-gradient(120% 100% at 50% 18%, var(--pf1), var(--pf2));
-    box-shadow: 0 6px 14px -8px rgba(0,0,0,.9); overflow: hidden;
+    box-shadow: 0 4px 10px -6px rgba(22,32,26,.5); overflow: hidden;
   }
   .pFace svg { width: 46px; height: auto; }
+  .pFace img { max-height: 52px; max-width: 52px; width: auto; height: auto; }
   .pBody h3 { margin: 0 0 3px; font-size: 15.5px; font-weight: 800; letter-spacing: -.02em; }
   .pBody h3 small { font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); letter-spacing: .12em; margin-left: 8px; font-weight: 400; }
   .pBody p { margin: 0; font-size: 12.5px; color: var(--fog); line-height: 1.5; }
@@ -426,8 +426,7 @@
   .skinGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
   .skin {
     position: relative; border: none; border-radius: var(--rLg); padding: 9px 9px 12px;
-    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
-    display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+    background: #FFFFFF; display: flex; flex-direction: column; gap: 8px; cursor: pointer;
     color: var(--chalk); font-family: var(--sans); transition: .2s;
     box-shadow: var(--lift); overflow: hidden;
   }
@@ -437,12 +436,13 @@
   }
   .skin:hover { transform: translateY(-2px); }
   .skin:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .skin[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--lime) inset; }
+  .skin[aria-pressed="true"]::after { box-shadow: 0 0 0 2px var(--grass) inset; }
   .skin .prev {
     border-radius: 14px; height: 86px; display: grid; place-items: center; overflow: hidden;
-    background: radial-gradient(110% 90% at 50% 12%, var(--sk1), var(--sk2));
+    background: linear-gradient(170deg, #F5F8F1, #E8EEE2);
   }
   .skin .prev svg { width: 96px; height: auto; }
+  .skin .prev img { max-height: 84px; max-width: 130px; width: auto; height: auto; }
   .skin .nm { font-size: 13.5px; font-weight: 700; padding-left: 3px; }
   .skin .mt { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--fog-dim); text-transform: uppercase; padding-left: 3px; margin-top: -5px; }
   .skin.locked { cursor: not-allowed; }
@@ -452,7 +452,7 @@
     position: absolute; top: 9px; left: 9px; right: 9px; height: 86px;
     display: grid; place-items: center; border-radius: 14px;
     font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .12em;
-    color: var(--amber); background: rgba(7,10,18,.5);
+    color: #8A5A12; background: rgba(255,255,255,.78);
   }
 
   /* ── 盲盒 ─────────────────────────────────────────────── */
@@ -477,21 +477,21 @@
   }
   @keyframes reveal { from { opacity: 0; transform: scale(.93) translateY(14px); } to { opacity: 1; transform: none; } }
   .planInner {
-    background: linear-gradient(168deg, var(--slab) 0%, #141B29 100%);
+    background: #FFFFFF;
     border-radius: 28px; padding: 17px; display: flex; flex-direction: column; gap: 13px;
   }
   .planTop { display: flex; align-items: center; gap: 8px; }
-  .rar { font-family: var(--mono); font-size: 10.5px; font-weight: 800; letter-spacing: .16em; padding: 4px 9px; border-radius: 7px; color: #0B0F14; background: var(--rr1); }
+  .rar { font-family: var(--mono); font-size: 10.5px; font-weight: 800; letter-spacing: .16em; padding: 4px 9px; border-radius: 7px; color: #FFFFFF; background: var(--rr1); }
   .planInner h3 { margin: 0; font-size: 19px; font-weight: 900; letter-spacing: -.03em; text-wrap: balance; }
   .route { display: flex; flex-direction: column; gap: 7px; }
   .stop { display: flex; align-items: center; gap: 11px; font-size: 13px; }
-  .stop .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--lime); }
+  .stop .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--grass); }
   .stop .dot.end { background: var(--rose); border-color: var(--rose); }
   .stop .ln { color: var(--chalk); }
   .stop .tm { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
-  .rail { margin-left: 4px; width: 2px; height: 15px; background: repeating-linear-gradient(180deg, var(--slab-3) 0 3px, transparent 3px 7px); }
+  .rail { margin-left: 4px; width: 2px; height: 15px; background: repeating-linear-gradient(180deg, #C7D2C0 0 3px, transparent 3px 7px); }
   .planSay {
-    background: rgba(255,134,174,.10); border-left: 3px solid var(--rose);
+    background: #FDF0F5; border-left: 3px solid var(--rose);
     border-radius: 0 12px 12px 0; padding: 11px 13px; font-size: 13px; color: var(--chalk); line-height: 1.55;
   }
   .planFoot { display: flex; align-items: center; justify-content: space-between; }
@@ -500,10 +500,10 @@
 
   .histRow {
     display: flex; align-items: center; gap: 11px; padding: 11px 13px;
-    background: linear-gradient(168deg, var(--slab) 0%, var(--deep) 100%);
+    background: #FFFFFF; border: 1px solid var(--hair);
     border-radius: var(--rMd); font-size: 12.5px; box-shadow: var(--lift);
   }
-  .histRow .tag { font-family: var(--mono); font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 5px; color: #0B0F14; }
+  .histRow .tag { font-family: var(--mono); font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 5px; color: #FFFFFF; }
   .histRow .dt { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
 
   .privacy { display: flex; gap: 10px; font-size: 11.5px; color: var(--fog-dim); padding: 2px 6px 8px; line-height: 1.5; }
@@ -511,7 +511,7 @@
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
     flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
-    background: rgba(9,13,21,.9); backdrop-filter: blur(20px);
+    background: rgba(255,255,255,.94); backdrop-filter: blur(20px);
     box-shadow: 0 -1px 0 var(--hair); padding: 10px 6px 26px;
   }
   .tab {
@@ -525,25 +525,25 @@
   .tab .dot {
     position: absolute; top: 2px; left: 50%; margin-left: 8px;
     width: 7px; height: 7px; border-radius: 50%; background: var(--rose);
-    box-shadow: 0 0 10px var(--rose);
   }
 
   /* ── 推播 ─────────────────────────────────────────────── */
   .push {
     position: absolute; top: 14px; left: 12px; right: 12px; z-index: 70;
-    background: rgba(38,47,66,.82); backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255,255,255,.12); border-radius: 24px; padding: 13px 15px;
+    background: rgba(255,255,255,.9); backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid var(--hair); border-radius: 24px; padding: 13px 15px;
     display: flex; gap: 12px; align-items: flex-start;
-    box-shadow: 0 24px 50px rgba(0,0,0,.65);
+    box-shadow: 0 18px 40px -14px rgba(22,32,26,.45);
     transform: translateY(-160%); transition: transform .6s cubic-bezier(.2,1.15,.35,1);
     cursor: pointer;
   }
   .push.in { transform: translateY(0); }
   .pushIcon {
     flex: none; width: 38px; height: 38px; border-radius: 11px; overflow: hidden;
-    background: linear-gradient(160deg, #FFFFFF, #DDE7DC); display: grid; place-items: center;
+    background: linear-gradient(160deg, #FFFFFF, #E4EEE0); border: 1px solid var(--hair); display: grid; place-items: center;
   }
   .pushIcon svg { width: 36px; height: auto; }
+  .pushIcon img { max-height: 34px; max-width: 34px; width: auto; height: auto; }
   .pushBody { flex: 1; min-width: 0; }
   .pushBody .t { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: .01em; }
   .pushBody .t .ago { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--fog); font-weight: 400; }
@@ -552,26 +552,26 @@
   /* ── 上線引導 ─────────────────────────────────────────── */
   .onb {
     position: absolute; inset: 0; z-index: 80;
-    background: radial-gradient(90% 60% at 50% 0%, #202A44 0%, #0A0E18 62%);
+    background: radial-gradient(95% 60% at 50% 0%, #E7F3E0 0%, #FBFCF9 64%);
     display: flex; flex-direction: column; justify-content: center; padding: 44px 24px; gap: 22px;
   }
   .onb[hidden] { display: none; }
   .onb h2 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -.04em; line-height: 1.18; text-wrap: balance; }
   .onb p { margin: 0; font-size: 14px; color: var(--fog); }
   .onb input[type="text"] {
-    width: 100%; padding: 15px 17px; border-radius: 18px; background: var(--slab);
-    border: 2px solid transparent; color: var(--chalk); font-family: var(--sans); font-size: 16px;
+    width: 100%; padding: 15px 17px; border-radius: 18px; background: #FFFFFF;
+    border: 2px solid var(--hair); color: var(--chalk); font-family: var(--sans); font-size: 16px;
   }
-  .onb input[type="text"]:focus { outline: none; border-color: var(--lime); }
+  .onb input[type="text"]:focus { outline: none; border-color: var(--grass); }
   .onbList { display: flex; flex-direction: column; gap: 10px; max-height: 430px; overflow-y: auto; scrollbar-width: none; }
   .onbList > * { flex: none; }
   .onbList::-webkit-scrollbar { display: none; }
 
   .toast {
     position: absolute; bottom: 106px; left: 50%; transform: translateX(-50%) translateY(16px);
-    z-index: 75; background: var(--chalk); color: #121722; padding: 9px 18px; border-radius: 22px;
+    z-index: 75; background: #17211B; color: #F4F7F1; padding: 9px 18px; border-radius: 22px;
     font-size: 12.5px; font-weight: 700; opacity: 0; transition: .3s; pointer-events: none;
-    white-space: nowrap; box-shadow: 0 14px 30px rgba(0,0,0,.5);
+    white-space: nowrap; box-shadow: 0 12px 26px -10px rgba(22,32,26,.6);
   }
   .toast.in { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -610,7 +610,7 @@
     </p>
 
     <div class="card">
-      <h2>調度台 · 時光滑桿</h2>
+      <h2>示範控制台</h2>
       <div class="clockRow">
         <span class="big" id="deskClock">21:40</span>
         <span class="slot" id="deskSlot">夜晚 · 車車最黏人的時段</span>
@@ -621,26 +621,16 @@
         <button class="seg" id="segWeekday" aria-pressed="true">平日</button>
         <button class="seg" id="segWeekend" aria-pressed="false">週末</button>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>使用者情境</h2>
-      <p style="margin:0;font-size:13.5px;color:var(--fog)">
-        yoxi 的常客多半不是在觀光——是趕著去客戶那邊、趕著回工作室、趕著打卡。
-        換情境會換掉行程、常跑地點、路線圖，以及車車講話的重點。
-      </p>
       <div class="segRow" id="personaRow">
         <button class="seg" data-pp="agency" aria-pressed="true">乙方跑客戶</button>
         <button class="seg" data-pp="free" aria-pressed="false">自由接案</button>
         <button class="seg" data-pp="worker" aria-pressed="false">趕時間上班族</button>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>觸發</h2>
-      <button class="btn primary" id="btnPush">發一則車車推播 <span class="k">PUSH</span></button>
-      <button class="btn" id="btnSeed">快轉一週使用紀錄 <span class="k">SEED</span></button>
-      <button class="btn ghost" id="btnReset">清空重養一台 <span class="k">RESET</span></button>
+      <div style="display:flex;gap:8px">
+        <button class="btn primary" id="btnPush" style="justify-content:center">發一則推播</button>
+        <button class="btn" id="btnSeed" style="justify-content:center">灌一週紀錄</button>
+        <button class="btn ghost" id="btnReset" style="justify-content:center">重來</button>
+      </div>
     </div>
 
     <!-- 後台：不在 app 裡 -->
@@ -678,17 +668,6 @@
       </p>
     </div>
 
-    <div class="card">
-      <h2>這個原型在展示什麼</h2>
-      <div class="notes">
-        <div class="note"><span class="num">01</span><p><b>首頁是一張你們的路線圖。</b>每一趟叫車和每一次盲盒約會都會畫上去，車車就站在圖上。點地圖或下面的清單可以切換要看哪一條。</p></div>
-        <div class="note"><span class="num">02</span><p><b>下一站直接給答案。</b>幾點抵達、車程幾分鐘、幾點該出門、剩幾分鐘——趕時間的人不需要先自己算一次。剩 15 分鐘以內會轉成催促語氣。</p></div>
-        <div class="note"><span class="num">03</span><p><b>個性是可挑的，也是會漂移的。</b>五種初始人格決定講話的口氣；黏人／毒舌／話癆／浪漫四條參數會隨你互動慢慢自己移動。</p></div>
-        <div class="note"><span class="num">04</span><p><b>造型綁在親密度上。</b>基本款一開始就有，季節與聯名款要養到等級才解鎖——換造型同時換掉車車的配件和打招呼方式。</p></div>
-        <div class="note"><span class="num">05</span><p><b>盲盒約會計畫。</b>抽一張含路線、時段、車資與車車真心話的行程卡，稀有度 N／R／SR／SSR，SSR 是跨縣市私奔那種。抽到的行程會回到地圖上。</p></div>
-        <div class="note"><span class="num">06</span><p><b>作息推論放在後台，不給使用者看。</b>使用者只會感覺到「它好像知道我幾點該出門」；標籤、信心值與排程邏輯留在上面那塊營運後台裡。</p></div>
-      </div>
-    </div>
   </div>
 
   <!-- ══ 手機 ════════════════════════════════════════════ -->
@@ -749,32 +728,15 @@
 
             <div class="places" id="places"></div>
 
-            <div class="stats" id="stats"></div>
+            <div class="acts" id="acts"></div>
 
             <div class="pane">
               <div class="paneTop">
                 <span class="lv" id="lvText">Lv.2 · 熟客</span>
                 <span class="nx" id="lvNext">62 / 100</span>
               </div>
-              <div class="bar"><i id="lvBar" style="width:62%;background:linear-gradient(90deg,var(--lime-d),var(--lime))"></i></div>
+              <div class="bar"><i id="lvBar" style="width:62%;background:linear-gradient(90deg,#7CC168,#3F9430)"></i></div>
               <div class="cap" id="lvCap">再相處一點，就會解鎖新的造型。</div>
-            </div>
-
-            <div class="acts" id="acts"></div>
-
-            <div class="meters">
-              <div class="meter">
-                <div class="lb">Energy</div><div class="vl" id="mEnergy">78</div>
-                <div class="bar"><i id="bEnergy" style="background:linear-gradient(90deg,var(--lime-d),var(--lime))"></i></div>
-              </div>
-              <div class="meter">
-                <div class="lb">Mood</div><div class="vl" id="mMood">84</div>
-                <div class="bar"><i id="bMood" style="background:linear-gradient(90deg,#C08430,var(--amber))"></i></div>
-              </div>
-              <div class="meter">
-                <div class="lb">默契</div><div class="vl" id="mSync">41</div>
-                <div class="bar"><i id="bSync" style="background:linear-gradient(90deg,#3E86AC,var(--sky))"></i></div>
-              </div>
             </div>
 
             <div class="scTitle" style="margin-top:4px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
@@ -896,13 +858,14 @@
     { id: "evening", name: "晚上", hrs: [18, 19, 20, 21, 22], desk: "晚上 · 適合發約會盲盒" }
   ];
 
+  /* 時段只留下一層很淡的色溫，讓亮色介面隨時間有一點呼吸 */
   const SKYS = {
-    night:   ["#131A33", "#0A0E1C", "#2A2350"],
-    dawn:    ["#3A2E52", "#17203A", "#C9744E"],
-    morning: ["#2E5478", "#152439", "#7FB8D8"],
-    noon:    ["#3E6C93", "#1A2B3D", "#A8CFE4"],
-    after:   ["#4A5478", "#1D2434", "#D89A6A"],
-    evening: ["#38284E", "#121628", "#E0693F"]
+    night:   ["#E4E7F3", "#E9EBF5"],
+    dawn:    ["#F7EBE2", "#FBF1EA"],
+    morning: ["#E6F0F7", "#EDF4F9"],
+    noon:    ["#EAF3F6", "#F0F6F8"],
+    after:   ["#F6F0E5", "#FAF5EC"],
+    evening: ["#F1E8F0", "#F6EFF5"]
   };
 
   /* ════ 台詞 ════════════════════════════════════════════ */
@@ -1193,38 +1156,32 @@
   ];
 
   function mapSVG(list, hl) {
-    const sl = slotOf(hour).id;
-    const glow = SKYS[sl][2];
-    const night = sl === "night" || sl === "dawn" || sl === "evening";
-
     let blocks = "";
     for (let i = 0; i < GV.length - 1; i++) {
       for (let j = 0; j < GH.length - 1; j++) {
         const x = GV[i] + 7, y = GH[j] + 7;
         const w = GV[i + 1] - GV[i] - 14, h = GH[j + 1] - GH[j] - 14;
-        const shade = ["#151E2C", "#1A2434", "#121A27"][(i * 3 + j * 5) % 3];
+        const shade = ["#FFFFFF", "#F7FAF3", "#FBFCF8"][(i * 3 + j * 5) % 3];
         blocks += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${shade}"/>`;
       }
     }
-    // 公園與水岸，讓地圖不只是格子
-    blocks += `<rect x="121" y="123" width="56" height="44" rx="8" fill="#1B3226"/>`;
-    blocks += `<circle cx="139" cy="139" r="6" fill="#25462F"/><circle cx="158" cy="152" r="8" fill="#25462F"/>`;
-    blocks += `<path d="M0 268 Q90 250 180 268 T366 258 L366 300 L0 300 Z" fill="#10202E"/>`;
+    blocks += `<rect x="121" y="123" width="56" height="44" rx="8" fill="#D9EDCB"/>`;
+    blocks += `<circle cx="139" cy="139" r="6" fill="#B9DFA5"/><circle cx="158" cy="152" r="8" fill="#B9DFA5"/>`;
+    blocks += `<path d="M0 268 Q90 250 180 268 T366 258 L366 300 L0 300 Z" fill="#CFE4EF"/>`;
 
     const roads =
-      GV.map(x => `<line x1="${x}" y1="34" x2="${x}" y2="300" stroke="#222D3E" stroke-width="10"/>`).join("") +
-      GH.map(y => `<line x1="0" y1="${y}" x2="366" y2="${y}" stroke="#222D3E" stroke-width="10"/>`).join("") +
-      GV.map(x => `<line x1="${x}" y1="34" x2="${x}" y2="300" stroke="#2C3A4E" stroke-width="1.5" stroke-dasharray="5 7"/>`).join("") +
-      GH.map(y => `<line x1="0" y1="${y}" x2="366" y2="${y}" stroke="#2C3A4E" stroke-width="1.5" stroke-dasharray="5 7"/>`).join("");
+      GV.map(x => `<line x1="${x}" y1="34" x2="${x}" y2="300" stroke="#DCE3D6" stroke-width="12"/>`).join("") +
+      GH.map(y => `<line x1="0" y1="${y}" x2="366" y2="${y}" stroke="#DCE3D6" stroke-width="12"/>`).join("") +
+      GV.map(x => `<line x1="${x}" y1="34" x2="${x}" y2="300" stroke="#FFFFFF" stroke-width="8"/>`).join("") +
+      GH.map(y => `<line x1="0" y1="${y}" x2="366" y2="${y}" stroke="#FFFFFF" stroke-width="8"/>`).join("");
 
-    const lamps = night ? GV.flatMap(x => GH.map(y =>
-      `<circle cx="${x}" cy="${y}" r="7" fill="${glow}" opacity=".14"/>`)).join("") : "";
+    const lamps = "";
 
     const lines = list.map((t, i) => {
       const on = i === hl;
       return `<polyline points="${ROUTE_PTS[t.r % 6]}" fill="none" stroke="${t.color}"
-        stroke-width="${on ? 5.5 : 3}" stroke-linecap="round" stroke-linejoin="round"
-        opacity="${on ? 1 : .38}" ${on ? 'filter="url(#rg)"' : ""}/>`;
+        stroke-width="${on ? 6 : 3.5}" stroke-linecap="round" stroke-linejoin="round"
+        opacity="${on ? 1 : .34}"/>`;
     }).join("");
 
     const cur = list[hl];
@@ -1234,28 +1191,21 @@
       const [sx, sy] = pts[0].split(",");
       const [ex, ey] = pts[pts.length - 1].split(",");
       pins = `
-        <circle cx="${sx}" cy="${sy}" r="7" fill="#0C111C" stroke="${cur.color}" stroke-width="3"/>
-        <circle cx="${ex}" cy="${ey}" r="13" fill="${cur.color}" opacity=".22"/>
-        <circle cx="${ex}" cy="${ey}" r="7" fill="${cur.color}"/>
-        <circle cx="${ex}" cy="${ey}" r="3" fill="#0C111C"/>`;
+        <circle cx="${sx}" cy="${sy}" r="7.5" fill="#FFFFFF" stroke="${cur.color}" stroke-width="3.5"/>
+        <circle cx="${ex}" cy="${ey}" r="14" fill="${cur.color}" opacity=".2"/>
+        <circle cx="${ex}" cy="${ey}" r="7.5" fill="${cur.color}" stroke="#FFFFFF" stroke-width="2.5"/>`;
     }
 
     return `
       <svg viewBox="0 0 366 300" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <filter id="rg" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <rect width="366" height="300" fill="#0D1420"/>
+        <rect width="366" height="300" fill="#E9EFE2"/>
         ${blocks}${roads}${lamps}${lines}${pins}
       </svg>`;
   }
 
   /* 地圖上要畫的路線：情境常跑路線 + 抽到的約會行程 */
   /* 地圖配色：工作路線走冷色，約會路線走暖色，一眼分得開 */
-  const DATE_COLOR = { N: "#FFC46B", R: "#FF9E7A", SR: "#FF86AE", SSR: "#C9F23A" };
+  const DATE_COLOR = { N: "#E08A25", R: "#DD6A4A", SR: "#D4507F", SSR: "#7A9E13" };
 
   function trips() {
     const P = PERSONAS[persona];
@@ -1263,7 +1213,7 @@
       name: h.title, km: [4.2, 7.6, 12.8, 21.4][["N", "R", "SR", "SSR"].indexOf(h.r)] || 6,
       r: (i + 3) % 6, kind: "約會", color: DATE_COLOR[h.r] || "#FFC46B"
     }));
-    const work = P.trips.map((t, i) => ({ ...t, kind: "常跑", color: ["#7DD3FC", "#8FB8E8", "#6FC7D4"][i % 3] }));
+    const work = P.trips.map((t, i) => ({ ...t, kind: "常跑", color: ["#2C7FBF", "#4C8FA8", "#3E6FA8"][i % 3] }));
     return [...dates, ...work].slice(0, 6);
   }
 
@@ -1452,6 +1402,505 @@
       </svg>`;
   }
 
+  /* ════ 3D 車車 ═════════════════════════════════════════
+     原生 WebGL，不載外部函式庫（CSP 擋 CDN）。
+     車身是超二次曲面（superquadric）——圓潤的方塊，正好是
+     yoxi 那種泡泡車的形狀。上綠下白由片段著色器依局部 y 分色。
+     ──────────────────────────────────────────────────── */
+
+  const M4 = {
+    mul(a, b) {
+      const o = new Float32Array(16);
+      for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+        let s = 0;
+        for (let k = 0; k < 4; k++) s += a[k * 4 + j] * b[i * 4 + k];
+        o[i * 4 + j] = s;
+      }
+      return o;
+    },
+    persp(fovy, asp, n, f) {
+      const t = 1 / Math.tan(fovy / 2);
+      return new Float32Array([t / asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]);
+    },
+    lookAt(e, c, u) {
+      const z = norm3([e[0]-c[0], e[1]-c[1], e[2]-c[2]]);
+      const x = norm3(cross3(u, z)), y = cross3(z, x);
+      return new Float32Array([
+        x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+        -(x[0]*e[0]+x[1]*e[1]+x[2]*e[2]), -(y[0]*e[0]+y[1]*e[1]+y[2]*e[2]), -(z[0]*e[0]+z[1]*e[1]+z[2]*e[2]), 1
+      ]);
+    },
+    /* T * Rz * Ry * Rx * S，同時回傳法線用的 mat3 */
+    trs(p, r, s) {
+      const [rx, ry, rz] = r;
+      const cx=Math.cos(rx),sx=Math.sin(rx),cy=Math.cos(ry),sy=Math.sin(ry),cz=Math.cos(rz),sz=Math.sin(rz);
+      const R = [
+        cy*cz, cy*sz, -sy,
+        sx*sy*cz - cx*sz, sx*sy*sz + cx*cz, sx*cy,
+        cx*sy*cz + sx*sz, cx*sy*sz - sx*cz, cx*cy
+      ];
+      const m = new Float32Array([
+        R[0]*s[0], R[1]*s[0], R[2]*s[0], 0,
+        R[3]*s[1], R[4]*s[1], R[5]*s[1], 0,
+        R[6]*s[2], R[7]*s[2], R[8]*s[2], 0,
+        p[0], p[1], p[2], 1
+      ]);
+      const nm = new Float32Array([
+        R[0]/s[0], R[1]/s[0], R[2]/s[0],
+        R[3]/s[1], R[4]/s[1], R[5]/s[1],
+        R[6]/s[2], R[7]/s[2], R[8]/s[2]
+      ]);
+      return [m, nm];
+    }
+  };
+  const cross3 = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  const norm3 = a => { const l = Math.hypot(a[0],a[1],a[2]) || 1; return [a[0]/l, a[1]/l, a[2]/l]; };
+  const hex3 = h => [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255];
+
+  /* ── 網格 ─────────────────────────────────────────────── */
+  function finalize(pos, idx, uv) {
+    const nor = new Float32Array(pos.length);
+    for (let i = 0; i < idx.length; i += 3) {
+      const a = idx[i]*3, b = idx[i+1]*3, c = idx[i+2]*3;
+      const u = [pos[b]-pos[a], pos[b+1]-pos[a+1], pos[b+2]-pos[a+2]];
+      const v = [pos[c]-pos[a], pos[c+1]-pos[a+1], pos[c+2]-pos[a+2]];
+      const n = cross3(u, v);
+      for (const o of [a, b, c]) { nor[o]+=n[0]; nor[o+1]+=n[1]; nor[o+2]+=n[2]; }
+    }
+    for (let i = 0; i < nor.length; i += 3) {
+      const l = Math.hypot(nor[i], nor[i+1], nor[i+2]) || 1;
+      nor[i]/=l; nor[i+1]/=l; nor[i+2]/=l;
+    }
+    return { pos: new Float32Array(pos), nor, uv: new Float32Array(uv), idx: new Uint16Array(idx) };
+  }
+
+  function superq(e1, e2, nu, nv) {
+    const pos = [], uv = [], idx = [];
+    const c = (w, e) => { const v = Math.cos(w); return Math.sign(v) * Math.pow(Math.abs(v), e); };
+    const s = (w, e) => { const v = Math.sin(w); return Math.sign(v) * Math.pow(Math.abs(v), e); };
+    for (let i = 0; i <= nu; i++) {
+      const phi = -Math.PI/2 + Math.PI*i/nu;
+      for (let j = 0; j <= nv; j++) {
+        const th = -Math.PI + 2*Math.PI*j/nv;
+        pos.push(c(phi,e1)*c(th,e2), s(phi,e1), c(phi,e1)*s(th,e2));
+        uv.push(j/nv, i/nu);
+      }
+    }
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const a = i*(nv+1)+j, b = a+nv+1;
+      idx.push(a, b, a+1, a+1, b, b+1);
+    }
+    return finalize(pos, idx, uv);
+  }
+
+  function torusArc(R, r, a0, a1, nu, nv) {
+    const pos = [], uv = [], idx = [];
+    for (let i = 0; i <= nu; i++) {
+      const a = a0 + (a1-a0)*i/nu, ca = Math.cos(a), sa = Math.sin(a);
+      for (let j = 0; j <= nv; j++) {
+        const b = 2*Math.PI*j/nv;
+        pos.push(ca*(R + r*Math.cos(b)), sa*(R + r*Math.cos(b)), r*Math.sin(b));
+        uv.push(i/nu, j/nv);
+      }
+    }
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const a = i*(nv+1)+j, b = a+nv+1;
+      idx.push(a, b, a+1, a+1, b, b+1);
+    }
+    return finalize(pos, idx, uv);
+  }
+
+  function cylinder(nv) {
+    const pos = [], uv = [], idx = [];
+    for (let k = 0; k < 2; k++) for (let j = 0; j <= nv; j++) {
+      const a = 2*Math.PI*j/nv;
+      pos.push(Math.cos(a), k ? 1 : -1, Math.sin(a)); uv.push(j/nv, k);
+    }
+    for (let j = 0; j < nv; j++) { const a = j, b = j+nv+1; idx.push(a, b, a+1, a+1, b, b+1); }
+    const base = pos.length/3;
+    for (let k = 0; k < 2; k++) {
+      const cIdx = pos.length/3;
+      pos.push(0, k ? 1 : -1, 0); uv.push(.5, .5);
+      for (let j = 0; j <= nv; j++) {
+        const a = 2*Math.PI*j/nv;
+        pos.push(Math.cos(a), k ? 1 : -1, Math.sin(a)); uv.push(0, 0);
+      }
+      for (let j = 0; j < nv; j++) {
+        if (k) idx.push(cIdx, cIdx+1+j, cIdx+2+j); else idx.push(cIdx, cIdx+2+j, cIdx+1+j);
+      }
+    }
+    void base;
+    return finalize(pos, idx, uv);
+  }
+
+  function cone(nv) {
+    const pos = [], uv = [], idx = [];
+    const apex = 0; pos.push(0, 1, 0); uv.push(.5, 1);
+    for (let j = 0; j <= nv; j++) {
+      const a = 2*Math.PI*j/nv;
+      pos.push(Math.cos(a), -1, Math.sin(a)); uv.push(j/nv, 0);
+    }
+    for (let j = 0; j < nv; j++) idx.push(apex, 1+j, 2+j);
+    const c = pos.length/3; pos.push(0, -1, 0); uv.push(.5, .5);
+    for (let j = 0; j < nv; j++) idx.push(c, 2+j, 1+j);
+    return finalize(pos, idx, uv);
+  }
+
+  function quad() {
+    return finalize([-1,-1,0, 1,-1,0, 1,1,0, -1,1,0], [0,1,2, 0,2,3], [0,0, 1,0, 1,1, 0,1]);
+  }
+
+  /* ── 著色器 ───────────────────────────────────────────── */
+  const VS = `
+    attribute vec3 aPos; attribute vec3 aNor; attribute vec2 aUV;
+    uniform mat4 uProj, uView, uModel; uniform mat3 uNM;
+    varying vec3 vN, vP, vL; varying vec2 vUV;
+    void main() {
+      vec4 wp = uModel * vec4(aPos, 1.0);
+      vP = wp.xyz; vN = normalize(uNM * aNor); vL = aPos; vUV = aUV;
+      gl_Position = uProj * uView * wp;
+    }`;
+  const FS = `
+    precision highp float;
+    uniform vec3 uColA, uColB, uCam;
+    uniform float uSplit, uSpec, uShin, uAmb, uStripe, uAlpha;
+    uniform int uMode;
+    uniform sampler2D uTex;
+    varying vec3 vN, vP, vL; varying vec2 vUV;
+    void main() {
+      if (uMode == 4) {                                  // 接地陰影
+        float d = length(vUV - 0.5) * 2.0;
+        gl_FragColor = vec4(uColA, uAlpha * pow(max(1.0 - d, 0.0), 1.9));
+        return;
+      }
+      vec3 base = uColA;
+      if (uMode == 0) {                                  // 上下雙色，分界帶弧度
+        float b = uSplit + 0.13 * cos(vL.x * 1.25);
+        base = mix(uColB, uColA, smoothstep(b - 0.03, b + 0.03, vL.y));
+        if (uStripe > 0.5 && abs(vL.x) < 0.11 && vL.y > -0.1) base = vec3(0.97);
+      } else if (uMode == 3) {                           // 貼花（車頂燈箱、車牌字樣）
+        vec4 t = texture2D(uTex, vUV);
+        if (t.a < 0.5) discard;
+        base = t.rgb;
+      }
+      vec3 N = normalize(vN), V = normalize(uCam - vP);
+      if (!gl_FrontFacing) N = -N;
+      vec3 L1 = normalize(vec3(-0.42, 0.92, 0.86));
+      vec3 L2 = normalize(vec3(0.85, 0.22, 0.30));
+      float d1 = max(dot(N, L1), 0.0), d2 = max(dot(N, L2), 0.0);
+      float rim = pow(1.0 - max(dot(N, V), 0.0), 2.6);
+      float spec = pow(max(dot(N, normalize(L1 + V)), 0.0), uShin) * uSpec;
+      float ao = mix(0.70, 1.0, smoothstep(-0.85, 0.10, vL.y));
+      vec3 col = base * (uAmb + 0.70 * d1 + 0.24 * d2) * ao
+               + vec3(1.0) * spec
+               + base * rim * (uMode == 2 ? 0.85 : 0.30);
+      gl_FragColor = vec4(col, 1.0);
+    }`;
+
+  function makeGL(canvas) {
+    const gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: true });
+    if (!gl) return null;
+    const sh = (t, src) => {
+      const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; }
+      return s;
+    };
+    const vs = sh(gl.VERTEX_SHADER, VS), fs = sh(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return null;
+    const pr = gl.createProgram();
+    gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+    gl.useProgram(pr);
+
+    const A = { pos: gl.getAttribLocation(pr,"aPos"), nor: gl.getAttribLocation(pr,"aNor"), uv: gl.getAttribLocation(pr,"aUV") };
+    const U = {};
+    ["uProj","uView","uModel","uNM","uColA","uColB","uCam","uSplit","uSpec","uShin","uAmb","uStripe","uAlpha","uMode","uTex"]
+      .forEach(n => U[n] = gl.getUniformLocation(pr, n));
+
+    const upload = m => {
+      const b = {};
+      for (const k of ["pos","nor","uv"]) {
+        b[k] = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b[k]);
+        gl.bufferData(gl.ARRAY_BUFFER, m[k], gl.STATIC_DRAW);
+      }
+      b.idx = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.idx);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.idx, gl.STATIC_DRAW);
+      b.n = m.idx.length;
+      return b;
+    };
+
+    const MESH = {
+      body:  upload(superq(0.42, 0.42, 34, 46)),
+      soft:  upload(superq(0.62, 0.62, 26, 34)),
+      sph:   upload(superq(1, 1, 20, 26)),
+      cyl:   upload(cylinder(26)),
+      cone:  upload(cone(20)),
+      quad:  upload(quad()),
+      smile: upload(torusArc(1, 0.12, Math.PI * 1.12, Math.PI * 1.88, 26, 10)),
+      frown: upload(torusArc(1, 0.12, Math.PI * 0.12, Math.PI * 0.88, 26, 10)),
+      ring:  upload(torusArc(1, 0.34, 0, Math.PI * 2, 26, 10))
+    };
+
+    const texCache = {};
+    function labelTex(text, bg, fg) {
+      const key = text + bg + fg;
+      if (texCache[key]) return texCache[key];
+      const c = document.createElement("canvas");
+      c.width = 256; c.height = 96;
+      const x = c.getContext("2d");
+      x.fillStyle = bg; x.fillRect(0, 0, 256, 96);
+      x.fillStyle = fg; x.font = "700 58px ui-monospace, monospace";
+      x.textAlign = "center"; x.textBaseline = "middle";
+      x.fillText(text, 128, 54);
+      const t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      texCache[key] = t;
+      return t;
+    }
+
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    function drawPart(p, eye) {
+      const b = MESH[p.m];
+      const [mm, nm] = M4.trs(p.pos || [0,0,0], p.rot || [0,0,0], p.scl || [1,1,1]);
+      gl.uniformMatrix4fv(U.uModel, false, mm);
+      gl.uniformMatrix3fv(U.uNM, false, nm);
+      gl.uniform3fv(U.uColA, hex3(p.a || "#ffffff"));
+      gl.uniform3fv(U.uColB, hex3(p.b || p.a || "#ffffff"));
+      gl.uniform3fv(U.uCam, eye);
+      gl.uniform1f(U.uSplit, p.split === undefined ? 0 : p.split);
+      gl.uniform1f(U.uSpec, p.spec === undefined ? 0.4 : p.spec);
+      gl.uniform1f(U.uShin, p.shin || 34);
+      gl.uniform1f(U.uAmb, p.amb === undefined ? 0.30 : p.amb);
+      gl.uniform1f(U.uStripe, p.stripe ? 1 : 0);
+      gl.uniform1f(U.uAlpha, p.alpha === undefined ? 1 : p.alpha);
+      gl.uniform1i(U.uMode, p.mode || 0);
+      if (p.mode === 3) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, labelTex(p.text, p.bg, p.fg));
+        gl.uniform1i(U.uTex, 0);
+      }
+      for (const [k, loc, sz] of [["pos", A.pos, 3], ["nor", A.nor, 3], ["uv", A.uv, 2]]) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, b[k]);
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, sz, gl.FLOAT, false, 0, 0);
+      }
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.idx);
+      if (p.mode === 4) { gl.enable(gl.BLEND); gl.depthMask(false); gl.disable(gl.CULL_FACE); }
+      if (p.mode === 3) gl.disable(gl.CULL_FACE);
+      gl.drawElements(gl.TRIANGLES, b.n, gl.UNSIGNED_SHORT, 0);
+      if (p.mode === 4) { gl.disable(gl.BLEND); gl.depthMask(true); gl.enable(gl.CULL_FACE); }
+      if (p.mode === 3) gl.enable(gl.CULL_FACE);
+    }
+
+    function render(parts, yaw, pitch, hop, dpr) {
+      let W, H;
+      if (canvas.clientWidth) {
+        W = Math.round(canvas.clientWidth * dpr); H = Math.round(canvas.clientHeight * dpr);
+        if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
+      } else { W = canvas.width; H = canvas.height; }
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      const r = 7.9;
+      const eye = [Math.sin(yaw)*Math.cos(pitch)*r, Math.sin(pitch)*r + 0.28, Math.cos(yaw)*Math.cos(pitch)*r];
+      gl.uniformMatrix4fv(U.uProj, false, M4.persp(0.42, W/H, 0.1, 40));
+      gl.uniformMatrix4fv(U.uView, false, M4.lookAt(eye, [0, -0.02 - hop*0.35, 0], [0,1,0]));
+      for (const p of parts) drawPart({ ...p, pos: [(p.pos||[0,0,0])[0], (p.pos||[0,0,0])[1] + (p.ground ? 0 : hop), (p.pos||[0,0,0])[2]] }, eye);
+    }
+    return { gl, render, canvas };
+  }
+
+  /* ── 依造型與心情組出零件 ─────────────────────────────── */
+  function carParts(sk, mood) {
+    const dark = "#1B2430", tyre = "#1A212C";
+    const P = [];
+
+    P.push({ m: "quad", mode: 4, a: sk.acc === "neon" ? "#7DD3FC" : "#000000",
+             alpha: sk.acc === "neon" ? 0.42 : 0.26, ground: true,
+             pos: [0,-0.95,0.05], rot: [-Math.PI/2,0,0], scl: [1.55,1.45,1] });
+
+    // 車輪
+    for (const x of [-0.86, 0.86]) for (const z of [0.76, -0.78])
+      P.push({ m: "cyl", a: tyre, spec: 0.18, shin: 14, amb: 0.34,
+               pos: [x,-0.60,z], rot: [0,0,Math.PI/2], scl: [0.29,0.10,0.29] });
+
+    // 車身：上綠下白
+    P.push({ m: "body", mode: 0, a: sk.body, b: sk.lower, split: -0.04,
+             spec: 0.72, shin: 46, amb: 0.46, stripe: sk.acc === "racer",
+             pos: [0,0,0], scl: [1.02,0.74,1.28] });
+
+    // 擋風玻璃：從車身前上方穿出來，形成環繞的深色車窗
+    P.push({ m: "soft", mode: 2, a: sk.glass, spec: 1.15, shin: 96, amb: 0.16,
+             pos: [0,0.30,0.36], scl: [0.90,0.31,0.70] });
+
+    // 後照鏡
+    for (const x of [-1.06, 1.06])
+      P.push({ m: "soft", a: sk.body, spec: 0.6, shin: 40, amb: 0.32,
+               pos: [x,0.16,0.52], scl: [0.13,0.09,0.10] });
+
+    // 車頂燈箱 + 字樣
+    P.push({ m: "soft", a: sk.deep, spec: 0.45, shin: 30, amb: 0.34, pos: [0,0.80,0.10], scl: [0.32,0.11,0.18] });
+    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.62, spec: 0.1,
+             pos: [0,0.80,0.285], scl: [0.30,0.095,1] });
+
+    // 車牌
+    P.push({ m: "soft", a: sk.deep, spec: 0.35, shin: 26, amb: 0.32, pos: [0,-0.46,1.20], scl: [0.28,0.095,0.05] });
+    P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.62, spec: 0.1,
+             pos: [0,-0.46,1.26], scl: [0.26,0.082,1] });
+
+    // 大頭燈＝眼睛
+    for (const x of [-0.55, 0.55]) {
+      P.push({ m: "sph", a: "#FFFFFF", spec: 0.9, shin: 60, amb: 0.66, pos: [x,-0.02,1.10], scl: [0.27,0.27,0.15] });
+      P.push({ m: "sph", a: sk.light, spec: 1.3, shin: 80, amb: 0.60, pos: [x,-0.02,1.16], scl: [0.215,0.215,0.13] });
+      // 眼睛一律圓的，心情靠嘴巴和眉毛表達
+      P.push({ m: "sph", a: dark, spec: 0.5, shin: 40, amb: 0.42, pos: [x,-0.02,1.255], scl: [0.115,0.115,0.06] });
+      P.push({ m: "sph", a: "#FFFFFF", spec: 0.4, amb: 0.9, pos: [x+0.042,0.028,1.29], scl: [0.042,0.042,0.03] });
+      if (mood === "grumpy")
+        P.push({ m: "soft", a: dark, spec: 0.3, amb: 0.45, pos: [x,0.145,1.235], rot: [0,0, x < 0 ? -0.42 : 0.42], scl: [0.15,0.026,0.04] });
+      if (mood === "sleepy")
+        P.push({ m: "soft", a: sk.body, spec: 0.4, amb: 0.4, pos: [x,0.085,1.245], scl: [0.20,0.055,0.05] });
+    }
+
+    // 前保桿的嘴
+    const mm = mood === "grumpy" ? "frown" : "smile";
+    if (mood === "sleepy") {
+      P.push({ m: "ring", a: dark, spec: 0.35, amb: 0.45, pos: [0,-0.22,1.27], scl: [0.075,0.075,0.075] });
+    } else {
+      P.push({ m: mm, a: dark, spec: 0.35, amb: 0.45,
+               pos: [0, mood === "grumpy" ? -0.30 : -0.20, 1.26],
+               scl: [0.30, mood === "happy" ? 0.24 : 0.17, 0.14] });
+    }
+
+    // 造型配件
+    if (sk.acc === "cat") {
+      for (const x of [-0.52, 0.52]) {
+        P.push({ m: "cone", a: sk.body, spec: 0.5, amb: 0.34, pos: [x,0.86,0.06], rot: [0.16,0, x<0 ? 0.24 : -0.24], scl: [0.24,0.30,0.16] });
+        P.push({ m: "cone", a: "#FF9BB3", spec: 0.5, amb: 0.42, pos: [x,0.84,0.14], rot: [0.16,0, x<0 ? 0.24 : -0.24], scl: [0.14,0.20,0.10] });
+      }
+    }
+    if (sk.acc === "racer") {
+      P.push({ m: "soft", a: "#1A2028", spec: 0.5, amb: 0.30, pos: [0,0.66,-1.16], scl: [0.60,0.045,0.11] });
+      for (const x of [-0.44, 0.44])
+        P.push({ m: "soft", a: "#1A2028", spec: 0.4, amb: 0.30, pos: [x,0.50,-1.10], scl: [0.05,0.16,0.05] });
+    }
+    if (sk.acc === "deer") {
+      for (const x of [-0.42, 0.42]) {
+        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x,0.95,0.05], rot: [0,0, x<0 ? 0.34 : -0.34], scl: [0.035,0.24,0.035] });
+        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x*1.5,1.16,0.05], rot: [0,0, x<0 ? 1.15 : -1.15], scl: [0.03,0.16,0.03] });
+      }
+      P.push({ m: "sph", a: "#FF4D4D", spec: 0.9, shin: 50, amb: 0.55, pos: [0,-0.14,1.30], scl: [0.13,0.13,0.09] });
+    }
+    if (sk.acc === "sakura") {
+      P.push({ m: "ring", a: "#FF9BB8", spec: 0.6, amb: 0.45, pos: [0,0.80,0.10], rot: [Math.PI/2,0,0], scl: [0.40,0.40,0.40] });
+      for (const [x, y, z] of [[-0.9,0.95,0.5],[0.95,1.02,-0.2],[0.7,0.62,1.0],[-1.05,0.55,-0.6]])
+        P.push({ m: "sph", a: "#FF9BB8", spec: 0.6, amb: 0.52, pos: [x,y,z], scl: [0.065,0.02,0.065] });
+    }
+    return P;
+  }
+
+  /* ── 主場景：閒置擺動 + 拖曳轉動 ───────────────────────── */
+  const Car3D = (() => {
+    let R = null, cv = null, raf = 0, t0 = 0;
+    let yaw = 0, pitch = 0.10, dragYaw = 0, dragPitch = 0, hop = 0, hopT = -9;
+    let cur = { sk: SKINS[0], mood: "normal" }, dragging = false, moved = 0, last = null, lastFrame = 0;
+    const dpr = Math.min(1.75, window.devicePixelRatio || 1);
+
+    function mount(host) {
+      if (cv && cv.parentNode === host) return true;
+      cv = document.createElement("canvas");
+      cv.style.cssText = "width:184px;height:172px;display:block;touch-action:none;cursor:grab";
+      R = makeGL(cv);
+      if (!R) { cv = null; return false; }
+      host.innerHTML = ""; host.appendChild(cv);
+      cv.addEventListener("pointerdown", e => {
+        dragging = true; moved = 0; last = [e.clientX, e.clientY];
+        cv.setPointerCapture(e.pointerId); cv.style.cursor = "grabbing"; e.stopPropagation();
+      });
+      cv.addEventListener("pointermove", e => {
+        if (!dragging) return;
+        const dx = e.clientX - last[0], dy = e.clientY - last[1];
+        last = [e.clientX, e.clientY]; moved += Math.abs(dx) + Math.abs(dy);
+        dragYaw = clamp(dragYaw + dx * 0.011, -1.15, 1.15);
+        dragPitch = clamp(dragPitch - dy * 0.008, -0.28, 0.55);
+        e.stopPropagation();
+      });
+      const end = e => { dragging = false; cv.style.cursor = "grab"; if (moved > 6) e.stopPropagation(); };
+      cv.addEventListener("pointerup", end);
+      cv.addEventListener("pointercancel", end);
+      cv.addEventListener("click", e => { if (moved > 6) e.stopPropagation(); });
+      loop(0);
+      return true;
+    }
+
+    function loop(t) {
+      raf = requestAnimationFrame(loop);
+      if (!t0) t0 = t;
+      const s = (t - t0) / 1000;
+      // 只有車庫分頁在看得到的時候才畫，省電也不擋主執行緒
+      if (document.visibilityState === "hidden" || !cv.isConnected || cv.offsetParent === null) return;
+      if (t - lastFrame < 24) return;
+      lastFrame = t;
+      if (!dragging) { dragYaw *= 0.94; dragPitch *= 0.94; }
+      yaw = Math.sin(s * 0.42) * 0.24 + dragYaw;
+      pitch = 0.10 + Math.sin(s * 0.31) * 0.045 + dragPitch;
+      hop = hopT < 0 ? 0 : Math.max(0, Math.sin((s - hopT) * 7.5)) * Math.max(0, 1 - (s - hopT) * 1.4) * 0.42;
+      if (hopT >= 0 && s - hopT > 1.2) hopT = -9;
+      R.render(carParts(cur.sk, cur.mood), yaw, pitch, hop, dpr);
+      window._t = s;
+    }
+
+    return {
+      mount,
+      set(sk, mood) { cur = { sk, mood }; },
+      bounce() { hopT = window._t || 0; },
+      alive: () => !!R
+    };
+  })();
+
+  /* ── 縮圖：離屏渲染一次，之後當圖片用 ─────────────────── */
+  const Thumb = (() => {
+    let R = null, cv = null, ok = true;
+    const cache = {};
+    function init() {
+      if (R || !ok) return R;
+      cv = document.createElement("canvas");
+      cv.style.width = "200px"; cv.style.height = "186px";
+      cv.width = 400; cv.height = 372;
+      R = makeGL(cv);
+      if (!R) ok = false;
+      return R;
+    }
+    return {
+      get(sk, key) {
+        if (cache[key]) return cache[key];
+        if (!init()) return null;
+        R.render(carParts(sk, "normal"), 0.30, 0.13, 0, 2);
+        try { cache[key] = cv.toDataURL("image/png"); } catch { return null; }
+        return cache[key];
+      }
+    };
+  })();
+
+  /* 縮圖優先用 3D 離屏渲染，取不到就退回向量圖 */
+  function thumb(sk, key) {
+    const src = Thumb.get(sk, key);
+    return src ? `<img src="${src}" alt="${sk.name || ""}" style="display:block">`
+               : carSVG(sk, "normal", true);
+  }
+  function persThumb(p) {
+    const sk = { id: "p" + p.id, name: p.name, body: p.tint, lower: "#FFFFFF",
+                 deep: p.tint, glass: "#1E2A22", light: "#EAF7FF", acc: "none" };
+    return thumb(sk, "p" + p.id);
+  }
+
   const ICONS = {
     home:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.2-5.4a2 2 0 0 1 2-1.6h5.6a2 2 0 0 1 2 1.6L18 17M7 17v2M17 17v2M8.5 13.5h7"/></svg>`,
     pers:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z"/></svg>`,
@@ -1590,18 +2039,6 @@
     }));
   }
 
-  function renderStats() {
-    const list = trips();
-    const P = PERSONAS[persona];
-    const km = list.reduce((a, t) => a + t.km, 0).toFixed(1);
-    const spots = new Set(list.map(t => t.name)).size;
-    $("stats").innerHTML = [
-      [12 + S.history.length, P.stat[0]],
-      [spots, P.stat[1]],
-      [km, P.stat[2]]
-    ].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
-  }
-
   function renderMap() {
     const list = trips();
     if (mapHl >= list.length) mapHl = 0;
@@ -1630,9 +2067,10 @@
     $("homeName").textContent = S.name;
     $("homePers").textContent = pers().type.replace("型", "");
     $("homeMood").textContent = MOOD_TEXT[m];
-    $("carHold").innerHTML = carSVG(skin(), m, false);
+    if (Car3D.mount($("carHold"))) Car3D.set(skin(), m);
+    else $("carHold").innerHTML = carSVG(skin(), m, false);
     $("bubble").textContent = line();
-    renderMap(); renderNextStop(); renderPlaces(); renderStats();
+    renderMap(); renderNextStop(); renderPlaces();
 
     const lv = level(), prog = Math.min(100, S.intimacy - (lv - 1) * 100);
     $("lvText").textContent = `Lv.${lv} · ${LV_NAMES[lv - 1]}`;
@@ -1642,12 +2080,7 @@
     $("lvCap").textContent = next ? `再養到 Lv.${next.lv} 就會解鎖「${next.name}」。`
                                   : "所有造型都解鎖了。它現在只認你一個。";
 
-    $("mEnergy").textContent = Math.round(S.energy);
-    $("mMood").textContent = Math.round(S.mood);
-    $("mSync").textContent = Math.round(S.sync);
-    $("bEnergy").style.width = S.energy + "%";
-    $("bMood").style.width = S.mood + "%";
-    $("bSync").style.width = S.sync + "%";
+
   }
 
   function renderActs() {
@@ -1665,7 +2098,7 @@
   function renderPers() {
     $("persList").innerHTML = PERSONALITIES.map(p => `
       <button class="pCard" data-p="${p.id}" aria-pressed="${p.id === S.pers}">
-        <span class="pFace" style="--pf1:${p.pf[0]};--pf2:${p.pf[1]}">${faceSVG(p)}</span>
+        <span class="pFace">${persThumb(p)}</span>
         <span class="pBody">
           <h3>${p.name}<small>${p.type}</small></h3>
           <p>${p.desc}</p>
@@ -1699,7 +2132,7 @@
       return `
         <button class="skin${lock ? " locked" : ""}" data-s="${s.id}"
                 aria-pressed="${s.id === S.skin}" ${lock ? "disabled" : ""}>
-          <span class="prev" style="--sk1:${s.bg[0]};--sk2:${s.bg[1]}">${carSVG(s, "normal", true)}</span>
+          <span class="prev">${thumb(s, s.id)}</span>
           ${lock ? `<span class="lock">LV.${s.lv} 解鎖</span>` : ""}
           <span class="nm">${s.name}</span>
           <span class="mt">${s.tag}${s.id === S.skin ? " · 使用中" : ""}</span>
@@ -1856,8 +2289,8 @@
     if (a === "pet") {
       S.intimacy += 6; S.mood = clamp(S.mood + 5);
       S.traits.clingy = clamp(S.traits.clingy + 1.2);
-      $("carHold").classList.add("pet");
-      setTimeout(() => $("carHold").classList.remove("pet"), 660);
+      if (Car3D.alive()) Car3D.bounce();
+      else { $("carHold").classList.add("pet"); setTimeout(() => $("carHold").classList.remove("pet"), 660); }
       sparks(9, ["#FF86AE", "#C9F23A", "#FFC46B"]);
       $("bubble").textContent = pick(REACT.pet[S.pers]);
       toast("親密度 +6");
@@ -1908,19 +2341,7 @@
   }
 
   function showPush(msg) {
-    const s = skin();
-    $("pushIcon").innerHTML = `
-      <svg viewBox="16 30 228 150" style="--body:${s.body};--lower:${s.lower};--glass:${s.glass};--light:${s.light}">
-        <clipPath id="pi"><rect x="26" y="36" width="208" height="172" rx="60"/></clipPath>
-        <rect x="26" y="36" width="208" height="172" rx="60" fill="var(--lower)"/>
-        <g clip-path="url(#pi)"><path d="M26 36 H234 V116 Q130 142 26 116 Z" fill="var(--body)"/></g>
-        <rect x="62" y="52" width="136" height="58" rx="27" fill="var(--glass)"/>
-        <circle cx="78" cy="150" r="23" fill="#FFFFFF"/><circle cx="182" cy="150" r="23" fill="#FFFFFF"/>
-        <circle cx="78" cy="150" r="18" fill="var(--light)"/><circle cx="182" cy="150" r="18" fill="var(--light)"/>
-        <path d="M66 153 q12 -15 24 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M170 153 q12 -15 24 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path d="M104 176 q26 18 52 0" stroke="#1B2430" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-      </svg>`;
+    $("pushIcon").innerHTML = thumb(skin(), skin().id);
     $("pushMsg").textContent = msg;
     $("pushAgo").textContent = `${pad(hour)}:40`;
     $("push").classList.add("in");
@@ -1960,7 +2381,7 @@
       $("onbNext").textContent = "開始養";
       $("onbStep2").innerHTML = PERSONALITIES.map(p => `
         <button class="pCard" data-op="${p.id}" aria-pressed="${p.id === S.pers}">
-          <span class="pFace" style="--pf1:${p.pf[0]};--pf2:${p.pf[1]}">${faceSVG(p)}</span>
+          <span class="pFace">${persThumb(p)}</span>
           <span class="pBody">
             <h3>${p.name}<small>${p.type}</small></h3>
             <p class="quote" style="margin-top:3px">${p.quote}</p>
