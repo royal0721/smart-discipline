@@ -222,8 +222,8 @@
   /* ── 地圖舞台：路線紀錄 + 車車 ─────────────────────────── */
   .carStage {
     position: relative; border-radius: var(--rXl); overflow: hidden;
-    height: 344px; box-shadow: 0 10px 26px -16px rgba(22,32,26,.5);
-    background: #E9EFE2; cursor: pointer;
+    height: 382px; box-shadow: 0 10px 26px -16px rgba(22,32,26,.5);
+    background: #E9EFE2;
   }
   .carStage:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -266,8 +266,8 @@
   @keyframes pop { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
 
   .carHold {
-    position: absolute; z-index: 4; right: 14px; bottom: 12px;
-    display: flex; justify-content: flex-end;
+    position: absolute; z-index: 4; left: 0; right: 0; bottom: 10px;
+    display: flex; justify-content: center;
     filter: drop-shadow(0 14px 22px rgba(22,32,26,.28));
   }
   .carHold svg { width: 148px; height: auto; animation: idle 4.6s ease-in-out infinite; }
@@ -582,9 +582,38 @@
   .souvCell[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
   .souvName { font-size: 11px; color: var(--fog); line-height: 1.4; }
 
+  /* ── 首頁只有三塊：車車、預約、加工 ─────────────────────── */
+  .bookCard {
+    display: flex; flex-direction: column; gap: 11px; padding: 17px 17px 16px;
+    border-radius: var(--rLg); box-shadow: var(--lift);
+    background: linear-gradient(152deg, #EDF6E7 0%, #FFFFFF 66%);
+  }
+  .bkTop { display: flex; align-items: baseline; gap: 10px; }
+  .bkTag { font-family: var(--mono); font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--lime-d); }
+  .bkCount { margin-left: auto; font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .bkCount.tight { color: #C63B2E; }
+  .bkTitle { margin: 0; font-size: 21px; font-weight: 900; letter-spacing: -.03em; }
+  .bkMeta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--fog); }
+  .bkMeta b { color: var(--chalk); font-weight: 600; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  .tuneEntry {
+    display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 16px;
+    border: none; border-radius: var(--rLg); cursor: pointer; text-align: left;
+    background: #FFFFFF; box-shadow: var(--lift); font-family: var(--sans);
+    color: var(--chalk); transition: .18s;
+  }
+  .tuneEntry:hover { transform: translateY(-2px); }
+  .tuneEntry:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  .teIc { flex: none; width: 42px; height: 42px; border-radius: 13px; overflow: hidden; display: grid; place-items: center; background: var(--slab-2); }
+  .teIc img { max-height: 38px; max-width: 38px; }
+  .teTx { display: flex; flex-direction: column; }
+  .teTx b { font-size: 14.5px; font-weight: 700; }
+  .teTx span { font-size: 12px; color: var(--fog); }
+  .teGo { margin-left: auto; color: var(--fog-dim); font-size: 16px; }
+
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
-    flex: none; display: grid; grid-template-columns: repeat(5, 1fr);
+    flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
     background: rgba(255,255,255,.94); backdrop-filter: blur(20px);
     box-shadow: 0 -1px 0 var(--hair); padding: 10px 6px 26px;
   }
@@ -774,45 +803,35 @@
       <div class="app" id="app">
         <div class="screens" id="screens">
 
-          <!-- 車庫 -->
+          <!-- 車庫：只做三件事——車車、預約、加工 -->
           <section class="screen" id="sc-home">
-            <div class="carStage" id="carStage" role="button" tabindex="0" aria-label="路線地圖，點一下切換要看的路線">
+            <div class="carStage" id="carStage">
               <div class="scene" id="scene"></div>
               <div class="veil"></div>
               <div class="stageTop">
                 <span class="nm" id="homeName">小綠</span>
-                <span class="chip" id="homePers">溫柔療癒</span>
+                <span class="chip" id="homeLv">Lv.1</span>
                 <span class="chip" id="homeMood">心情不錯</span>
               </div>
               <div class="bubble" id="bubble">…</div>
               <div class="carHold" id="carHold"></div>
-              <div class="routeChip" id="routeChip"></div>
             </div>
 
-            <div class="acts" id="acts"></div>
+            <div class="bookCard">
+              <div class="bkTop">
+                <span class="bkTag" id="bkTag">下一站</span>
+                <span class="bkCount" id="bkCount">--</span>
+              </div>
+              <h3 class="bkTitle" id="bkTitle">今天沒有行程</h3>
+              <div class="bkMeta" id="bkMeta"></div>
+              <button class="nsBtn" id="nsBtn">預約</button>
+            </div>
 
-            <button class="logCard" id="logCard">
-              <span class="logTop"><span class="lt">今天的行車日誌</span><span class="lg" id="logCount">還沒出門</span></span>
-              <span class="logLine" id="logLine">今天還沒跑，日誌是空的。</span>
-              <span class="logGo">打開日誌 →</span>
+            <button class="tuneEntry" id="tuneEntry">
+              <span class="teIc" id="teIc"></span>
+              <span class="teTx"><b>加工車車</b><span id="teSub">換造型、掛紀念品、調個性</span></span>
+              <span class="teGo">→</span>
             </button>
-
-            <div class="pane">
-              <div class="paneTop">
-                <span class="lv" id="lvText">Lv.1 · 初次見面</span>
-                <span class="nx" id="lvNext">0 / 100</span>
-              </div>
-              <div class="bar"><i id="lvBar" style="width:0%;background:linear-gradient(90deg,#7CC168,#3F9430)"></i></div>
-              <div class="kmRow">
-                <span><b id="kmVal">0.0</b> km</span>
-                <span><b id="rideVal">0</b> 趟</span>
-                <span><b id="souvVal">0</b> 件紀念品</span>
-              </div>
-              <div class="cap" id="lvCap">親密度只會因為你真的搭車而長。</div>
-            </div>
-
-            <div class="scTitle" style="margin-top:4px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
-            <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
           </section>
 
           <!-- 行程 -->
@@ -826,41 +845,22 @@
               <h3 class="nsTitle" id="nsTitle">今天沒有行程</h3>
               <div class="nsMeta" id="nsMeta"></div>
               <div class="nsSay" id="nsSay">…</div>
-              <button class="nsBtn" id="nsBtn">現在叫車</button>
+              <button class="nsBtn" id="nsBtn2">現在叫車</button>
             </div>
-
             <div class="places" id="places"></div>
-
             <div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">今天的安排</h2><span id="todayLeft"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="todayList"></div>
           </section>
 
-          <!-- 個性 -->
-          <section class="screen" id="sc-pers" hidden>
-            <div class="scTitle"><h2>個性</h2><span>Personality</span></div>
-            <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
+          <!-- 日誌 -->
+          <section class="screen" id="sc-log" hidden>
+            <div class="scTitle"><h2>日誌</h2><span id="logCount">還沒出門</span></div>
+            <div id="logBody" style="display:flex;flex-direction:column;gap:14px"></div>
 
-            <div class="pane" style="gap:14px">
-              <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
-              <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
-              <div class="cap">你越常在深夜找它，黏人度就自己往上爬；一直不理它，毒舌度會慢慢長出來。</div>
-            </div>
-          </section>
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
 
-          <!-- 造型 -->
-          <section class="screen" id="sc-skin" hidden>
-            <div class="scTitle"><h2>造型</h2><span id="skinCount">Styles 3/8</span></div>
-            <div class="skinGrid" id="skinGrid"></div>
-            <div class="privacy" id="skinNote"></div>
-          </section>
-
-          <!-- 收藏：紀念品與地點盲盒 -->
-          <section class="screen" id="sc-box" hidden>
-            <div class="scTitle"><h2>收藏</h2><span id="souvCount">0 / 0</span></div>
-            <div class="cap" style="padding:0 4px">車車會從你去過的地方帶東西回來。點一件掛到車上（最多兩件）。</div>
-            <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
-
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:16px">盲盒約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">盲盒約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
             <div class="cap" style="padding:0 4px" id="boxWhere">從你最常去的地方長出來的行程。</div>
             <div class="boxHold">
               <button class="boxBtn" id="boxBtn">
@@ -872,18 +872,26 @@
             <div id="histHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
+          <!-- 加工 -->
+          <section class="screen" id="sc-tune" hidden>
+            <div class="scTitle"><h2>加工車車</h2><span id="skinCount">Styles 3/8</span></div>
+            <div class="skinGrid" id="skinGrid"></div>
+            <div class="privacy" id="skinNote"></div>
+
+            <div class="scTitle" style="margin-top:8px"><h2 style="font-size:15px">掛件</h2><span id="souvCount">0 / 0</span></div>
+            <div class="cap" style="padding:0 4px">從你去過的地方帶回來的東西。點一件掛到車上，最多兩件。</div>
+            <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+
+            <div class="scTitle" style="margin-top:8px"><h2 style="font-size:15px">個性</h2><span>Personality</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
+            <div class="pane" style="gap:14px">
+              <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
+              <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
+            </div>
+          </section>
         </div>
 
         <nav class="tabs" id="tabs"></nav>
-      </div>
-
-      <!-- 每日行車日誌 -->
-      <div class="sheet" id="logSheet" hidden>
-        <div class="sheetBar">
-          <span class="sheetTitle">行車日誌</span>
-          <button class="sheetX" id="logClose" aria-label="關閉">✕</button>
-        </div>
-        <div class="sheetBody" id="logBody"></div>
       </div>
 
       <!-- 上線引導 -->
@@ -2104,7 +2112,7 @@
     function mount(host) {
       if (cv && cv.parentNode === host) return true;
       cv = document.createElement("canvas");
-      cv.style.cssText = "width:172px;height:162px;display:block;touch-action:none;cursor:grab";
+      cv.style.cssText = "width:250px;height:236px;display:block;touch-action:none;cursor:grab";
       R = makeGL(cv);
       if (!R) { cv = null; return false; }
       host.innerHTML = ""; host.appendChild(cv);
@@ -2202,7 +2210,6 @@
     lock:  `<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" style="flex:none;margin-top:4px"><path d="M4.6 7.2V5a3.4 3.4 0 0 1 6.8 0v2.2" stroke="#64708A" stroke-width="1.6" fill="none" stroke-linecap="round"/><rect x="3" y="7.2" width="10" height="6.8" rx="2.2" fill="#64708A"/></svg>`
   };
 
-  const ACT_COLOR = { pet: "var(--rose)", wash: "var(--sky)", fuel: "var(--lime)", talk: "var(--violet)" };
 
   /* ════ 推導 ════════════════════════════════════════════ */
 
@@ -2406,8 +2413,10 @@
   /* 叫車：完成一趟，結算里程與紀念品 */
   function doRide(place) {
     const got = takeRide(place);
-    renderTrip(); renderConsole();
+    renderConsole();
     if (currentTab === "home") renderHome();
+    if (currentTab === "trip") renderTrip();
+    if (currentTab === "log") renderLog();
     if (Car3D.alive()) Car3D.set(skin(), moodOf());
     toast(got ? `帶回「${got.n}」` : `+${place.km} km · 親密度成長`);
     setTimeout(() => showPush(S.today.events[S.today.events.length - 1]), 700);
@@ -2432,12 +2441,12 @@
     }).join("");
   }
 
-  function renderLogCard() {
-    const t = S.today;
-    const km = t.rides.reduce((a, r) => a + r.km, 0);
-    $("logCount").textContent = t.rides.length ? `${t.rides.length} 趟 · ${km.toFixed(1)} km` : "還沒出門";
-    $("logLine").textContent = t.events.length ? t.events[t.events.length - 1]
-      : "今天還沒跑，日誌是空的。去「行程」叫一台車就會開始寫。";
+  function renderLog() {
+    renderBox();
+    const _t = S.today;
+    $("logCount").textContent = _t.rides.length
+      ? `${_t.rides.length} 趟 · ${_t.rides.reduce((x, r) => x + r.km, 0).toFixed(1)} km` : "還沒出門";
+    openLog();
   }
 
   function openLog() {
@@ -2462,7 +2471,6 @@
       }).join("") : ""}
       ${types.length ? `<div class="logSec">今天的路線</div><div class="logItem"><span class="tm">▸</span><span>${types.map(x => PLACE_TYPE[x].name).join("、")}</span></div>` : ""}
     `;
-    $("logSheet").hidden = false;
   }
 
   function dayIdleLine() {
@@ -2500,8 +2508,13 @@
       else { S.equip.push(id); if (S.equip.length > 2) S.equip.shift(); }
       save(); renderSouv();
       if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
       toast(S.equip.includes(id) ? `掛上「${souvOf(id).n}」` : `收起「${souvOf(id).n}」`);
     }));
+  }
+
+  function renderTune() {
+    renderSkins(); renderSouv(); renderPers();
   }
 
   function renderMap() {
@@ -2509,7 +2522,7 @@
     if (mapHl >= list.length) mapHl = 0;
     $("scene").innerHTML = mapSVG(list, mapHl);
     const t = list[mapHl];
-    $("routeChip").innerHTML = t
+    if ($("routeChip")) $("routeChip").innerHTML = t
       ? `<span class="sw" style="background:${t.color}"></span>
          <span class="tx"><b>${t.name}</b><span>${t.kind} · ${t.km} km</span></span>
          <span class="cyc" aria-hidden="true">↻</span>`
@@ -2530,38 +2543,30 @@
   function renderHome() {
     const m = moodOf();
     $("homeName").textContent = S.name;
-    $("homePers").textContent = pers().type.replace("型", "");
+    $("homeLv").textContent = `Lv.${level()} · ${LV_NAMES[level() - 1]}`;
     $("homeMood").textContent = MOOD_TEXT[m];
     if (Car3D.mount($("carHold"))) Car3D.set(skin(), m);
     else $("carHold").innerHTML = carSVG(skin(), m, false);
     $("bubble").textContent = line();
     renderMap();
-
-    const lv = level(), prog = Math.min(100, S.intimacy - (lv - 1) * 100);
-    $("lvText").textContent = `Lv.${lv} · ${LV_NAMES[lv - 1]}`;
-    $("lvNext").textContent = lv >= 6 ? "MAX" : `${prog} / 100`;
-    $("lvBar").style.width = (lv >= 6 ? 100 : prog) + "%";
-    $("kmVal").textContent = S.km.toFixed(1);
-    $("rideVal").textContent = S.rides;
-    $("souvVal").textContent = souvOwned();
-    const next = SKINS.find(s => s.lv > lv);
-    $("lvCap").textContent = next ? `再養到 Lv.${next.lv} 解鎖「${next.name}」——只有真的搭車才會長。`
-                                  : "所有造型都解鎖了。這些里程都是你們一起跑的。";
-    renderLogCard();
-
-
+    renderBook();
+    $("teIc").innerHTML = thumb(skin(), skin().id);
+    $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
   }
 
-  function renderActs() {
-    const acts = [
-      { id: "pet", ic: "pet", t: "摸摸" }, { id: "wash", ic: "wash", t: "洗車" },
-      { id: "fuel", ic: "fuel", t: "充電" }, { id: "talk", ic: "talk", t: "聊天" }
-    ];
-    $("acts").innerHTML = acts.map(a =>
-      `<button class="act" data-act="${a.id}">
-         <span class="ring" style="color:${ACT_COLOR[a.id]}">${ICONS[a.ic]}</span><span>${a.t}</span>
-       </button>`).join("");
-    $("acts").querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => doAct(b.dataset.act)));
+  /* 首頁的預約卡：只留最少的必要資訊 */
+  function renderBook() {
+    const { a, leave, left, tomorrow } = nextAppt();
+    const lm = ((leave % 1440) + 1440) % 1440;
+    const leaveStr = `${pad(Math.floor(lm / 60))}:${pad(lm % 60)}`;
+    const rush = !tomorrow && left <= 15;
+    $("bkTag").textContent = pinned ? "臨時目的地" : (tomorrow ? "明天第一站" : "下一站");
+    $("bkTitle").textContent = pinned ? `去 ${pinned}` : a.t;
+    $("bkCount").textContent = tomorrow ? `${pad(a.h)}:${pad(a.m)}`
+      : left <= 0 ? "現在就該出門" : `${left} 分鐘後出發`;
+    $("bkCount").className = "bkCount" + (rush ? " tight" : "");
+    $("bkMeta").innerHTML = `<span>${pinned || a.loc}</span><span>車程 <b>${a.ride}</b> 分</span><span>建議 <b>${leaveStr}</b> 出發</span>`;
+    $("nsBtn").textContent = rush || left <= 0 ? "馬上叫車" : `預約 ${leaveStr} 的車`;
   }
 
   function renderPers() {
@@ -2577,7 +2582,8 @@
     $("persList").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
       S.pers = b.dataset.p;
       S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
-      save(); renderPers(); renderHome(); renderConsole();
+      save(); renderPers(); renderConsole();
+      if (Car3D.alive()) Car3D.set(skin(), moodOf());
       toast(`${S.name} 換成「${pers().type}」了`);
     }));
 
@@ -2661,7 +2667,6 @@
   }
 
   function renderBox() {
-    renderSouv();
     const top = topPlace();
     $("boxWhere").textContent = top
       ? `你最常去「${PLACE_TYPE[top].name}」，盲盒會從那附近長出來。`
@@ -2719,12 +2724,11 @@
   function renderTabs() {
     const T = [
       { id: "home", n: "車庫", ic: "home" }, { id: "trip", n: "行程", ic: "trip" },
-      { id: "pers", n: "個性", ic: "pers" }, { id: "skin", n: "造型", ic: "skin" },
-      { id: "box", n: "收藏", ic: "box" }
+      { id: "log",  n: "日誌", ic: "box" },  { id: "tune", n: "加工", ic: "skin" }
     ];
     $("tabs").innerHTML = T.map(t => `
       <button class="tab" data-t="${t.id}" aria-selected="${t.id === currentTab}">
-        ${ICONS[t.ic]}${t.id === "box" && S.boxLeft > 0 ? '<span class="dot"></span>' : ""}
+        ${ICONS[t.ic]}${t.id === "log" && S.boxLeft > 0 ? '<span class="dot"></span>' : ""}
         <span>${t.n}</span>
       </button>`).join("");
     $("tabs").querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => go(b.dataset.t)));
@@ -2732,10 +2736,10 @@
 
   function go(id) {
     currentTab = id;
-    ["home", "trip", "pers", "skin", "box"].forEach(k => { $("sc-" + k).hidden = k !== id; });
+    ["home", "trip", "log", "tune"].forEach(k => { $("sc-" + k).hidden = k !== id; });
     $("screens").scrollTop = 0;
     renderTabs();
-    ({ home: renderHome, trip: renderTrip, pers: renderPers, skin: renderSkins, box: renderBox })[id]();
+    ({ home: renderHome, trip: renderTrip, log: renderLog, tune: renderTune })[id]();
   }
 
   /* ════ 互動 ════════════════════════════════════════════ */
@@ -2765,39 +2769,6 @@
     }
   }
 
-  function doAct(a) {
-    if (a === "pet") {
-      S.mood = clamp(S.mood + 6);
-      S.traits.clingy = clamp(S.traits.clingy + 1.2);
-      if (Car3D.alive()) Car3D.bounce();
-      else { $("carHold").classList.add("pet"); setTimeout(() => $("carHold").classList.remove("pet"), 660); }
-      sparks(9, ["#FF86AE", "#C9F23A", "#FFC46B"]);
-      $("bubble").textContent = pick(REACT.pet[S.pers]);
-      toast("心情 +6");
-    } else if (a === "wash") {
-      S.mood = clamp(S.mood + 12);
-      sparks(11, ["#7DD3FC", "#EEF2F9"]);
-      $("bubble").textContent = pick(REACT.wash[S.pers]);
-      toast("心情 +12");
-    } else if (a === "fuel") {
-      S.energy = clamp(S.energy + 25);
-      sparks(9, ["#C9F23A", "#FFC46B"]);
-      $("bubble").textContent = pick(REACT.fuel[S.pers]);
-      toast("能量 +25");
-    } else {
-      S.sync = clamp(S.sync + 2);
-      S.traits.talkative = clamp(S.traits.talkative + 1);
-      $("bubble").textContent = line();
-      toast("默契 +2");
-    }
-    S.energy = clamp(S.energy - 1);
-    save();
-    const keep = $("bubble").textContent;
-    renderHome();
-    $("bubble").textContent = keep;
-    renderConsole();
-  }
-
   function openBox() {
     if (S.boxLeft <= 0) { toast("本週的盲盒用完了"); return; }
     shakeCount++;
@@ -2815,7 +2786,7 @@
     S.intimacy += p.r === "SSR" ? 20 : p.r === "SR" ? 12 : 5;
     S.mood = clamp(S.mood + 6);
     save();
-    renderPlan(p); renderBox(); renderTabs(); renderConsole();
+    renderPlan(p); renderLog(); renderTabs(); renderConsole();
     toast(p.r === "SSR" ? "SSR！它把壓箱寶拿出來了" : `抽到 ${p.r} · ${p.title}`);
     setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。要去嗎？`), 950);
   }
@@ -2878,7 +2849,7 @@
   /* ════ 啟動 ════════════════════════════════════════════ */
 
   function boot() {
-    renderClock(); renderActs(); renderTabs(); go("home"); renderConsole();
+    renderClock(); renderTabs(); go("home"); renderConsole();
 
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
     else { $("onb").hidden = true; recordVisit(hour); renderConsole(); }
@@ -2930,17 +2901,17 @@
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cycleMap(); }
     });
 
-    $("nsBtn").addEventListener("click", e => {
+    const book = e => {
       e.stopPropagation();
       const { a } = nextAppt();
       const P = PERSONAS[persona];
       const place = pinned ? (P.places.find(x => x.n === pinned) || { n: pinned, t: "office", km: 6 })
                            : { n: a.loc, t: a.pt || "office", km: a.km || 6 };
       doRide(place);
-    });
-
-    $("logCard").addEventListener("click", openLog);
-    $("logClose").addEventListener("click", () => { $("logSheet").hidden = true; });
+    };
+    $("nsBtn").addEventListener("click", book);
+    $("nsBtn2").addEventListener("click", book);
+    $("tuneEntry").addEventListener("click", () => go("tune"));
 
     $("btnPush").addEventListener("click", autoPush);
     $("push").addEventListener("click", () => $("push").classList.remove("in"));
@@ -2961,7 +2932,7 @@
       save(); renderConsole();
       if (currentTab === "home") renderHome();
       if (currentTab === "trip") renderTrip();
-      if (currentTab === "box") renderBox();
+      if (currentTab === "log") renderLog();
       if (Car3D.alive()) Car3D.set(skin(), moodOf());
       toast(`跑了 4 趟 · 共 ${S.km.toFixed(1)} km`);
     });
@@ -2971,7 +2942,6 @@
       onbStep = 1; shakeCount = 0;
       $("onbName").value = "小綠";
       $("onb").hidden = false;
-      $("logSheet").hidden = true;
       renderOnb(); renderPlan(null); go("home"); renderConsole();
       toast("已清空，重養一台");
     });
