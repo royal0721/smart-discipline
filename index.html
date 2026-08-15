@@ -266,7 +266,7 @@
   @keyframes pop { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
 
   .carHold {
-    position: absolute; z-index: 4; right: 4px; bottom: 12px;
+    position: absolute; z-index: 4; right: 14px; bottom: 12px;
     display: flex; justify-content: flex-end;
     filter: drop-shadow(0 14px 22px rgba(22,32,26,.28));
   }
@@ -1226,7 +1226,7 @@
 
   /* ════ 車車插畫 ════════════════════════════════════════
      參考 yoxi 品牌造型：綠白雙色圓潤車身、車頂燈箱。
-     臉不畫在擋風玻璃上——大頭燈當眼睛，前保桿當嘴。
+     不畫臉：頭燈就是頭燈，只在前保桿留一道參考圖本來就有的微笑。
      ──────────────────────────────────────────────────── */
 
   function accessory(acc) {
@@ -1739,10 +1739,10 @@
       body:  upload(loftMesh(-BODY.END, BODY.END, 0, Math.PI * 2, 0, 62, 52)),
       // 車窗：前擋整片，側窗兩片，後擋一片，全都貼著車身外偏移
       // 分層塗裝：車身整台綠，白色下半身與深色車窗各是一片貼合車身的殼
-      pnR:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 0.86 ? 9 : 0.06,  1, 0.012, 60, 18)),
-      pnL:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 0.86 ? 9 : 0.06, -1, 0.012, 60, 18)),
-      glR:   upload(glassArc(-1.06, BODY.END, 0.04, 0.56,  1, 0.026, 50, 14)),
-      glL:   upload(glassArc(-1.06, BODY.END, 0.04, 0.56, -1, 0.026, 50, 14)),
+      pnR:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 1.05 ? 9 : 0.12,  1, 0.012, 62, 18)),
+      pnL:   upload(glassArc(-0.58, BODY.END, -0.98, t => t > 1.05 ? 9 : 0.12, -1, 0.012, 62, 18)),
+      glR:   upload(glassArc(-1.06, 1.12, 0.10, 0.56,  1, 0.026, 52, 14)),
+      glL:   upload(glassArc(-1.06, 1.12, 0.10, 0.56, -1, 0.026, 52, 14)),
       soft:  upload(superq(0.62, 0.62, 26, 34)),
       sph:   upload(superq(1, 1, 20, 26)),
       cyl:   upload(cylinder(26)),
@@ -1865,32 +1865,32 @@
     P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.70, spec: 0.1,
              pos: [0,0.90,0.195], scl: [0.28,0.088,1] });
 
-    // 大頭燈＝眼睛，貼在車頭真正的表面上
-    const eyeY = -0.28;
-    for (const x of [-0.55, 0.55]) {
-      const z = frontZ(x, eyeY);
-      P.push({ m: "sph", a: "#FFFFFF", spec: 0.9, shin: 60, amb: 0.76, pos: [x,eyeY,z-0.10], scl: [0.27,0.27,0.20] });
-      P.push({ m: "sph", a: sk.light, spec: 1.3, shin: 90, amb: 0.72, pos: [x,eyeY,z-0.045], scl: [0.215,0.215,0.17] });
-      P.push({ m: "sph", a: dark, spec: 0.5, shin: 40, amb: 0.46, pos: [x,eyeY,z+0.065], scl: [0.108,0.108,0.07] });
-      P.push({ m: "sph", a: "#FFFFFF", spec: 0.4, amb: 0.92, pos: [x+0.040,eyeY+0.048,z+0.105], scl: [0.039,0.039,0.03] });
-      if (mood === "grumpy")
-        P.push({ m: "soft", a: dark, spec: 0.3, amb: 0.45, pos: [x,eyeY+0.17,frontZ(x,eyeY+0.17)+0.02], rot: [0,0, x < 0 ? -0.42 : 0.42], scl: [0.15,0.026,0.04] });
-      if (mood === "sleepy")
-        P.push({ m: "soft", a: sk.body, spec: 0.4, amb: 0.42, pos: [x,eyeY+0.10,frontZ(x,eyeY+0.10)+0.02], scl: [0.20,0.055,0.05] });
+    // 大頭燈就是大頭燈：內嵌在車身裡的燈殼＋燈面，不放眼珠
+    const lampY = -0.30;
+    for (const x of [-0.56, 0.56]) {
+      const z = frontZ(x, lampY);
+      // 燈碗用圓柱：不論車身怎麼彎，燈口都是乾淨的正圓
+      P.push({ m: "cyl", a: sk.deep, spec: 0.65, shin: 50, amb: 0.46,
+               pos: [x,lampY,z-0.115], rot: [Math.PI/2,0,0], scl: [0.225,0.155,0.225] });
+      P.push({ m: "cyl", a: "#F2F5F7", spec: 0.5, shin: 40, amb: 0.66,
+               pos: [x,lampY,z-0.10], rot: [Math.PI/2,0,0], scl: [0.185,0.145,0.185] });
+      P.push({ m: "sph", a: sk.light, spec: 1.8, shin: 150, amb: 0.86,
+               pos: [x,lampY,z-0.02], scl: [0.168,0.168,0.095] });
     }
 
-    // 前保桿的嘴
-    const mY = mood === "grumpy" ? -0.60 : -0.52;
+    // 前保桿的微笑（參考圖上就有這一道）
+    const mY = mood === "grumpy" ? -0.58 : -0.505;
     if (mood === "sleepy") {
-      P.push({ m: "ring", a: dark, spec: 0.35, amb: 0.48, pos: [0,-0.52,frontZ(0,-0.52)+0.02], scl: [0.075,0.075,0.075] });
+      P.push({ m: "smile", a: dark, spec: 0.3, amb: 0.5,
+               pos: [0,-0.54,frontZ(0.16,-0.54)+0.02], scl: [0.16,0.07,0.10] });
     } else {
-      P.push({ m: mood === "grumpy" ? "frown" : "smile", a: dark, spec: 0.35, amb: 0.48,
-               pos: [0, mY, frontZ(0.28, mY) + 0.03],
-               scl: [0.33, mood === "happy" ? 0.26 : 0.19, 0.13] });
+      P.push({ m: mood === "grumpy" ? "frown" : "smile", a: dark, spec: 0.3, amb: 0.5,
+               pos: [0, mY, frontZ(0.26, mY) + 0.025],
+               scl: [0.30, mood === "happy" ? 0.20 : 0.135, 0.10] });
     }
 
     // 車牌
-    const pY = -0.665, pZ = frontZ(0.24, pY);
+    const pY = -0.715, pZ = frontZ(0.22, pY);
     P.push({ m: "soft", a: sk.deep, spec: 0.4, shin: 28, amb: 0.44, pos: [0,pY,pZ-0.03], scl: [0.26,0.088,0.075] });
     P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.72, spec: 0.1,
              pos: [0,pY,pZ+0.05], scl: [0.24,0.075,1] });
@@ -1932,7 +1932,7 @@
     function mount(host) {
       if (cv && cv.parentNode === host) return true;
       cv = document.createElement("canvas");
-      cv.style.cssText = "width:184px;height:172px;display:block;touch-action:none;cursor:grab";
+      cv.style.cssText = "width:172px;height:162px;display:block;touch-action:none;cursor:grab";
       R = makeGL(cv);
       if (!R) { cv = null; return false; }
       host.innerHTML = ""; host.appendChild(cv);
@@ -1965,7 +1965,7 @@
       if (t - lastFrame < 24) return;
       lastFrame = t;
       if (!dragging) { dragYaw *= 0.94; dragPitch *= 0.94; }
-      yaw = Math.sin(s * 0.42) * 0.24 + dragYaw;
+      yaw = Math.sin(s * 0.42) * 0.17 + dragYaw;
       pitch = 0.10 + Math.sin(s * 0.31) * 0.045 + dragPitch;
       hop = hopT < 0 ? 0 : Math.max(0, Math.sin((s - hopT) * 7.5)) * Math.max(0, 1 - (s - hopT) * 1.4) * 0.42;
       if (hopT >= 0 && s - hopT > 1.2) hopT = -9;
