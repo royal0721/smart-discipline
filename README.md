@@ -1,35 +1,40 @@
-#### Commands
+# Yoxi 車車 — 養成型叫車 App 原型
 
-| command                   | What it does?                                 |
-| ------------------------- | :-------------------------------------------- |
-| `npm start`               | Starts the server in dev mode                 |
-| `npm run lint`            | Runs ESLint on project                        |
-| `npm run prettier`        | Runs prettier on entire src folder            |
-| `npm run prettier:verify` | Runs prettier-check and throws error if fails |
-| `npm run prettier:staged` | Runs prettier on only staged (changed) files  |
+一個可以直接在瀏覽器打開試玩的互動原型：車車住在 app 正中間，你挑它的個性、幫它套皮，
+它記住你都幾點打開它，然後在你還沒想到要出門之前，先丟一個盲盒約會計畫給你。
 
-#### Dependencies
+**打開方式**：用瀏覽器開 `index.html` 就好，沒有 build、沒有相依套件。
 
-| Package            | What it does?                                                                               | Link                                                   |
-| ------------------ | :------------------------------------------------------------------------------------------ | :----------------------------------------------------- |
-| `angular-svg-icon` | Provides a means to inline SVG files to allow for them to be easily styled by CSS and code. | [Here](https://www.npmjs.com/package/angular-svg-icon) |
-| `apexcharts`       | Modern & Interactive Open-source Charts                                                     | [Here](https://www.npmjs.com/package/apexcharts)       |
-| `ng-apexcharts`    | Angular wrapper for ApexCharts to build interactive visualizations in Angular.              | [Here](https://www.npmjs.com/package/ng-apexcharts)    |
+## 原型涵蓋的功能
 
-#### Dev Dependencies
+| 功能 | 說明 |
+| --- | --- |
+| 選個性 | 五種初始人格（暖暖／小辣／阿嘿／老派／霧霧），決定所有對話與推播的口氣 |
+| 個性漂移 | 黏人／毒舌／話癆／浪漫四條參數，隨互動時段與頻率自己移動 |
+| 套皮 | 8 款外觀，基本款直接有，季節與聯名款綁親密度等級解鎖；換皮同時換配件與車牌 |
+| 盲盒約會 | 抽含路線、時段、預估車資與車車真心話的行程卡，稀有度 N／R／SR／SSR |
+| 作息學習 | 累積 24 小時開啟熱區 → 推論夜貓／早鳥／通勤族／午休派等標籤與信心值 |
+| 自動排程推播 | 由學到的作息反推它自己的推播時間表，文案帶入個性口吻 |
+| 養成互動 | 摸摸、洗車、充電、聊天，影響親密度／心情／能量／默契 |
 
-| Package                       | What it does?                                                                                            | Link                                                              |
-| ----------------------------- | :------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------- |
-| `prettier`                    | An opinionated code formatter                                                                            | [Here](https://www.npmjs.com/package/prettier)                    |
-| `prettier-plugin-tailwindcss` | A Prettier plugin for Tailwind CSS that automatically sorts classes based on our recommended class order | [Here](https://www.npmjs.com/package/prettier-plugin-tailwindcss) |
-| `tailwind-scrollbar`          | Tailwind plugin for styling scrollbars.                                                                  | [Here](https://www.npmjs.com/package/tailwind-scrollbar)          |
-| `tailwindcss`                 | A utility-first CSS framework for rapidly building custom user interfaces.                               | [Here](https://www.npmjs.com/package/tailwindcss)                 |
+## 頁面上的「調度台」
 
-#### Icons and Patterns
+原型左側是給展示用的控制盤，不屬於 app 本身：
 
-This project use [Hero Icons](https://heroicons.com/) and [Hero Patterns](https://heropatterns.com/)
+- **時光滑桿**：把現在時間拉到 0–23 點，天空、車車心情、對話與推播內容會跟著換
+- **平日／週末**：切換情境，影響學習頁的週末佔比推論
+- **發一則車車推播**：即時看到鎖定畫面推播長什麼樣
+- **快轉一週使用紀錄**：灌入模擬資料，讓學習頁一次長出完整的熱區與標籤
+- **清空重養一台**：回到取名與選個性的第一步
 
-#### Disclaimer
+## 技術與資料
 
-The Tailwind name and logos are trademarks of Tailwind Labs Inc.
-The Angular name and logos are trademarks of Google.
+單一 `index.html`，原生 HTML／CSS／JS，車車與盲盒都是手繪 SVG，狀態存在 `localStorage`
+（key：`yoxi.car.v1`）。所有行程、車資與對話皆為示意內容，沒有任何連外請求。
+
+## 待驗證的產品問題
+
+1. 盲盒次數該綁週期、綁乘車次數，還是綁親密度？現在寫死每週 3 次。
+2. 個性漂移的速度要多快才有感但不失控？現行參數偏保守。
+3. 學習頁把推論攤開給使用者看是加分還是恐怖谷？需要實際受測。
+4. 推播頻率上限與靜音時段的預設值尚未定義。
