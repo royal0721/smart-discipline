@@ -348,6 +348,8 @@
     box-shadow: 0 10px 20px -10px rgba(63,148,48,.8); transition: .18s;
   }
   .nsBtn[hidden] { display: none; }
+  .nsBtn:disabled { background: var(--slab-3); color: var(--fog); box-shadow: none; cursor: default; }
+  .nsBtn:disabled:hover { filter: none; transform: none; }
   .nsBtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .nsBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
 
@@ -420,7 +422,18 @@
   .pBody h3 { margin: 0 0 3px; font-size: 15.5px; font-weight: 800; letter-spacing: -.02em; }
   .pBody h3 small { font-family: var(--mono); font-size: 9.5px; color: var(--fog-dim); letter-spacing: .12em; margin-left: 8px; font-weight: 400; }
   .pBody p { margin: 0; font-size: 12.5px; color: var(--fog); line-height: 1.5; }
-  .pBody .quote { margin-top: 6px; font-size: 12.5px; color: var(--lime); }
+  /* 引言是車車在說話，就畫成從左邊頭像長出來的對話框 */
+  .pBody .quote {
+    position: relative; margin-top: 9px; padding: 9px 12px;
+    background: #EFF6E8; border-radius: 3px 14px 14px 14px;
+    font-size: 12.5px; line-height: 1.6; color: #33502C;
+  }
+  .pBody .quote::before {
+    content: ""; position: absolute; left: -4px; top: 8px;
+    width: 11px; height: 11px; background: #EFF6E8; transform: rotate(45deg); border-radius: 2px;
+  }
+  .pCard[aria-pressed="true"] .pBody .quote,
+  .pCard[aria-pressed="true"] .pBody .quote::before { background: #E3F1D8; }
 
   .traitRow { display: flex; align-items: center; gap: 12px; }
   .traitRow label { flex: none; width: 60px; font-size: 12.5px; color: var(--fog); }
@@ -845,6 +858,27 @@
   }
   .hsKill:hover { background: #F7E1E3; }
 
+  /* 盲盒入口 */
+  .boxSheet { max-height: 82%; }
+  .bsBody { align-items: stretch; gap: 14px; padding-top: 2px; }
+  .bsArt { display: grid; place-items: center; padding: 4px 0 2px; }
+  .bsArt svg { width: 118px; height: auto; animation: bob 2.8s ease-in-out infinite; }
+  .bsCount { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .bsCount b { font-size: 21px; letter-spacing: -.02em; }
+  .bsPips { display: flex; gap: 7px; }
+  .bsPips i { width: 10px; height: 10px; border-radius: 50%; background: var(--slab-3); }
+  .bsPips i.on { background: #E4577B; }
+  .bsReset { font-size: 12px; color: var(--fog); }
+  .bsSay { padding: 12px 14px; background: #FDF1F5; border-radius: 14px; font-size: 13.5px; line-height: 1.6; color: #7A3350; }
+  .bsHist { display: flex; flex-direction: column; gap: 7px; }
+  .bsHist .hd { font-size: 12px; color: var(--fog); padding: 2px 2px 0; }
+  .bsHist .row { display: flex; align-items: center; gap: 9px; padding: 9px 12px; background: var(--slab-2); border-radius: 12px; }
+  .bsHist .row .tag { font-family: var(--mono); font-size: 10px; font-weight: 700; color: #FFF; padding: 2px 6px; border-radius: 6px; }
+  .bsHist .row b { flex: 1; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bsHist .row span.t { font-family: var(--mono); font-size: 11px; color: var(--fog); }
+  .boxPin.spent { animation: none; opacity: .55; filter: saturate(.35); }
+  .boxPin.spent .bpGlow { display: none; }
+
   /* 行程中的進度條 */
   .rideBar { display: flex; flex-direction: column; gap: 7px; padding: 2px 2px 0; }
   .rbTrack { position: relative; height: 8px; border-radius: 4px; background: var(--slab-3); }
@@ -1236,7 +1270,7 @@
             <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
 
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">收起來的約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">收起來的約會</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
             <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
@@ -1333,6 +1367,25 @@
             <button class="nsBtn" id="hsBoard" hidden>我上車了</button>
             <button class="nsBtn" id="hsDone" hidden>已經到了</button>
           </div>
+        </div>
+      </div>
+
+      <!-- 盲盒：先進來看還有幾次，再決定要不要開 -->
+      <div class="hailSheet boxSheet" id="boxSheet" hidden>
+        <div class="hsBar">
+          <span class="sheetTitle">盲盒約會</span>
+          <button class="sheetX" id="boxClose" aria-label="關閉">✕</button>
+        </div>
+        <div class="hsBody bsBody">
+          <div class="bsArt" id="bsArt"></div>
+          <div class="bsCount">
+            <b id="bsLeft">還有 3 次</b>
+            <span class="bsPips" id="bsPips"></span>
+            <span class="bsReset" id="bsReset">每週一補滿</span>
+          </div>
+          <button class="nsBtn" id="bsGo">開一個</button>
+          <div class="bsSay" id="bsSay"></div>
+          <div class="bsHist" id="bsHist"></div>
         </div>
       </div>
 
@@ -4140,7 +4193,7 @@
         <span class="pBody">
           <h3>${p.name}<small>${p.type}</small></h3>
           <p>${p.desc}</p>
-          <p class="quote">${p.quote}</p>
+          <p class="quote">${p.quote.replace(/[「」]/g, "")}</p>
         </span>
       </button>`).join("");
     $("persList").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
@@ -4366,15 +4419,56 @@
   }
 
   /* 地圖上的盲盒：一點就開，不要有多餘的步驟擋在高潮前面 */
+  const BOX_MAX = 3;
+
   function renderBoxPin() {
     const pin = $("boxPin");
     if (!pin) return;
-    pin.hidden = S.boxLeft <= 0;
-    if (pin.hidden) return;
+    /* 用完不藏起來——藏起來就沒地方看「什麼時候補」 */
+    pin.hidden = false;
+    pin.className = "boxPin" + (S.boxLeft <= 0 ? " spent" : "");
     $("bpArt").innerHTML = boxSVG();
-    const sl = slotOf(hour).id;
-    $("bpLb").textContent = sl === "evening" || sl === "night" ? "今晚的盲盒" : "有一張約會";
+    $("bpLb").textContent = S.boxLeft > 0 ? `盲盒 · 剩 ${S.boxLeft} 次` : "週一補滿";
   }
+
+  /* 盲盒入口：先看還有幾次，再決定要不要開 */
+  function openBoxSheet() {
+    $("boxSheet").hidden = false;
+    renderBoxSheet();
+  }
+
+  function renderBoxSheet() {
+    const left = S.boxLeft;
+    $("bsArt").innerHTML = boxSVG();
+    $("bsLeft").textContent = left > 0 ? `本週還有 ${left} 次` : "本週抽完了";
+    $("bsPips").innerHTML = Array.from({ length: BOX_MAX },
+      (_, i) => `<i class="${i < left ? "on" : ""}"></i>`).join("");
+    $("bsReset").textContent = left > 0 ? `每週一補滿 ${BOX_MAX} 次` : "下週一補滿";
+    $("bsGo").disabled = left <= 0;
+    $("bsGo").textContent = left > 0 ? "開一個" : "等下週一";
+    $("bsSay").textContent = left > 0 ? pick({
+      warm:  ["我挑了幾條你可能會喜歡的路。", "抽到哪一張都可以，我都會開。"],
+      tsun:  ["不是我想去。是剛好抽到。", "抽吧。反正你也不會挑。"],
+      sunny: ["來了來了！我超期待這個！", "抽！我已經在想路線了！"],
+      gent:  ["行程已備妥，請抽選。", "每一張都排過時間了。"],
+      misty: ["有些地方只有那個時間才好看。", "抽出來的那張，通常會剛好。"]
+    }[S.pers]) : pick({
+      warm:  ["這週的都給你了，下週一再來。", "先把已經抽到的跑完吧。"],
+      tsun:  ["沒了。下週一。", "一週三次還不夠喔。"],
+      sunny: ["用完啦！下週一再戰！", "先去跑抽到的那幾張！"],
+      gent:  ["本週額度已用畢。", "下週一自動補滿。"],
+      misty: ["這週的緣分用完了。", "下週一會再有。"]
+    }[S.pers]);
+
+    const h = (S.history || []).slice(0, 3);
+    $("bsHist").innerHTML = h.length
+      ? `<div class="hd">抽過的</div>` + h.map(x =>
+          `<div class="row"><span class="tag" style="background:${RARITY[x.r].c1}">${x.r}</span>
+             <b>${x.title}</b><span class="t">${x.at}</span></div>`).join("")
+      : "";
+  }
+
+  function closeBoxSheet() { $("boxSheet").hidden = true; }
 
   const RV_SKY = {
     N:   ["#F2F4F6", "#FBFBF8"],
@@ -4467,6 +4561,7 @@
 
   function closeReveal() {
     $("reveal").hidden = true;
+    renderBoxSheet();
     $("rvBox").style.display = "";
     $("rvHint").style.display = "";
     renderBoxPin();
@@ -4535,7 +4630,7 @@
           <span class="pFace">${persThumb(p)}</span>
           <span class="pBody">
             <h3>${p.name}<small>${p.type}</small></h3>
-            <p class="quote" style="margin-top:3px">${p.quote}</p>
+            <p class="quote">${p.quote.replace(/[「」]/g, "")}</p>
           </span>
         </button>`).join("");
       $("onbStep2").querySelectorAll("[data-op]").forEach(b => b.addEventListener("click", () => {
@@ -4627,7 +4722,10 @@
     $("tuneEntry").addEventListener("click", () => go("tune"));
     $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
       b.addEventListener("click", () => { tuneSeg = b.dataset.ts; renderTune(); $("screens").scrollTop = 0; }));
-    $("boxPin").addEventListener("click", e => { e.stopPropagation(); openBox(); });
+    $("boxPin").addEventListener("click", e => { e.stopPropagation(); openBoxSheet(); });
+    $("boxClose").addEventListener("click", closeBoxSheet);
+    $("bsGo").addEventListener("click", () => { closeBoxSheet(); openBox(); });
+    $("boxLeftTx").addEventListener("click", openBoxSheet);
     $("talkBtn").addEventListener("click", e => { e.stopPropagation(); openTalk(); });
     $("talkClose").addEventListener("click", () => { $("talkSheet").hidden = true; });
     $("rvClose").addEventListener("click", closeReveal);
@@ -4661,7 +4759,7 @@
       S = defaults(); save();
       onbStep = 1; shakeCount = 0;
       clearInterval(rideTimer);
-      closeHail();
+      closeHail(); closeBoxSheet();
       $("onbName").value = "小綠";
       $("onb").hidden = false;
       $("reveal").hidden = true;
