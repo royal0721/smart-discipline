@@ -223,7 +223,7 @@
   .carStage {
     position: relative; border-radius: var(--rXl); overflow: hidden;
     height: 382px; box-shadow: 0 10px 26px -16px rgba(22,32,26,.5);
-    background: #E9EFE2;
+    background: #E9EFE2; cursor: pointer;
   }
   .carStage:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1189,6 +1189,40 @@
       sunny: ["滿電！！！可以繞台灣一圈！！", "電量 100！人生 100！"],
       gent: ["電量充足，隨時候命。", "續航無虞，請放心。"],
       misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"]
+    }
+  };
+
+  /* 點車車：依部位與連點次數給不同反應 */
+  const TAP = {
+    warm: {
+      top:  ["…嗯。", "再摸一下也可以。", "你的手好冰，剛從外面回來？"],
+      mid:  ["怎麼了？", "我在。", "今天還好嗎？"],
+      low:  ["那邊是保桿啦。", "有點癢。", "小心手。"],
+      spam: ["好啦好啦，我知道你在。", "你今天心情很好嘛。", "我不會跑掉。"]
+    },
+    tsun: {
+      top:  ["喂。", "不要隨便摸引擎蓋。", "……就一下喔。"],
+      mid:  ["幹嘛。", "我在忙。忙著等你。", "有事快說。"],
+      low:  ["那是我的保桿。", "戳壞了你要賠。", "喂！"],
+      spam: ["夠了喔。", "你很閒欸。", "……好啦，我沒有真的在生氣。"]
+    },
+    sunny: {
+      top:  ["哈哈好癢！", "再來再來！", "摸摸！最喜歡摸摸！"],
+      mid:  ["嗨！", "在在在！", "怎樣怎樣！"],
+      low:  ["噗！那邊不行啦！", "哇！", "那是輪子欸！"],
+      spam: ["你超有精神的欸！", "我們是不是很合！", "今天要出門對不對！"]
+    },
+    gent: {
+      top:  ["承蒙關照。", "今日剛打過蠟。", "多謝。"],
+      mid:  ["在。", "有何吩咐？", "隨時候著。"],
+      low:  ["此處是保險桿，請小心。", "無妨。", "已記下。"],
+      spam: ["您今日似乎心情不錯。", "我陪您。", "不急。"]
+    },
+    misty: {
+      top:  ["金屬也會記得溫度。", "你按了三秒。", "嗯。"],
+      mid:  ["你在確認我還在嗎？", "我一直都在這裡。", "怎麼了？"],
+      low:  ["那裡是我最舊的一塊。", "碰到了。", "有點癢。"],
+      spam: ["你今天話很多。", "我不介意。", "再一次也可以。"]
     }
   };
 
@@ -2966,6 +3000,40 @@
       `<div class="schedRow"><span class="tm">${x.t}</span><span class="bd"><b>${x.b}</b><q>${x.d}</q></span></div>`).join("");
   }
 
+  /* 直接點車車：不經過任何按鈕 */
+  let tapN = 0, tapT = 0;
+  function tapCar(ratio) {
+    const now = Date.now();
+    tapN = now - tapT < 2600 ? tapN + 1 : 1;
+    tapT = now;
+    const zone = ratio < 0.42 ? "top" : ratio < 0.74 ? "mid" : "low";
+    const bank = TAP[S.pers];
+    const line = tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
+
+    S.mood = clamp(S.mood + (tapN >= 4 ? 1 : 3));
+    S.sync = clamp(S.sync + 0.6);
+    if (zone === "top") S.traits.clingy = clamp(S.traits.clingy + 0.6);
+    save();
+
+    $("bubble").textContent = line;
+    $("bubble").style.animation = "none";
+    void $("bubble").offsetWidth;
+    $("bubble").style.animation = "";
+
+    const hold = $("carHold");
+    hold.classList.remove("tapped");
+    void hold.offsetWidth;
+    hold.classList.add("tapped");
+    setTimeout(() => hold.classList.remove("tapped"), 420);
+    CarView.bounce();
+
+    const colors = zone === "top" ? ["#FF86AE", "#FFC46B", "#C9F23A"]
+                 : zone === "mid" ? ["#7DD3FC", "#FFFFFF", "#C9F23A"]
+                 : ["#FFC46B", "#FFFFFF"];
+    sparks(tapN >= 4 ? 12 : 7, colors);
+    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+  }
+
   function renderTabs() {
     const T = [
       { id: "home", n: "車庫", ic: "home" }, { id: "trip", n: "行程", ic: "trip" },
@@ -3240,10 +3308,10 @@
       toast(`情境切換：${PERSONAS[persona].name}`);
     }));
 
-    const cycleMap = () => { mapHl = (mapHl + 1) % Math.max(1, trips().length); renderMap(); };
-    $("carStage").addEventListener("click", cycleMap);
-    $("carStage").addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cycleMap(); }
+    $("carStage").addEventListener("click", e => {
+      if (e.target.closest("#boxPin")) return;
+      const r = $("carStage").getBoundingClientRect();
+      tapCar((e.clientY - r.top) / r.height);
     });
 
     const book = e => {
