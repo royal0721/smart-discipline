@@ -126,6 +126,7 @@
     transition: .18s;
   }
   .btn:hover { background: var(--slab-3); transform: translateY(-1px); }
+  .btn:disabled { opacity: .42; cursor: default; transform: none; }
   .btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .btn .k { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--fog-dim); margin-left: auto; }
   .btn.primary {
@@ -704,6 +705,13 @@
     font-family: var(--sans); font-size: 13.5px; font-weight: 800;
   }
   .rvGo:hover { filter: brightness(1.08); }
+  .rvSkip {
+    margin-left: auto; padding: 10px 14px; border: none; border-radius: 13px; cursor: pointer;
+    background: rgba(255,255,255,.14); color: rgba(255,255,255,.82);
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+  }
+  .rvSkip:hover { background: rgba(255,255,255,.22); }
+  .rvGo { margin-left: 0; }
   .rvNote { font-size: 11px; color: var(--fog-dim); text-align: center; margin-top: 2px; }
   .conf { position: absolute; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; z-index: 3; }
 
@@ -753,6 +761,125 @@
   .tkItem:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
   .tkItem.hot { background: #FDEEF1; color: #A32E45; }
   .tkItem.hot:hover { background: #FBE2E8; }
+
+  /* ── 叫車 ─────────────────────────────────────────────── */
+  .hailSheet {
+    position: absolute; inset: auto 0 0 0; z-index: 80; max-height: 86%;
+    display: flex; flex-direction: column; overflow: hidden;
+    background: #FFFFFF; border-radius: 26px 26px 0 0;
+    box-shadow: 0 -14px 40px -14px rgba(22,32,26,.35);
+    animation: sheetUp .34s cubic-bezier(.2,1,.35,1);
+  }
+  .hailSheet[hidden] { display: none; }
+  .hsBar { flex: none; display: flex; align-items: center; padding: 18px 20px 8px; }
+  .hsBody { flex: 1; overflow-y: auto; padding: 6px 16px 22px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
+  .hsBody::-webkit-scrollbar { display: none; }
+  .hsBody > * { flex: none; }
+  .hsBody[hidden] { display: none; }
+
+  .hsRow {
+    display: flex; align-items: center; gap: 11px; padding: 12px 14px;
+    background: var(--slab-2); border-radius: 15px;
+  }
+  .hsDot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .hsDot.from { background: var(--grass); }
+  .hsDot.to { background: #E4577B; }
+  .hsF { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .hsLb { font-size: 11px; color: var(--fog); letter-spacing: .04em; }
+  .hsVal { font-size: 14.5px; font-weight: 700; color: var(--chalk); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hsVal.off { color: var(--fog); font-weight: 500; }
+  .hsIn {
+    border: none; background: none; padding: 0; width: 100%;
+    font-family: var(--sans); font-size: 14.5px; font-weight: 700; color: var(--chalk);
+  }
+  .hsIn:focus { outline: none; }
+  .hsIn::placeholder { color: var(--fog); font-weight: 500; }
+  .hsLoc {
+    flex: none; border: none; cursor: pointer; padding: 7px 13px; border-radius: 20px;
+    background: var(--grass); color: #FFFFFF; font-family: var(--sans); font-size: 12px; font-weight: 700;
+  }
+  .hsLoc.ghost { background: var(--slab-3); color: var(--chalk); }
+  .hsLoc:disabled { opacity: .5; cursor: default; }
+
+  .hsSug { display: flex; flex-wrap: wrap; gap: 7px; }
+  .hsSug button {
+    border: none; cursor: pointer; padding: 8px 13px; border-radius: 20px;
+    background: #FFFFFF; box-shadow: var(--lift); color: var(--chalk);
+    font-family: var(--sans); font-size: 12.5px; transition: .16s;
+  }
+  .hsSug button:hover { transform: translateY(-1px); }
+  .hsSug .k { color: var(--fog); font-size: 11px; margin-left: 5px; }
+
+  .hsQuote { display: flex; align-items: baseline; justify-content: space-between; padding: 2px 4px; }
+  .hsFare { font-family: var(--mono); font-size: 21px; font-weight: 700; color: var(--chalk); }
+  .hsFare small { font-family: var(--sans); font-size: 11px; color: var(--fog); font-weight: 500; }
+  .hsEta { font-size: 12.5px; color: var(--fog); }
+
+  .hsLiveTop { display: flex; align-items: center; gap: 13px; padding: 4px 4px 2px; }
+  .hsLiveTop b { display: block; font-size: 16px; }
+  .hsLiveTop span.s { font-size: 12.5px; color: var(--fog); }
+  .hsSpin {
+    width: 26px; height: 26px; flex: none; border-radius: 50%;
+    border: 3px solid var(--slab-3); border-top-color: var(--grass);
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hsSpin.done {
+    border-color: var(--grass); animation: none; background: var(--grass);
+    display: grid; place-items: center; color: #FFFFFF; font-size: 14px; font-weight: 900;
+  }
+  .hsDrv { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: var(--slab-2); border-radius: 15px; }
+  .hsDrv .who { display: flex; flex-direction: column; gap: 3px; }
+  .hsDrv .pl { font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: .06em; }
+  .hsDrv .dv { font-size: 12.5px; color: var(--fog); }
+  .hsDrv .et { margin-left: auto; font-family: var(--mono); font-weight: 700; color: var(--grass); }
+  .hsSay { padding: 13px 15px; background: #F2F7EC; border-radius: 15px; font-size: 14px; line-height: 1.55; }
+  .hsActs { display: flex; gap: 9px; }
+  .hsActs .nsBtn { flex: 1; }
+  .hsKill {
+    flex: 1; border: none; cursor: pointer; padding: 14px; border-radius: 15px;
+    background: #FBEDEE; color: #A6323F; font-family: var(--sans); font-size: 14.5px; font-weight: 700;
+  }
+  .hsKill:hover { background: #F7E1E3; }
+
+  /* 進行中的行程：首頁一定要看得到，也一定要能取消 */
+  .liveBar {
+    display: flex; align-items: center; gap: 11px; width: 100%; cursor: pointer;
+    padding: 13px 15px; border: none; border-radius: var(--rLg);
+    background: #EAF4E4; box-shadow: var(--lift); font-family: var(--sans); text-align: left;
+  }
+  .liveBar .pulse { width: 9px; height: 9px; border-radius: 50%; background: var(--grass); animation: pulse 1.4s infinite; flex: none; }
+  .liveBar b { font-size: 14px; color: var(--chalk); }
+  .liveBar span.s { display: block; font-size: 12px; color: var(--fog); }
+  .liveBar .go { margin-left: auto; color: var(--fog); }
+
+  /* 收起來的約會 */
+  .saveRow { display: flex; align-items: center; gap: 10px; padding: 11px 13px; background: #FFFFFF; border-radius: 14px; box-shadow: var(--lift); }
+  .saveRow .tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: #FFFFFF; padding: 3px 7px; border-radius: 7px; flex: none; }
+  .saveRow .tx { flex: 1; min-width: 0; }
+  .saveRow .tx b, .saveRow .tx span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .saveRow .tx b { font-size: 13.5px; }
+  .saveRow .tx span { font-size: 11.5px; color: var(--fog); }
+  .saveRow button {
+    flex: none; border: none; cursor: pointer; padding: 7px 12px; border-radius: 18px;
+    font-family: var(--sans); font-size: 12px; font-weight: 700;
+  }
+  .saveRow .ride { background: var(--grass); color: #FFFFFF; }
+  .saveRow .del { background: var(--slab-2); color: var(--fog); }
+
+  .lnk {
+    border: none; background: none; padding: 0; cursor: pointer;
+    font-family: var(--sans); font-size: inherit; color: var(--grass);
+    font-weight: 700; text-decoration: underline;
+  }
+
+  /* 定位（示範台） */
+  .place.here { display: inline-flex; align-items: center; gap: 6px; }
+  .place .hd { width: 7px; height: 7px; border-radius: 50%; background: var(--grass); flex: none; }
+
+  .geoRow { display: flex; align-items: center; gap: 9px; font-size: 13.5px; }
+  .geoRow .lamp { width: 9px; height: 9px; border-radius: 50%; background: #C4CCC2; flex: none; }
+  .geoRow.on .lamp { background: var(--grass); }
 
   .carHold.mad { animation: mad .5s ease; }
   @keyframes mad {
@@ -888,6 +1015,17 @@
       </div>
     </div>
 
+    <div class="card">
+      <h2>模擬定位</h2>
+      <div class="geoRow" id="geoRow"><span class="lamp"></span><span id="geoState">尚未開啟定位</span></div>
+      <div class="cap" id="geoNote">要先開啟定位，才能指定車車現在停在哪。</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn primary" id="btnGeo" style="justify-content:center">開啟定位</button>
+        <button class="btn ghost" id="btnGeoOff" style="justify-content:center">關閉定位</button>
+      </div>
+      <div class="segRow" id="geoPlaces" style="flex-wrap:wrap"></div>
+    </div>
+
     <!-- 後台：不在 app 裡 -->
     <div class="card console">
       <h2>營運後台 · 作息推論</h2>
@@ -972,6 +1110,12 @@
               </button>
             </div>
 
+            <button class="liveBar" id="liveBar" hidden>
+              <span class="pulse"></span>
+              <span class="tx"><b id="lvTitle">行程進行中</b><span class="s" id="lvSub"></span></span>
+              <span class="go">→</span>
+            </button>
+
             <div class="bookCard">
               <div class="bkTop">
                 <span class="bkTag" id="bkTag">下一站</span>
@@ -1015,8 +1159,8 @@
             <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
 
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">抽過的約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
-            <div id="histHold" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">收起來的約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
           <!-- 加工：邊看車車邊改 -->
@@ -1051,6 +1195,47 @@
         </div>
 
         <nav class="tabs" id="tabs"></nav>
+      </div>
+
+      <!-- 叫車：輸入地點 → 定位 → 叫車 → 隨時可以取消 -->
+      <div class="hailSheet" id="hailSheet" hidden>
+        <div class="hsBar">
+          <span class="sheetTitle" id="hsTitle">叫車</span>
+          <button class="sheetX" id="hailClose" aria-label="關閉">✕</button>
+        </div>
+
+        <div class="hsBody" id="hsForm">
+          <div class="hsRow">
+            <span class="hsDot from"></span>
+            <div class="hsF"><span class="hsLb">從</span><span class="hsVal off" id="hsFrom">還沒開定位</span></div>
+            <button class="hsLoc" id="hsLocate">開啟定位</button>
+          </div>
+          <div class="hsRow">
+            <span class="hsDot to"></span>
+            <div class="hsF"><span class="hsLb">到</span>
+              <input class="hsIn" id="hsTo" placeholder="要去哪？" autocomplete="off"></div>
+          </div>
+          <div class="hsSug" id="hsSug"></div>
+          <div class="segRow" id="hsCars"></div>
+          <div class="hsQuote">
+            <span class="hsFare" id="hsFare">NT$ --</span>
+            <span class="hsEta" id="hsEta">先選一個目的地</span>
+          </div>
+          <button class="nsBtn" id="hsGo" disabled>叫車</button>
+        </div>
+
+        <div class="hsBody" id="hsLive" hidden>
+          <div class="hsLiveTop">
+            <span class="hsSpin" id="hsSpin"></span>
+            <div><b id="hsState">幫你找車</b><span class="s" id="hsSub"></span></div>
+          </div>
+          <div class="hsDrv" id="hsDrv" hidden></div>
+          <div class="hsSay" id="hsSay"></div>
+          <div class="hsActs">
+            <button class="hsKill" id="hsCancel">取消行程</button>
+            <button class="nsBtn" id="hsDone" hidden>已經到了</button>
+          </div>
+        </div>
       </div>
 
       <!-- 跟車車說話 -->
@@ -1138,7 +1323,13 @@
     { id: "sakura", name: "櫻花限定", tag: "聯名", lv: 5, hi: "花瓣會一直掉。它說那是頭皮屑。",
       body: "#F7A8C0", lower: "#FFF3F7", deep: "#E07A9C", glass: "#25202A", light: "#FFF0F5", acc: "sakura", bg: ["#42283A", "#1A1620"] },
     { id: "deer",   name: "聖誕小鹿", tag: "聯名", lv: 6, hi: "十二月限定。鼻子會亮。",
-      body: "#C0503F", lower: "#F8F0E5", deep: "#9C3A2E", glass: "#1A222B", light: "#FFE6A8", acc: "deer", bg: ["#3E2320", "#161A1E"] }
+      body: "#C0503F", lower: "#F8F0E5", deep: "#9C3A2E", glass: "#1A222B", light: "#FFE6A8", acc: "deer", bg: ["#3E2320", "#161A1E"] },
+    { id: "boba",   name: "珍珠奶茶", tag: "人氣", lv: 2, hi: "車頂那根吸管是真的。",
+      body: "#C89A6B", lower: "#F7EBDB", deep: "#8A5F3C", glass: "#241A14", light: "#FFE9C6", acc: "boba", bg: ["#3A2A1E", "#1A1512"] },
+    { id: "fox",    name: "九尾狐", tag: "聯名", lv: 5, hi: "尾巴它自己數過。說九條是上限。",
+      body: "#F0803C", lower: "#FFF4E8", deep: "#C4571F", glass: "#231A18", light: "#FFE0B0", acc: "fox", bg: ["#48291A", "#1C1512"] },
+    { id: "dragon", name: "祥龍出巡", tag: "聯名", lv: 6, hi: "過年限定。整路都在說吉祥話。",
+      body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] }
   ];
 
   const LV_NAMES = ["初次見面", "熟客", "老朋友", "有點在乎", "離不開", "已經是家人"];
@@ -1439,7 +1630,10 @@
     // 皮克敏式：親密度只由真實搭車餵養
     km: 0, rides: 0, rideLog: [],
     placeVisits: {}, souv: {}, equip: [],
-    today: { rides: [], souv: [], events: [] }
+    today: { rides: [], souv: [], events: [] },
+    geo: { on: false, mode: null, place: null },   // 定位：on 之前不能指定位置
+    saved: [],                                     // 收起來的盲盒約會，還沒約車
+    hail: null                                     // 進行中的行程，隨時可以取消
   });
 
   let S = load();
@@ -1453,6 +1647,8 @@
       const p = JSON.parse(raw), base = defaults();
       return { ...base, ...p,
         traits: { ...base.traits, ...(p.traits || {}) },
+        geo: { ...base.geo, ...(p.geo || {}) },
+        saved: Array.isArray(p.saved) ? p.saved : [],
         visits: Array.isArray(p.visits) && p.visits.length === 24 ? p.visits : base.visits };
     } catch { return defaults(); }
   }
@@ -1669,6 +1865,27 @@
      正面平視的扁平插畫。跟 3D 版一樣不畫臉：頭燈就是頭燈，
      只在前保桿留一道細微的笑。
      ──────────────────────────────────────────────────── */
+  /* 畫在車身「後面」的配件：地面光暈、九條尾巴這種要被車身擋住一半的東西 */
+  function svgAccBack(sk) {
+    switch (sk.acc) {
+      case "neon": return `
+        <ellipse cx="140" cy="228" rx="112" ry="16" fill="#7DD3FC" opacity=".3"/>
+        <ellipse cx="140" cy="228" rx="76" ry="9" fill="#C9F23A" opacity=".22"/>`;
+      case "fox": {
+        /* 車身只有 280 寬，尾巴往兩側扇會超出畫布，所以是往車頂後方張開。
+           尾根埋在車身裡，看到的是從肩膀後面探出來的那一段 */
+        const tail = (x, y, a, s) => `<g transform="translate(${x} ${y}) rotate(${a}) scale(${s})">
+            <path d="M0 0 C-11 -28 -10 -58 4 -82 C18 -58 19 -28 9 0 Z" fill="${sk.body}"/>
+            <path d="M4 -82 C14 -64 15 -49 12 -40 C3 -49 -1 -64 4 -82 Z" fill="#FFF1DE"/>
+          </g>`;
+        const L = [[-10, 1.02], [-34, 1.06], [-58, 1.04], [-82, 1], [-106, .94]];
+        return L.map(([a, s]) => tail(95, 92, a, s)).join("")
+             + L.slice(0, 4).map(([a, s]) => tail(185, 92, -a, s)).join("");
+      }
+      default: return "";
+    }
+  }
+
   function svgAcc(sk) {
     switch (sk.acc) {
       case "cat": return `
@@ -1687,9 +1904,33 @@
               font-size="18" font-weight="700" fill="#E8412F">07</text>
         <path d="M52 210 C52 226 74 232 110 232 H170 C206 232 228 226 228 210
                  C228 220 206 224 170 224 H110 C74 224 52 220 52 210 Z" fill="#1A2028"/>`;
-      case "neon": return `
-        <ellipse cx="140" cy="228" rx="112" ry="16" fill="#7DD3FC" opacity=".3"/>
-        <ellipse cx="140" cy="228" rx="76" ry="9" fill="#C9F23A" opacity=".22"/>`;
+      case "boba": {
+        const pearl = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#3A2317"/>
+          <circle cx="${x - r * .3}" cy="${y - r * .32}" r="${r * .3}" fill="#FFFFFF" opacity=".3"/>`;
+        return `
+        <path d="M174 56 L212 -4" stroke="#A82B4C" stroke-width="16" stroke-linecap="round"/>
+        <path d="M174 56 L212 -4" stroke="#F2637F" stroke-width="11.5" stroke-linecap="round"/>
+        <path d="M194 26 L204 32" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity=".45"/>
+        ${pearl(44, 112, 9)}${pearl(60, 128, 7)}
+        ${pearl(236, 112, 9)}${pearl(220, 128, 7)}`;
+      }
+      /* 耳朵用深色，不然跟後面那把尾巴糊在一起 */
+      case "fox": return `
+        <path d="M84 54 L70 8 L122 40 Z" fill="${sk.deep}"/>
+        <path d="M196 54 L210 8 L158 40 Z" fill="${sk.deep}"/>
+        <path d="M88 36 L78 12 L106 28 Z" fill="#FFF1DE"/>
+        <path d="M192 36 L202 12 L174 28 Z" fill="#FFF1DE"/>`;
+      case "dragon": return `
+        <g stroke="#F0C24A" stroke-width="7" fill="none" stroke-linecap="round">
+          <path d="M106 44 C98 24 86 15 70 12"/><path d="M88 21 C78 17 72 11 70 2"/>
+          <path d="M174 44 C182 24 194 15 210 12"/><path d="M192 21 C202 17 208 11 210 2"/>
+        </g>
+        <g stroke="#F0C24A" stroke-width="3.6" fill="none" stroke-linecap="round">
+          <path d="M42 152 C18 150 8 162 12 178 C14 188 25 191 31 184"/>
+          <path d="M238 152 C262 150 272 162 268 178 C266 188 255 191 249 184"/>
+        </g>
+        <circle cx="140" cy="162" r="19" fill="#F5C64B" stroke="#A31F1C" stroke-width="2.5"/>
+        <text x="140" y="170" text-anchor="middle" font-size="19" font-weight="700" fill="#A31F1C">福</text>`;
       case "sakura": return `
         <g fill="#FF9BB8">
           <circle cx="34" cy="70" r="6"/><circle cx="252" cy="92" r="5"/>
@@ -1785,7 +2026,7 @@
         </defs>
 
         <ellipse cx="140" cy="230" rx="86" ry="10" fill="#16201A" opacity=".13"/>
-        ${s.acc === "neon" ? svgAcc(s) : ""}
+        ${svgAccBack(s)}
 
         <rect x="46" y="192" width="46" height="36" rx="17" fill="#2A3038"/>
         <rect x="188" y="192" width="46" height="36" rx="17" fill="#2A3038"/>
@@ -1819,7 +2060,7 @@
         <text x="140" y="212" text-anchor="middle" font-family="ui-monospace, monospace"
               font-size="12" font-weight="700" fill="#FFFFFF" letter-spacing=".5">yoxi</text>
 
-        ${s.acc !== "neon" ? svgAcc(s) : ""}
+        ${svgAcc(s)}
         ${withEquip ? svgEquip() : ""}
       </svg>`;
   }
@@ -2830,8 +3071,10 @@
   }
 
   function renderPlaces() {
-    $("places").innerHTML = PERSONAS[persona].places.map((p, i) =>
-      `<button class="place" data-pl="${i}" aria-pressed="${pinned === p.n}">${p.n}</button>`).join("");
+    $("places").innerHTML = PERSONAS[persona].places.map((p, i) => {
+      const here = S.geo.on && S.geo.place === p.n;
+      return `<button class="place${here ? " here" : ""}" data-pl="${i}" aria-pressed="${pinned === p.n}">${here ? '<span class="hd"></span>' : ""}${p.n}</button>`;
+    }).join("");
     $("places").querySelectorAll("[data-pl]").forEach(b => b.addEventListener("click", () => {
       const p = PERSONAS[persona].places[+b.dataset.pl];
       pinned = pinned === p.n ? null : p.n;
@@ -2867,6 +3110,241 @@
     setTimeout(() => showPush(S.today.events[S.today.events.length - 1]), 700);
   }
 
+  /* ════ 定位 ════════════════════════════════════════════
+     先跟瀏覽器要真的定位權限；拿不到就退成示範定位，
+     但兩種都要讓使用者看得出來現在是哪一種。
+     ──────────────────────────────────────────────────── */
+
+  function geoPlaceList() { return PERSONAS[persona].places; }
+
+  function setGeo(mode, quiet) {
+    const list = geoPlaceList();
+    const keep = list.find(p => p.n === (S.geo && S.geo.place));
+    /* 預設站在最後一個地點（通常是家），不然出發地會跟下一站撞在一起 */
+    S.geo = { on: true, mode, place: keep ? keep.n : list[list.length - 1].n };
+    save(); renderGeo(); renderHail(); if (currentTab === "trip") renderPlaces();
+    if (!quiet) toast(mode === "real" ? "定位已開啟" : "改用示範定位");
+  }
+
+  function geoOff() {
+    S.geo = { on: false, mode: null, place: null };
+    save(); renderGeo(); renderHail();
+    toast("定位已關閉");
+  }
+
+  let geoBusy = false;
+  function askGeo() {
+    if (geoBusy) return;
+    const fail = why => {
+      geoBusy = false; renderGeo();
+      $("geoNote").innerHTML = `${why}。<button class="lnk" id="geoDemo">用示範定位繼續</button>`;
+      const d = $("geoDemo");
+      if (d) d.addEventListener("click", () => setGeo("demo"));
+      toast(why);
+    };
+    if (!navigator.geolocation) return fail("這個瀏覽器沒有定位");
+    geoBusy = true; renderGeo();
+    let done = false;
+    const guard = setTimeout(() => { if (!done) { done = true; fail("定位一直沒回應"); } }, 4500);
+    navigator.geolocation.getCurrentPosition(
+      () => { if (done) return; done = true; clearTimeout(guard); geoBusy = false; setGeo("real"); },
+      e => { if (done) return; done = true; clearTimeout(guard); fail(e && e.code === 1 ? "定位權限被拒絕" : "這個環境拿不到定位"); },
+      { timeout: 4000, maximumAge: 120000 }
+    );
+  }
+
+  function renderGeo() {
+    const on = S.geo.on;
+    $("geoRow").className = "geoRow" + (on ? " on" : "");
+    $("geoState").textContent = geoBusy ? "定位中…"
+      : on ? `已開啟${S.geo.mode === "demo" ? "（示範）" : ""} · 現在在 ${S.geo.place}` : "尚未開啟定位";
+    $("btnGeo").disabled = geoBusy || on;
+    $("btnGeoOff").disabled = !on;
+    if (on || (!geoBusy && !$("geoNote").querySelector("#geoDemo")))
+      $("geoNote").textContent = on ? "指定車車現在停在哪，叫車的出發地會跟著換。" : "要先開啟定位，才能指定車車現在停在哪。";
+    $("geoPlaces").innerHTML = geoPlaceList().map(p =>
+      `<button class="seg" data-gp="${p.n}" aria-pressed="${on && S.geo.place === p.n}" ${on ? "" : "disabled"}>${p.n}</button>`).join("");
+    $("geoPlaces").querySelectorAll("[data-gp]").forEach(b => b.addEventListener("click", () => {
+      S.geo.place = b.dataset.gp; save(); renderGeo(); renderHail();
+      if (currentTab === "home") renderHome();
+      toast(`現在在「${S.geo.place}」`);
+    }));
+  }
+
+  /* ════ 叫車 ════════════════════════════════════════════ */
+
+  const CAR_TYPES = [
+    { id: "std", n: "一般", mul: 1,    cap: "4 人座" },
+    { id: "xl",  n: "大車", mul: 1.35, cap: "6 人座" },
+    { id: "pet", n: "寵物", mul: 1.2,  cap: "可帶籠" }
+  ];
+  const DRIVERS = ["陳大哥", "林小姐", "黃師傅", "吳大哥", "蔡小姐", "鄭師傅"];
+  let hailCar = "std";
+
+  const placeOf = name => {
+    const P = PERSONAS[persona];
+    return P.places.find(x => x.n === name)
+        || (P.appts.find(a => a.loc === name) && { n: name, t: P.appts.find(a => a.loc === name).pt || "office", km: P.appts.find(a => a.loc === name).km || 6 })
+        || { n: name, t: "office", km: 6.5 };
+  };
+
+  function hailQuote(name) {
+    const km = placeOf(name).km || 6;
+    const mul = (CAR_TYPES.find(c => c.id === hailCar) || CAR_TYPES[0]).mul;
+    return { km, fare: Math.round((78 + km * 21) * mul / 5) * 5, min: Math.round(km * 2.4) + 4 };
+  }
+
+  function hailSuggest() {
+    const P = PERSONAS[persona];
+    const out = [];
+    const add = (n, k) => { if (n && !out.some(o => o.n === n)) out.push({ n, k }); };
+    P.places.forEach(p => add(p.n, `${p.km} km`));
+    P.appts.forEach(a => add(a.loc, `${pad(a.h)}:${pad(a.m)}`));
+    (S.saved || []).forEach(s => add(s.to, "收起來的"));
+    return out;
+  }
+
+  function openHail(dest) {
+    $("hailSheet").hidden = false;
+    if (dest !== undefined && !S.hail) $("hsTo").value = dest || "";
+    renderHail();
+  }
+  function closeHail() { $("hailSheet").hidden = true; }
+
+  function renderHail() {
+    const live = S.hail;
+    $("hsForm").hidden = !!live;
+    $("hsLive").hidden = !live;
+    $("hsTitle").textContent = live ? "行程" : "叫車";
+
+    if (!live) {
+      const on = S.geo.on;
+      $("hsFrom").textContent = on ? S.geo.place : "還沒開定位";
+      $("hsFrom").className = "hsVal" + (on ? "" : " off");
+      $("hsLocate").textContent = on ? "重新定位" : "開啟定位";
+      $("hsLocate").className = "hsLoc" + (on ? " ghost" : "");
+      $("hsLocate").disabled = geoBusy;
+
+      const q = $("hsTo").value.trim();
+      const sug = hailSuggest().filter(s => !q || s.n.includes(q)).slice(0, 6);
+      $("hsSug").innerHTML = sug.map(s => `<button data-sg="${s.n}">${s.n}<span class="k">${s.k}</span></button>`).join("");
+      $("hsSug").querySelectorAll("[data-sg]").forEach(b => b.addEventListener("click", () => {
+        $("hsTo").value = b.dataset.sg; renderHail();
+      }));
+
+      $("hsCars").innerHTML = CAR_TYPES.map(c =>
+        `<button class="seg" data-ct="${c.id}" aria-pressed="${c.id === hailCar}">${c.n}</button>`).join("");
+      $("hsCars").querySelectorAll("[data-ct]").forEach(b => b.addEventListener("click", () => {
+        hailCar = b.dataset.ct; renderHail();
+      }));
+
+      const same = on && q === S.geo.place;
+      const ready = !!q && on && !same;
+      if (q) {
+        const { fare, min } = hailQuote(q);
+        $("hsFare").innerHTML = same ? "NT$ --" : `NT$ ${fare} <small>預估</small>`;
+        $("hsEta").textContent = !on ? "開啟定位才知道從哪裡出發"
+                               : same ? "你已經在這裡了"
+                               : `車程約 ${min} 分 · ${(CAR_TYPES.find(c => c.id === hailCar) || CAR_TYPES[0]).cap}`;
+      } else {
+        $("hsFare").innerHTML = "NT$ --";
+        $("hsEta").textContent = on ? "先選一個目的地" : "先開啟定位";
+      }
+      $("hsGo").disabled = !ready;
+      $("hsGo").textContent = ready ? `叫車去「${q}」` : "叫車";
+      return;
+    }
+
+    const matching = live.state === "match";
+    $("hsSpin").className = "hsSpin" + (matching ? "" : " done");
+    $("hsSpin").textContent = matching ? "" : "✓";
+    $("hsState").textContent = matching ? "幫你找車" : "司機在路上了";
+    $("hsSub").textContent = `${live.from} → ${live.to} · NT$ ${live.fare} 預估`;
+    $("hsDrv").hidden = matching;
+    if (!matching) {
+      $("hsDrv").innerHTML = `<span class="who"><span class="pl">${live.plate}</span><span class="dv">${live.driver} · ${live.carName}</span></span>
+        <span class="et">${live.eta} 分</span>`;
+    }
+    $("hsSay").textContent = live.say;
+    $("hsDone").hidden = matching;
+  }
+
+  function startHail() {
+    const to = $("hsTo").value.trim();
+    if (!to || !S.geo.on) return;
+    const { fare, min } = hailQuote(to);
+    const ct = CAR_TYPES.find(c => c.id === hailCar) || CAR_TYPES[0];
+    S.hail = {
+      to, from: S.geo.place, car: hailCar, carName: ct.n, fare, min, state: "match",
+      say: pick({
+        warm:  [`我出發了，你在${S.geo.place}等我一下。`, `找到車了就跟你說，先別走遠。`],
+        tsun:  [`叫得那麼急。我又不是不會來。`, `等一下。我還在路上。`],
+        sunny: [`收到！${to}對吧！我衝了！`, `準備出發囉！安全帶先想一下！`],
+        gent:  [`已受理。目的地：${to}。`, `正在為您安排車輛。`],
+        misty: [`往${to}的路，這個時間應該很安靜。`, `我在來的路上了。`]
+      }[S.pers])
+    };
+    save(); renderHail(); renderLive();
+    setTimeout(() => {
+      if (!S.hail || S.hail.state !== "match") return;
+      S.hail.state = "onway";
+      S.hail.plate = `${pick(["ABC", "AXK", "RBT", "MJY", "KLD"])}-${1000 + Math.floor(Math.random() * 8999)}`;
+      S.hail.driver = pick(DRIVERS);
+      S.hail.eta = 2 + Math.floor(Math.random() * 6);
+      S.hail.say = pick({
+        warm:  [`${S.hail.eta} 分鐘後到，慢慢來不用跑。`, `車來了，你先把東西收一收。`],
+        tsun:  [`到了。你最好已經在門口了。`, `${S.hail.eta} 分鐘。我不會等太久喔。`],
+        sunny: [`接到啦！${S.hail.eta} 分鐘就到！`, `路況超順！馬上到！`],
+        gent:  [`車輛已指派，預計 ${S.hail.eta} 分鐘後抵達。`, `司機已出發，請稍候。`],
+        misty: [`它在往你那邊移動。${S.hail.eta} 分鐘。`, `車已經在路上了。`]
+      }[S.pers]);
+      save(); renderHail(); renderLive();
+      toast(`${S.hail.plate} 接單了`);
+    }, 1700);
+  }
+
+  function cancelHail() {
+    S.hail = null; save(); renderHail(); renderLive();
+    toast("行程已取消");
+  }
+
+  function finishHail() {
+    const h = S.hail;
+    if (!h) return;
+    S.hail = null; save();
+    closeHail();
+    doRide(placeOf(h.to));
+    renderLive();
+  }
+
+  function renderLive() {
+    const bar = $("liveBar");
+    if (!bar) return;
+    const h = S.hail;
+    bar.hidden = !h;
+    if (!h) return;
+    $("lvTitle").textContent = h.state === "match" ? "幫你找車中" : `${h.plate} 在路上`;
+    $("lvSub").textContent = `${h.from} → ${h.to}${h.state === "onway" ? ` · ${h.eta} 分` : ""} · 可以取消`;
+  }
+
+  function renderSaved() {
+    const list = S.saved || [];
+    $("savedHold").innerHTML = list.length ? list.map((s, i) => `
+      <div class="saveRow">
+        <span class="tag" style="background:${RARITY[s.r].c1}">${s.r}</span>
+        <span class="tx"><b>${s.title}</b><span>${s.to} · NT$ ${s.fare}</span></span>
+        <button class="ride" data-sr="${i}">約這趟</button>
+        <button class="del" data-sd="${i}">刪掉</button>
+      </div>`).join("") : `<div class="cap" style="padding:2px 4px">還沒收起任何約會</div>`;
+    $("savedHold").querySelectorAll("[data-sr]").forEach(b => b.addEventListener("click", () => {
+      openHail(list[+b.dataset.sr].to);
+    }));
+    $("savedHold").querySelectorAll("[data-sd]").forEach(b => b.addEventListener("click", () => {
+      const g = S.saved.splice(+b.dataset.sd, 1)[0];
+      save(); renderSaved(); toast(`刪掉「${g.title}」`);
+    }));
+  }
+
   function renderTrip() {
     $("tripWho").textContent = PERSONAS[persona].name;
     renderNextStop(); renderPlaces(); renderToday();
@@ -2887,7 +3365,7 @@
   }
 
   function renderLog() {
-    renderBox();
+    renderBox(); renderSaved();
     const _t = S.today;
     $("logCount").textContent = _t.rides.length
       ? `${_t.rides.length} 趟 · ${_t.rides.reduce((x, r) => x + r.km, 0).toFixed(1)} km` : "還沒出門";
@@ -2995,6 +3473,7 @@
   }
 
   function renderHome() {
+    renderLive();
     const m = moodOf();
     $("homeName").textContent = S.name;
     $("homeLv").textContent = `Lv.${level()} · ${LV_NAMES[level() - 1]}`;
@@ -3092,39 +3571,6 @@
       if (near.length && Math.random() < 0.7) pool = near;
     }
     return pick(pool.length ? pool : PLANS);
-  }
-
-  function renderPlan(p) {
-    if (!p) { $("planHold").innerHTML = ""; return; }
-    const R = RARITY[p.r];
-    $("planHold").innerHTML = `
-      <div class="planCard" style="--rr1:${R.c1};--rr2:${R.c2}">
-        <div class="planInner">
-          <div class="planTop"><span class="rar">${p.r}</span><span class="chip">${p.slot}</span></div>
-          <h3>${p.title}</h3>
-          <div class="route">
-            <div class="stop"><span class="dot"></span><span class="ln">${p.from}</span><span class="tm">出發</span></div>
-            <div class="rail"></div>
-            <div class="stop"><span class="dot end"></span><span class="ln">${p.to}</span><span class="tm">抵達</span></div>
-          </div>
-          <div class="planSay">${p.say[S.pers] || p.say.warm}</div>
-          <div class="planFoot">
-            <span class="fare">NT$ ${p.fare} <small>預估</small></span>
-            <span class="chip lime">加進行事曆</span>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  function renderHist() {
-    if (!S.history.length) { $("histHold").innerHTML = ""; return; }
-    $("histHold").innerHTML =
-      `<div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">抽過的行程</h2></div>` +
-      S.history.slice(0, 6).map(h =>
-        `<div class="histRow">
-           <span class="tag" style="background:${RARITY[h.r].c1}">${h.r}</span>
-           <span>${h.title}</span><span class="dt">${h.at}</span>
-         </div>`).join("");
   }
 
   /* 後台：分析口吻，不在 app 裡 */
@@ -3287,7 +3733,6 @@
   function renderBox() {
     const top = topPlace();
     $("boxLeftTx").textContent = S.boxLeft > 0 ? `本週剩 ${S.boxLeft} 次` : "本週用完了";
-    renderHist();
   }
 
   /* 地圖上的盲盒：一點就開，不要有多餘的步驟擋在高潮前面 */
@@ -3368,17 +3813,23 @@
         <div class="rvSay">${p.say[S.pers] || p.say.warm}</div>
         <div class="rvFoot">
           <span class="rvFare">NT$ ${p.fare} <small>預估</small></span>
-          <button class="rvGo" id="rvGo">加進行事曆</button>
+          <button class="rvSkip" id="rvSkip">這次不要</button>
+          <button class="rvGo" id="rvGo">先收起來</button>
         </div>
         <div class="rvNote">${p.r === "SSR" ? "壓箱寶" : p.r === "SR" ? "這張不常出現" : ""}</div>
       </div>`;
     confetti(p.r === "SSR" ? 46 : p.r === "SR" ? 30 : 16, [R.c1, R.c2, "#FFFFFF"]);
     if (p.r === "SSR" || p.r === "SR") toast(`${p.r}！${p.title}`);
+    /* 開出來的約會不會自己變成預約——只是收進日誌，要不要去是之後的事 */
     $("rvGo").addEventListener("click", () => {
-      toast("已加進行事曆");
+      S.saved.unshift({ r: p.r, title: p.title, to: p.to, from: p.from, slot: p.slot, fare: p.fare, pt: p.pt });
+      S.saved = S.saved.slice(0, 8);
+      save(); renderSaved(); renderTabs();
+      toast("收進日誌了，隨時可以丟掉");
       closeReveal();
-      setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。`), 500);
+      setTimeout(() => showPush(`我把「${p.title}」收起來了。想去再跟我說。`), 500);
     });
+    $("rvSkip").addEventListener("click", () => { closeReveal(); toast("這張跳過了"); });
     renderTabs();
     if (currentTab === "log") renderLog();
     if (currentTab === "home") renderBoxPin();
@@ -3466,7 +3917,7 @@
   /* ════ 啟動 ════════════════════════════════════════════ */
 
   function boot() {
-    renderClock(); renderTabs(); go("home"); renderConsole();
+    renderClock(); renderTabs(); go("home"); renderConsole(); renderGeo(); renderHail();
 
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
     else { $("onb").hidden = true; recordVisit(hour); renderConsole(); }
@@ -3504,6 +3955,9 @@
     $("personaRow").querySelectorAll("[data-pp]").forEach(b => b.addEventListener("click", () => {
       persona = b.dataset.pp;
       pinned = null; mapHl = 0;
+      /* 換情境等於換一組常跑地點，定位跟著回到那組的第一個 */
+      if (S.geo.on) { const L = geoPlaceList(); S.geo.place = L[L.length - 1].n; save(); }
+      renderGeo(); renderHail();
       $("personaRow").querySelectorAll("[data-pp]").forEach(o =>
         o.setAttribute("aria-pressed", String(o.dataset.pp === persona)));
       if (currentTab === "home") renderHome();
@@ -3518,16 +3972,24 @@
       tapCar((e.clientY - r.top) / r.height);
     });
 
+    /* 預約按鈕不再直接扣車——開叫車頁，地點先填好，按不按是使用者的事 */
     const book = e => {
       e.stopPropagation();
       const { a } = nextAppt();
-      const P = PERSONAS[persona];
-      const place = pinned ? (P.places.find(x => x.n === pinned) || { n: pinned, t: "office", km: 6 })
-                           : { n: a.loc, t: a.pt || "office", km: a.km || 6 };
-      doRide(place);
+      openHail(pinned || (a && a.loc) || "");
     };
     $("nsBtn").addEventListener("click", book);
     $("nsBtn2").addEventListener("click", book);
+    $("liveBar").addEventListener("click", () => openHail());
+    $("hailClose").addEventListener("click", closeHail);
+    $("hsLocate").addEventListener("click", askGeo);
+    $("hsTo").addEventListener("input", renderHail);
+    $("hsTo").addEventListener("keydown", e => { if (e.key === "Enter" && !$("hsGo").disabled) startHail(); });
+    $("hsGo").addEventListener("click", startHail);
+    $("hsCancel").addEventListener("click", cancelHail);
+    $("hsDone").addEventListener("click", finishHail);
+    $("btnGeo").addEventListener("click", askGeo);
+    $("btnGeoOff").addEventListener("click", geoOff);
     $("tuneEntry").addEventListener("click", () => go("tune"));
     $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
       b.addEventListener("click", () => { tuneSeg = b.dataset.ts; renderTune(); $("screens").scrollTop = 0; }));
@@ -3563,12 +4025,13 @@
     $("btnReset").addEventListener("click", () => {
       S = defaults(); save();
       onbStep = 1; shakeCount = 0;
+      closeHail();
       $("onbName").value = "小綠";
       $("onb").hidden = false;
       $("reveal").hidden = true;
       $("talkSheet").hidden = true;
       sulkUntil = 0;
-      renderOnb(); renderPlan(null); go("home"); renderConsole();
+      renderOnb(); go("home"); renderConsole(); renderGeo();
       toast("已清空，重養一台");
     });
 
