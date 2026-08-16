@@ -611,6 +611,98 @@
   .teTx span { font-size: 12px; color: var(--fog); }
   .teGo { margin-left: auto; color: var(--fog-dim); font-size: 16px; }
 
+  /* ── 地圖上的盲盒：最該被看到的東西 ─────────────────────── */
+  .boxPin {
+    position: absolute; z-index: 6; left: 14px; top: 152px;
+    display: grid; place-items: center; gap: 4px;
+    background: none; border: none; padding: 0; cursor: pointer;
+    animation: bob 2.6s ease-in-out infinite;
+  }
+  .boxPin[hidden] { display: none; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .boxPin .bpGlow {
+    position: absolute; width: 92px; height: 92px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,80,127,.34), rgba(212,80,127,0) 68%);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(.85); opacity: .75; } 50% { transform: scale(1.12); opacity: 1; } }
+  .boxPin .bpArt { position: relative; width: 62px; height: 62px; display: grid; place-items: center; }
+  .boxPin .bpArt svg { width: 62px; height: auto; filter: drop-shadow(0 8px 14px rgba(22,32,26,.34)); }
+  .boxPin .bpLb {
+    position: relative; font-size: 11px; font-weight: 700; color: #FFFFFF;
+    background: var(--rose); padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(212,80,127,.4);
+  }
+  .boxPin:hover .bpArt { transform: scale(1.06); }
+  .boxPin:focus-visible { outline: 2px solid var(--sky); outline-offset: 6px; border-radius: 18px; }
+
+  /* ── 開箱 ─────────────────────────────────────────────── */
+  .reveal {
+    position: absolute; inset: 0; z-index: 82; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 26px 20px;
+  }
+  .reveal[hidden] { display: none; }
+  .rvSky {
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 80% at 50% 30%, var(--rv1, #FFF3F7) 0%, var(--rv2, #FBF8EF) 62%, var(--ink) 100%);
+    transition: background .5s;
+  }
+  .rvX {
+    position: absolute; top: 58px; right: 20px; z-index: 4;
+    width: 34px; height: 34px; border-radius: 50%; border: none;
+    background: rgba(22,32,26,.10); color: var(--fog); font-size: 14px; cursor: pointer;
+  }
+  .rvX:hover { background: rgba(22,32,26,.18); color: var(--chalk); }
+  .rvStage { position: relative; z-index: 2; display: grid; place-items: center; gap: 18px; }
+  .rvStage[hidden] { display: none; }
+  .rvBox svg { width: 190px; height: auto; filter: drop-shadow(0 22px 34px rgba(212,80,127,.3)); }
+  .rvBox.shake svg { animation: rvShake .48s cubic-bezier(.36,.07,.19,.97) 3; }
+  @keyframes rvShake {
+    10%,90% { transform: translateX(-3px) rotate(-3deg); }
+    30%,50%,70% { transform: translateX(-9px) rotate(-6deg); }
+    40%,60% { transform: translateX(9px) rotate(6deg); }
+  }
+  .rvBox.pop svg { animation: rvPop .5s cubic-bezier(.2,1.5,.4,1) forwards; }
+  @keyframes rvPop { 0% { transform: scale(1); } 45% { transform: scale(1.25); } 100% { transform: scale(0); opacity: 0; } }
+  .rvHint { font-size: 13px; color: var(--fog); }
+
+  .rvCard {
+    position: relative; z-index: 3; width: 100%; max-width: 320px;
+    border-radius: 26px; padding: 3px; box-shadow: 0 26px 50px -20px var(--rr1);
+    background: linear-gradient(150deg, var(--rr1), var(--rr2));
+    animation: rvUp .6s cubic-bezier(.2,1.2,.35,1);
+  }
+  .rvCard[hidden] { display: none; }
+  @keyframes rvUp { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
+  .rvIn { background: #FFFFFF; border-radius: 23px; padding: 18px 17px 16px; display: flex; flex-direction: column; gap: 13px; }
+  .rvTop { display: flex; align-items: center; gap: 9px; }
+  .rvRar {
+    font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: .18em;
+    padding: 4px 10px; border-radius: 8px; color: #FFFFFF; background: var(--rr1);
+  }
+  .rvDate { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
+  .rvHead { display: flex; align-items: center; gap: 12px; }
+  .rvHead .ic { flex: none; width: 54px; height: 54px; border-radius: 16px; background: var(--slab-2); display: grid; place-items: center; overflow: hidden; }
+  .rvHead .ic img, .rvHead .ic svg { max-height: 48px; max-width: 48px; }
+  .rvHead h3 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.03em; line-height: 1.2; }
+  .rvHead .sl { font-size: 11.5px; color: var(--fog); }
+  .rvSay {
+    background: #F7F4EC; border-left: 3px solid var(--rr1); border-radius: 0 13px 13px 0;
+    padding: 12px 13px; font-size: 13.5px; line-height: 1.6; color: var(--chalk);
+  }
+  .rvFoot { display: flex; align-items: center; gap: 10px; }
+  .rvFare { font-family: var(--mono); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .rvFare small { font-size: 10px; color: var(--fog-dim); letter-spacing: .1em; }
+  .rvGo {
+    margin-left: auto; padding: 10px 16px; border: none; border-radius: 13px; cursor: pointer;
+    background: linear-gradient(180deg, #59BC44, #3F9430); color: #FFFFFF;
+    font-family: var(--sans); font-size: 13.5px; font-weight: 800;
+  }
+  .rvGo:hover { filter: brightness(1.08); }
+  .rvNote { font-size: 11px; color: var(--fog-dim); text-align: center; margin-top: 2px; }
+  .conf { position: absolute; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; z-index: 3; }
+
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
     flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
@@ -815,6 +907,11 @@
               </div>
               <div class="bubble" id="bubble">…</div>
               <div class="carHold" id="carHold"></div>
+              <button class="boxPin" id="boxPin" hidden>
+                <span class="bpGlow"></span>
+                <span class="bpArt" id="bpArt"></span>
+                <span class="bpLb" id="bpLb">今晚的盲盒</span>
+              </button>
             </div>
 
             <div class="bookCard">
@@ -860,15 +957,8 @@
             <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
 
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">盲盒約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
+            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">抽過的約會</h2><span id="boxLeftTx">本週剩 3 次</span></div>
             <div class="cap" style="padding:0 4px" id="boxWhere">從你最常去的地方長出來的行程。</div>
-            <div class="boxHold">
-              <button class="boxBtn" id="boxBtn">
-                <span id="boxArt"></span>
-                <span class="boxHint" id="boxHint">連點三下搖它，它就會吐一張行程給你</span>
-              </button>
-            </div>
-            <div id="planHold"></div>
             <div id="histHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
@@ -892,6 +982,17 @@
         </div>
 
         <nav class="tabs" id="tabs"></nav>
+      </div>
+
+      <!-- 盲盒開箱 -->
+      <div class="reveal" id="reveal" hidden>
+        <div class="rvSky" id="rvSky"></div>
+        <button class="rvX" id="rvClose" aria-label="關閉">✕</button>
+        <div class="rvStage" id="rvStage">
+          <div class="rvBox" id="rvBox"></div>
+          <div class="rvHint" id="rvHint">車車翻了一下置物箱…</div>
+        </div>
+        <div class="rvCard" id="rvCard" hidden></div>
       </div>
 
       <!-- 上線引導 -->
@@ -2102,12 +2203,45 @@
     return P;
   }
 
-  /* ── 主場景：閒置擺動 + 拖曳轉動 ───────────────────────── */
-  const Car3D = (() => {
-    let R = null, cv = null, raf = 0, t0 = 0;
-    let yaw = 0, pitch = 0.10, dragYaw = 0, dragPitch = 0, hop = 0, hopT = -9;
+  /* ════════════════════════════════════════════════════════
+     車車的外觀從這裡換。
+
+     現在跑的是內建的 WebGL 佔位模型——那是用程式硬刻的幾何
+     （programmer art），不是建模，所以不會好看。正式資產到位
+     之後，只要改下面這個 CAR_SOURCE，其他邏輯完全不用動。
+
+     kind: "webgl"   內建佔位模型（預設）
+     kind: "frames"  離線算圖的角度序列（Blender 算好的 PNG）
+                     frames: { yoxi: ["a/00.png", "a/01.png", ...], ... }
+                     最推薦：畫質＝離線算圖，效能＝貼圖，可拖曳轉動
+     kind: "model"   glTF／glb，用 <model-viewer> 顯示
+                     glb: { yoxi: "assets/car-yoxi.glb", ... }
+                     需自行載入 model-viewer 的 script（CSP 環境要自架）
+     kind: "spline"  Spline 場景
+                     scene: "https://prod.spline.design/xxxx/scene.splinecode"
+                     需自行載入 spline-viewer 的 script
+     kind: "svg"     手繪向量版本，永遠可用
+
+     任何一種初始化失敗，會自動退回 svg，不會白畫面。
+     ════════════════════════════════════════════════════════ */
+  const CAR_SOURCE = { kind: "webgl" };
+
+  /* ── 渲染器一：內建 WebGL 佔位模型 ─────────────────────── */
+  function webglImpl() {
+    let R = null, cv = null, t0 = 0;
+    let dragYaw = 0, dragPitch = 0, hopT = -9;
     let cur = { sk: SKINS[0], mood: "normal" }, dragging = false, moved = 0, last = null, lastFrame = 0;
     const dpr = Math.min(1.75, window.devicePixelRatio || 1);
+
+    let TR = null, tcv = null, tOK = true;
+    const tcache = {};
+
+    function ok() {
+      try {
+        const c = document.createElement("canvas");
+        return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
+      } catch { return false; }
+    }
 
     function mount(host) {
       if (cv && cv.parentNode === host) return true;
@@ -2128,69 +2262,195 @@
         dragPitch = clamp(dragPitch - dy * 0.008, -0.28, 0.55);
         e.stopPropagation();
       });
-      const end = e => { dragging = false; cv.style.cursor = "grab"; if (moved > 6) e.stopPropagation(); };
-      cv.addEventListener("pointerup", end);
-      cv.addEventListener("pointercancel", end);
+      const endDrag = e => { dragging = false; cv.style.cursor = "grab"; if (moved > 6) e.stopPropagation(); };
+      cv.addEventListener("pointerup", endDrag);
+      cv.addEventListener("pointercancel", endDrag);
       cv.addEventListener("click", e => { if (moved > 6) e.stopPropagation(); });
-      loop(0);
+      requestAnimationFrame(loop);
       return true;
     }
 
     function loop(t) {
-      raf = requestAnimationFrame(loop);
+      requestAnimationFrame(loop);
       if (!t0) t0 = t;
       const s = (t - t0) / 1000;
-      // 只有車庫分頁在看得到的時候才畫，省電也不擋主執行緒
-      if (document.visibilityState === "hidden" || !cv.isConnected || cv.offsetParent === null) return;
+      if (document.visibilityState === "hidden" || !cv || !cv.isConnected || cv.offsetParent === null) return;
       if (t - lastFrame < 24) return;
       lastFrame = t;
       if (!dragging) { dragYaw *= 0.94; dragPitch *= 0.94; }
-      yaw = Math.sin(s * 0.42) * 0.17 + dragYaw;
-      pitch = 0.10 + Math.sin(s * 0.31) * 0.045 + dragPitch;
-      hop = hopT < 0 ? 0 : Math.max(0, Math.sin((s - hopT) * 7.5)) * Math.max(0, 1 - (s - hopT) * 1.4) * 0.42;
+      const yaw = Math.sin(s * 0.42) * 0.17 + dragYaw;
+      const pitch = 0.10 + Math.sin(s * 0.31) * 0.045 + dragPitch;
+      const hop = hopT < 0 ? 0
+        : Math.max(0, Math.sin((s - hopT) * 7.5)) * Math.max(0, 1 - (s - hopT) * 1.4) * 0.42;
       if (hopT >= 0 && s - hopT > 1.2) hopT = -9;
       R.render(carParts(cur.sk, cur.mood), yaw, pitch, hop, dpr);
       window._t = s;
     }
 
-    return {
-      mount,
-      set(sk, mood) { cur = { sk, mood }; },
-      bounce() { hopT = window._t || 0; },
-      alive: () => !!R
-    };
-  })();
-
-  /* ── 縮圖：離屏渲染一次，之後當圖片用 ─────────────────── */
-  const Thumb = (() => {
-    let R = null, cv = null, ok = true;
-    const cache = {};
-    function init() {
-      if (R || !ok) return R;
-      cv = document.createElement("canvas");
-      cv.style.width = "200px"; cv.style.height = "186px";
-      cv.width = 400; cv.height = 372;
-      R = makeGL(cv);
-      if (!R) ok = false;
-      return R;
+    function thumb(sk, key) {
+      if (tcache[key]) return tcache[key];
+      if (!TR && tOK) {
+        tcv = document.createElement("canvas");
+        tcv.width = 400; tcv.height = 372;
+        TR = makeGL(tcv);
+        if (!TR) tOK = false;
+      }
+      if (!TR) return carSVG(sk, "normal", true);
+      TR.render(carParts(sk, "normal"), 0.32, 0.14, 0, 2);
+      try {
+        tcache[key] = `<img src="${tcv.toDataURL("image/png")}" alt="${sk.name || ""}" style="display:block">`;
+      } catch { return carSVG(sk, "normal", true); }
+      return tcache[key];
     }
+
     return {
-      get(sk, key) {
-        if (cache[key]) return cache[key];
-        if (!init()) return null;
-        R.render(carParts(sk, "normal"), 0.32, 0.14, 0, 2);
-        try { cache[key] = cv.toDataURL("image/png"); } catch { return null; }
-        return cache[key];
+      kind: "webgl", ok, mount, thumb,
+      set(sk, mood) { cur = { sk, mood }; },
+      bounce() { hopT = window._t || 0; }
+    };
+  }
+
+  /* ── 渲染器二：離線算圖的角度序列 ─────────────────────────
+     最推薦的正式做法。Blender 算好每個造型一圈的 PNG，
+     這裡只負責換圖與拖曳換格，畫質等同離線算圖。 */
+  function framesImpl(cfg) {
+    const sets = cfg.frames || {};
+    let img = null, cur = null, idx = 0, dragging = false, lastX = 0, moved = 0;
+    const listOf = sk => sets[sk.id] || sets.default || [];
+
+    return {
+      kind: "frames",
+      ok: () => Object.keys(sets).length > 0,
+      mount(host) {
+        img = document.createElement("img");
+        img.alt = "車車";
+        img.style.cssText = "width:250px;height:auto;display:block;touch-action:none;cursor:grab;user-select:none";
+        host.innerHTML = ""; host.appendChild(img);
+        img.addEventListener("pointerdown", e => {
+          dragging = true; moved = 0; lastX = e.clientX;
+          img.setPointerCapture(e.pointerId); e.stopPropagation();
+        });
+        img.addEventListener("pointermove", e => {
+          if (!dragging || !cur) return;
+          const l = listOf(cur.sk); if (l.length < 2) return;
+          const dx = e.clientX - lastX;
+          if (Math.abs(dx) > 6) {
+            idx = (idx + (dx > 0 ? 1 : -1) + l.length) % l.length;
+            img.src = l[idx]; lastX = e.clientX; moved += Math.abs(dx);
+          }
+          e.stopPropagation();
+        });
+        const end = e => { dragging = false; if (moved > 6) e.stopPropagation(); };
+        img.addEventListener("pointerup", end);
+        img.addEventListener("pointercancel", end);
+        img.addEventListener("click", e => { if (moved > 6) e.stopPropagation(); });
+        return true;
+      },
+      set(sk, mood) {
+        cur = { sk, mood };
+        const l = listOf(sk);
+        if (!l.length || !img) return;
+        idx = Math.min(idx, l.length - 1);
+        img.src = l[idx];
+      },
+      thumb(sk) {
+        const l = listOf(sk);
+        return l.length ? `<img src="${l[0]}" alt="${sk.name || ""}" style="display:block">`
+                        : carSVG(sk, "normal", true);
       }
     };
+  }
+
+  /* ── 渲染器三：glTF／glb（<model-viewer>）─────────────────
+     需要先載入 model-viewer 的 script。CSP 環境請自架。 */
+  function modelImpl(cfg) {
+    const glb = cfg.glb || {};
+    let el = null;
+    return {
+      kind: "model",
+      ok: () => !!window.customElements && !!customElements.get("model-viewer") && Object.keys(glb).length > 0,
+      mount(host) {
+        el = document.createElement("model-viewer");
+        el.setAttribute("camera-controls", "");
+        el.setAttribute("auto-rotate", "");
+        el.setAttribute("shadow-intensity", "1");
+        el.setAttribute("exposure", "1.05");
+        el.setAttribute("disable-zoom", "");
+        el.style.cssText = "width:250px;height:236px;display:block;background:transparent";
+        host.innerHTML = ""; host.appendChild(el);
+        return true;
+      },
+      set(sk) { if (el) el.src = glb[sk.id] || glb.default || ""; },
+      thumb(sk) {
+        const poster = (cfg.poster || {})[sk.id];
+        return poster ? `<img src="${poster}" alt="${sk.name || ""}" style="display:block">`
+                      : carSVG(sk, "normal", true);
+      }
+    };
+  }
+
+  /* ── 渲染器四：Spline 場景 ───────────────────────────────
+     需要先載入 spline-viewer 的 script。 */
+  function splineImpl(cfg) {
+    let el = null;
+    return {
+      kind: "spline",
+      ok: () => !!window.customElements && !!customElements.get("spline-viewer") && !!cfg.scene,
+      mount(host) {
+        el = document.createElement("spline-viewer");
+        el.setAttribute("url", cfg.scene);
+        el.style.cssText = "width:250px;height:236px;display:block";
+        host.innerHTML = ""; host.appendChild(el);
+        return true;
+      },
+      /* Spline 端請開一個變數接造型，這裡用 postMessage 通知 */
+      set(sk, mood) {
+        if (el && el.contentWindow) {
+          try { el.contentWindow.postMessage({ type: "yoxi/car", skin: sk.id, mood }, "*"); } catch {}
+        }
+      },
+      thumb(sk) { return carSVG(sk, "normal", true); }
+    };
+  }
+
+  /* ── 渲染器五：手繪向量（永遠可用的退路）───────────────── */
+  function svgImpl() {
+    let host = null, cur = null;
+    return {
+      kind: "svg",
+      ok: () => true,
+      mount(h) { host = h; if (cur) this.set(cur.sk, cur.mood); return true; },
+      set(sk, mood) { cur = { sk, mood }; if (host) host.innerHTML = carSVG(sk, mood, false); },
+      thumb(sk) { return carSVG(sk, "normal", true); }
+    };
+  }
+
+  /* ── 對外只有這一個介面，其他程式都只呼叫它 ──────────────── */
+  const CarView = (() => {
+    const impls = { webgl: webglImpl, frames: framesImpl, model: modelImpl, spline: splineImpl, svg: svgImpl };
+    let impl = null;
+    function resolve() {
+      if (impl) return impl;
+      const want = CAR_SOURCE.kind || "webgl";
+      const made = (impls[want] || impls.webgl)(CAR_SOURCE);
+      if (made.ok()) { impl = made; return impl; }
+      console.warn(`[car] 「${want}」渲染器不可用，退回向量版本。`);
+      impl = svgImpl();
+      return impl;
+    }
+    return {
+      mount(host) { return resolve().mount(host); },
+      set(sk, mood) { resolve().set(sk, mood); },
+      bounce() { const i = resolve(); i.bounce && i.bounce(); },
+      thumb(sk, key) { return resolve().thumb(sk, key); },
+      kind() { return resolve().kind; }
+    };
   })();
 
-  /* 縮圖優先用 3D 離屏渲染，取不到就退回向量圖 */
-  function thumb(sk, key) {
-    const src = Thumb.get(sk, key);
-    return src ? `<img src="${src}" alt="${sk.name || ""}" style="display:block">`
-               : carSVG(sk, "normal", true);
-  }
+  /* 縮圖一律走渲染器；渲染器取不到就自動退回向量圖 */
+  const thumb = (sk, key) => CarView.thumb(sk, key);
+
+  /* 個性頭像：同一台車，依人格上色 */
   function persThumb(p) {
     const sk = { id: "p" + p.id, name: p.name, body: p.tint, lower: "#FFFFFF",
                  deep: p.tint, glass: "#1E2A22", light: "#EAF7FF", acc: "none" };
@@ -2417,7 +2677,7 @@
     if (currentTab === "home") renderHome();
     if (currentTab === "trip") renderTrip();
     if (currentTab === "log") renderLog();
-    if (Car3D.alive()) Car3D.set(skin(), moodOf());
+    CarView.set(skin(), moodOf());
     toast(got ? `帶回「${got.n}」` : `+${place.km} km · 親密度成長`);
     setTimeout(() => showPush(S.today.events[S.today.events.length - 1]), 700);
   }
@@ -2507,7 +2767,7 @@
       if (S.equip.includes(id)) S.equip = S.equip.filter(x => x !== id);
       else { S.equip.push(id); if (S.equip.length > 2) S.equip.shift(); }
       save(); renderSouv();
-      if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      CarView.set(skin(), moodOf());
       if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
       toast(S.equip.includes(id) ? `掛上「${souvOf(id).n}」` : `收起「${souvOf(id).n}」`);
     }));
@@ -2545,10 +2805,11 @@
     $("homeName").textContent = S.name;
     $("homeLv").textContent = `Lv.${level()} · ${LV_NAMES[level() - 1]}`;
     $("homeMood").textContent = MOOD_TEXT[m];
-    if (Car3D.mount($("carHold"))) Car3D.set(skin(), m);
-    else $("carHold").innerHTML = carSVG(skin(), m, false);
+    CarView.mount($("carHold"));
+    CarView.set(skin(), m);
     $("bubble").textContent = line();
     renderMap();
+    renderBoxPin();
     renderBook();
     $("teIc").innerHTML = thumb(skin(), skin().id);
     $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
@@ -2583,7 +2844,7 @@
       S.pers = b.dataset.p;
       S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
       save(); renderPers(); renderConsole();
-      if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      CarView.set(skin(), moodOf());
       toast(`${S.name} 換成「${pers().type}」了`);
     }));
 
@@ -2666,18 +2927,6 @@
          </div>`).join("");
   }
 
-  function renderBox() {
-    const top = topPlace();
-    $("boxWhere").textContent = top
-      ? `你最常去「${PLACE_TYPE[top].name}」，盲盒會從那附近長出來。`
-      : "先搭幾趟車，盲盒才知道要從哪裡長。";
-    $("boxArt").innerHTML = boxSVG();
-    $("boxLeftTx").textContent = S.boxLeft > 0 ? `本週剩 ${S.boxLeft} 次` : "本週用完了";
-    $("boxHint").textContent = S.boxLeft > 0 ? "連點三下搖它，它就會吐一張行程給你"
-                                             : "下週一補充。它說它需要休息一下。";
-    renderHist();
-  }
-
   /* 後台：分析口吻，不在 app 裡 */
   function renderConsole() {
     const total = S.visits.reduce((a, b) => a + b, 0);
@@ -2742,8 +2991,6 @@
     ({ home: renderHome, trip: renderTrip, log: renderLog, tune: renderTune })[id]();
   }
 
-  /* ════ 互動 ════════════════════════════════════════════ */
-
   function toast(msg) {
     const t = $("toast");
     t.textContent = msg; t.classList.add("in");
@@ -2769,26 +3016,131 @@
     }
   }
 
+  function renderBox() {
+    const top = topPlace();
+    $("boxWhere").textContent = top
+      ? `盲盒會從你最常去的「${PLACE_TYPE[top].name}」附近長出來。`
+      : "先搭幾趟車，盲盒才知道要從哪裡長。";
+    $("boxLeftTx").textContent = S.boxLeft > 0 ? `本週剩 ${S.boxLeft} 次` : "本週用完了";
+    renderHist();
+  }
+
+  /* 地圖上的盲盒：一點就開，不要有多餘的步驟擋在高潮前面 */
+  function renderBoxPin() {
+    const pin = $("boxPin");
+    if (!pin) return;
+    pin.hidden = S.boxLeft <= 0;
+    if (pin.hidden) return;
+    $("bpArt").innerHTML = boxSVG();
+    const sl = slotOf(hour).id;
+    $("bpLb").textContent = sl === "evening" || sl === "night" ? "今晚的盲盒" : "有一張約會";
+  }
+
+  const RV_SKY = {
+    N:   ["#F2F4F6", "#FBFBF8"],
+    R:   ["#E8F3FB", "#F8FBFD"],
+    SR:  ["#FDEDF3", "#FDF7F9"],
+    SSR: ["#F6FBE4", "#FEFBEE"]
+  };
+
   function openBox() {
     if (S.boxLeft <= 0) { toast("本週的盲盒用完了"); return; }
-    shakeCount++;
-    const btn = $("boxBtn");
-    btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
-    if (shakeCount < 3) {
-      $("boxHint").textContent = shakeCount === 1 ? "有東西在裡面動…再兩下" : "快出來了…再一下";
-      return;
-    }
-    shakeCount = 0;
+    const rv = $("reveal");
+    rv.hidden = false;
+    $("rvCard").hidden = true;
+    $("rvStage").hidden = false;
+    $("rvSky").style.setProperty("--rv1", "#FDEDF3");
+    $("rvSky").style.setProperty("--rv2", "#FBF8EF");
+    $("rvBox").className = "rvBox shake";
+    $("rvBox").innerHTML = boxSVG();
+    $("rvHint").textContent = pick({
+      warm:  ["車車翻了一下置物箱…", "它說它藏了一個東西給你…"],
+      tsun:  ["它假裝不在意地把盒子推過來…", "「不是特地準備的。」它說。"],
+      sunny: ["它超興奮地把盒子抱過來！", "「快打開快打開！」"],
+      gent:  ["它把盒子端正地放好…", "「請過目。」"],
+      misty: ["它從後座拿出一個盒子…", "「這個只有今天會出現。」"]
+    }[S.pers]);
+
+    setTimeout(() => {
+      $("rvBox").className = "rvBox pop";
+      setTimeout(reveal, 420);
+    }, 1450);
+  }
+
+  function reveal() {
     S.boxLeft--;
     const p = rollPlan();
+    const R = RARITY[p.r];
     S.history.unshift({ r: p.r, title: p.title, at: `${pad(hour)}:40` });
     S.history = S.history.slice(0, 12);
     S.intimacy += p.r === "SSR" ? 20 : p.r === "SR" ? 12 : 5;
     S.mood = clamp(S.mood + 6);
     save();
-    renderPlan(p); renderLog(); renderTabs(); renderConsole();
-    toast(p.r === "SSR" ? "SSR！它把壓箱寶拿出來了" : `抽到 ${p.r} · ${p.title}`);
-    setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。要去嗎？`), 950);
+
+    $("rvStage").hidden = true;
+    $("rvSky").style.setProperty("--rv1", RV_SKY[p.r][0]);
+    $("rvSky").style.setProperty("--rv2", RV_SKY[p.r][1]);
+    const card = $("rvCard");
+    card.hidden = false;
+    card.style.setProperty("--rr1", R.c1);
+    card.style.setProperty("--rr2", R.c2);
+    card.innerHTML = `
+      <div class="rvIn">
+        <div class="rvTop">
+          <span class="rvRar">${p.r}</span>
+          <span class="chip">${PLACE_TYPE[p.pt] ? PLACE_TYPE[p.pt].name : "特別行程"}</span>
+          <span class="rvDate">${pad(hour)}:40</span>
+        </div>
+        <div class="rvHead">
+          <span class="ic">${thumb(skin(), skin().id)}</span>
+          <span><h3>${p.title}</h3><span class="sl">${p.slot}</span></span>
+        </div>
+        <div class="route">
+          <div class="stop"><span class="dot"></span><span class="ln">${p.from}</span><span class="tm">出發</span></div>
+          <div class="rail"></div>
+          <div class="stop"><span class="dot end"></span><span class="ln">${p.to}</span><span class="tm">抵達</span></div>
+        </div>
+        <div class="rvSay">${p.say[S.pers] || p.say.warm}</div>
+        <div class="rvFoot">
+          <span class="rvFare">NT$ ${p.fare} <small>預估</small></span>
+          <button class="rvGo" id="rvGo">加進行事曆</button>
+        </div>
+        <div class="rvNote">${p.r === "SSR" ? "SSR · 它把壓箱寶拿出來了" : p.r === "SR" ? "SR · 這張不常出現" : "截圖傳給要一起去的人"}</div>
+      </div>`;
+    confetti(p.r === "SSR" ? 46 : p.r === "SR" ? 30 : 16, [R.c1, R.c2, "#FFFFFF"]);
+    if (p.r === "SSR" || p.r === "SR") toast(`${p.r}！${p.title}`);
+    $("rvGo").addEventListener("click", () => {
+      toast("已加進行事曆");
+      closeReveal();
+      setTimeout(() => showPush(`${S.name} 幫你排好了「${p.title}」，${p.slot}。`), 500);
+    });
+    renderTabs();
+    if (currentTab === "log") renderLog();
+    if (currentTab === "home") renderBoxPin();
+  }
+
+  function closeReveal() {
+    $("reveal").hidden = true;
+    renderBoxPin();
+  }
+
+  function confetti(n, colors) {
+    const host = $("reveal");
+    const w = host.clientWidth, h = host.clientHeight;
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement("span");
+      el.className = "conf";
+      el.style.background = pick(colors);
+      el.style.left = (w / 2 + (Math.random() - .5) * 90) + "px";
+      el.style.top = (h * .42) + "px";
+      el.style.transition = "transform 1.1s cubic-bezier(.15,.7,.4,1), opacity 1.1s";
+      host.appendChild(el);
+      requestAnimationFrame(() => {
+        el.style.transform = `translate(${(Math.random() - .5) * w * 1.1}px, ${(Math.random() - .35) * h * .9}px) rotate(${Math.random() * 720}deg)`;
+        el.style.opacity = "0";
+      });
+      setTimeout(() => el.remove(), 1150);
+    }
   }
 
   function showPush(msg) {
@@ -2912,6 +3264,8 @@
     $("nsBtn").addEventListener("click", book);
     $("nsBtn2").addEventListener("click", book);
     $("tuneEntry").addEventListener("click", () => go("tune"));
+    $("boxPin").addEventListener("click", e => { e.stopPropagation(); openBox(); });
+    $("rvClose").addEventListener("click", closeReveal);
 
     $("btnPush").addEventListener("click", autoPush);
     $("push").addEventListener("click", () => $("push").classList.remove("in"));
@@ -2933,7 +3287,7 @@
       if (currentTab === "home") renderHome();
       if (currentTab === "trip") renderTrip();
       if (currentTab === "log") renderLog();
-      if (Car3D.alive()) Car3D.set(skin(), moodOf());
+      CarView.set(skin(), moodOf());
       toast(`跑了 4 趟 · 共 ${S.km.toFixed(1)} km`);
     });
 
@@ -2942,11 +3296,11 @@
       onbStep = 1; shakeCount = 0;
       $("onbName").value = "小綠";
       $("onb").hidden = false;
+      $("reveal").hidden = true;
       renderOnb(); renderPlan(null); go("home"); renderConsole();
       toast("已清空，重養一台");
     });
 
-    $("boxBtn").addEventListener("click", openBox);
   }
 
   boot();
