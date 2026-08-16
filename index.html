@@ -347,6 +347,7 @@
     font-family: var(--sans); font-size: 14.5px; font-weight: 800;
     box-shadow: 0 10px 20px -10px rgba(63,148,48,.8); transition: .18s;
   }
+  .nsBtn[hidden] { display: none; }
   .nsBtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
   .nsBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
 
@@ -687,10 +688,12 @@
   }
   .rvDate { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--fog-dim); }
   .rvHead { display: flex; align-items: center; gap: 12px; }
-  .rvHead .ic { flex: none; width: 54px; height: 54px; border-radius: 16px; background: var(--slab-2); display: grid; place-items: center; overflow: hidden; }
+  .rvHead .ic { flex: none; min-width: 54px; height: 54px; padding: 0 6px; border-radius: 16px; background: var(--slab-2); display: flex; align-items: center; justify-content: center; gap: 2px; overflow: hidden; }
+  .rvHead .ic.two svg { width: 38px; }
   .rvHead .ic img { max-height: 48px; max-width: 48px; }
   .rvHead .ic svg { width: 50px; height: auto; }
-  .rvHead h3 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.03em; line-height: 1.2; }
+  .rvHead h3 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.03em; line-height: 1.28; }
+  .rvHead > span:last-child { min-width: 0; }
   .rvHead .sl { font-size: 11.5px; color: var(--fog); }
   .rvSay {
     background: #F7F4EC; border-left: 3px solid var(--rr1); border-radius: 0 13px 13px 0;
@@ -841,6 +844,75 @@
     background: #FBEDEE; color: #A6323F; font-family: var(--sans); font-size: 14.5px; font-weight: 700;
   }
   .hsKill:hover { background: #F7E1E3; }
+
+  /* 行程中的進度條 */
+  .rideBar { display: flex; flex-direction: column; gap: 7px; padding: 2px 2px 0; }
+  .rbTrack { position: relative; height: 8px; border-radius: 4px; background: var(--slab-3); }
+  .rbFill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--grass); transition: width .8s linear; }
+  .rbCar {
+    position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+    border-radius: 50%; background: #FFFFFF; box-shadow: 0 2px 8px rgba(22,32,26,.24);
+    display: grid; place-items: center; transition: left .8s linear;
+  }
+  .rbCar svg { width: 15px; height: 15px; }
+  .rbEnds { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--fog); }
+
+  /* 加購 */
+  .addOn { display: flex; flex-direction: column; gap: 9px; }
+  .aoHead { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px; }
+  .aoHead b { font-size: 14px; }
+  .aoHead span { font-size: 11.5px; color: var(--fog); }
+  #aoList { display: flex; flex-direction: column; gap: 8px; }
+  .aoItem {
+    display: flex; align-items: center; gap: 11px; width: 100%; cursor: pointer; text-align: left;
+    padding: 11px 13px; border: none; border-radius: 14px; background: var(--slab-2);
+    font-family: var(--sans); transition: .16s;
+  }
+  .aoItem:hover { background: var(--slab-3); }
+  .aoItem[aria-pressed="true"] { background: #EAF4E4; box-shadow: 0 0 0 2px var(--grass) inset; }
+  .aoItem .ic { width: 34px; height: 34px; flex: none; display: grid; place-items: center; background: #FFFFFF; border-radius: 11px; }
+  .aoItem .tx { flex: 1; min-width: 0; }
+  .aoItem .tx b { display: block; font-size: 13.5px; color: var(--chalk); }
+  .aoItem .tx span { font-size: 11.5px; color: var(--fog); }
+  .aoItem .pr { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--grass); flex: none; }
+
+  /* 聯名活動 */
+  .campBar {
+    display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;
+    padding: 12px 14px; border: none; border-radius: var(--rLg);
+    background: linear-gradient(120deg, var(--cb1, #4FB477), var(--cb2, #2C7A54));
+    font-family: var(--sans); text-align: left; box-shadow: var(--lift);
+  }
+  .campBar[hidden] { display: none; }
+  .cbTag { flex: none; font-size: 10.5px; font-weight: 700; color: #FFFFFF; background: rgba(255,255,255,.24); padding: 3px 8px; border-radius: 8px; }
+  .cbTx { flex: 1; min-width: 0; color: #FFFFFF; }
+  .cbTx b { display: block; font-size: 14px; }
+  .cbTx span { font-size: 11.5px; opacity: .82; }
+  .cbGo { color: rgba(255,255,255,.8); }
+
+  .campCard { border-radius: var(--rLg); overflow: hidden; box-shadow: var(--lift); background: #FFFFFF; }
+  .ccTop { padding: 14px 16px 13px; color: #FFFFFF; display: flex; flex-direction: column; gap: 3px; }
+  .ccTop .row { display: flex; align-items: center; gap: 7px; }
+  .ccTop .kind { font-size: 10.5px; font-weight: 700; background: rgba(255,255,255,.24); padding: 3px 8px; border-radius: 8px; }
+  .ccTop .dt { margin-left: auto; font-family: var(--mono); font-size: 11px; opacity: .82; }
+  .ccTop h3 { font-size: 17px; }
+  .ccTop .bl { font-size: 12px; opacity: .86; line-height: 1.5; }
+  .ccBody { padding: 13px 16px 15px; display: flex; flex-direction: column; gap: 11px; }
+  .ccProg { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--fog); }
+  .ccProg .bar { flex: 1; height: 7px; border-radius: 4px; background: var(--slab-3); overflow: hidden; }
+  .ccProg .bar i { display: block; height: 100%; border-radius: 4px; }
+  .ccTier { display: flex; align-items: center; gap: 10px; }
+  .ccTier .ic { width: 38px; height: 38px; flex: none; display: grid; place-items: center; background: var(--slab-2); border-radius: 12px; }
+  .ccTier .tx { flex: 1; min-width: 0; }
+  .ccTier .tx b { display: block; font-size: 13px; }
+  .ccTier .tx span { font-size: 11.5px; color: var(--fog); }
+  .ccTier button {
+    flex: none; border: none; cursor: pointer; padding: 8px 13px; border-radius: 18px;
+    font-family: var(--sans); font-size: 12px; font-weight: 700; background: var(--grass); color: #FFFFFF;
+  }
+  .ccTier button:disabled { background: var(--slab-3); color: var(--fog); cursor: default; }
+  .ccTier.got .tx b { color: var(--fog); }
+  .ccJoin { width: 100%; }
 
   /* 進行中的行程：首頁一定要看得到，也一定要能取消 */
   .liveBar {
@@ -1146,6 +1218,11 @@
               <div class="nsSay" id="nsSay">…</div>
               <button class="nsBtn" id="nsBtn2">現在叫車</button>
             </div>
+            <button class="campBar" id="campBar" hidden>
+              <span class="cbTag" id="cbTag">聯名</span>
+              <span class="cbTx"><b id="cbTitle"></b><span id="cbSub"></span></span>
+              <span class="cbGo">→</span>
+            </button>
             <div class="places" id="places"></div>
             <div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">今天的安排</h2><span id="todayLeft"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="todayList"></div>
@@ -1169,6 +1246,7 @@
             <div class="segRow" id="tuneSeg">
               <button class="seg" data-ts="skin" aria-pressed="true">造型</button>
               <button class="seg" data-ts="souv" aria-pressed="false">掛件</button>
+              <button class="seg" data-ts="camp" aria-pressed="false">聯名</button>
               <button class="seg" data-ts="pers" aria-pressed="false">個性</button>
             </div>
 
@@ -1182,6 +1260,11 @@
               <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">掛件</h2><span id="souvCount">0 / 0</span></div>
               <div class="cap" style="padding:0 4px 6px">最多掛兩件</div>
               <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+            </div>
+
+            <div id="tsCamp" hidden>
+              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">進行中的活動</h2><span id="campCount"></span></div>
+              <div id="campHold" style="display:flex;flex-direction:column;gap:12px"></div>
             </div>
 
             <div id="tsPers" hidden>
@@ -1230,9 +1313,24 @@
             <div><b id="hsState">幫你找車</b><span class="s" id="hsSub"></span></div>
           </div>
           <div class="hsDrv" id="hsDrv" hidden></div>
+
+          <!-- 行程中：走到哪了 -->
+          <div class="rideBar" id="rideBar" hidden>
+            <div class="rbTrack"><span class="rbFill" id="rbFill"></span><span class="rbCar" id="rbCar"></span></div>
+            <div class="rbEnds"><span id="rbFrom">出發</span><span id="rbTo">抵達</span></div>
+          </div>
+
           <div class="hsSay" id="hsSay"></div>
+
+          <!-- 加購：加的錢換得到看得到的東西 -->
+          <div class="addOn" id="addOn" hidden>
+            <div class="aoHead"><b>要不要加點什麼</b><span id="aoNote">加購都送虛寶</span></div>
+            <div id="aoList"></div>
+          </div>
+
           <div class="hsActs">
             <button class="hsKill" id="hsCancel">取消行程</button>
+            <button class="nsBtn" id="hsBoard" hidden>我上車了</button>
             <button class="nsBtn" id="hsDone" hidden>已經到了</button>
           </div>
         </div>
@@ -1633,7 +1731,9 @@
     today: { rides: [], souv: [], events: [] },
     geo: { on: false, mode: null, place: null },   // 定位：on 之前不能指定位置
     saved: [],                                     // 收起來的盲盒約會，還沒約車
-    hail: null                                     // 進行中的行程，隨時可以取消
+    hail: null,                                    // 進行中的行程，隨時可以取消
+    camp: {},                                      // 聯名活動：{ id: { joined, base, claimed:[] } }
+    coupons: []                                    // 廣告主給的折價券
   });
 
   let S = load();
@@ -1649,6 +1749,8 @@
         traits: { ...base.traits, ...(p.traits || {}) },
         geo: { ...base.geo, ...(p.geo || {}) },
         saved: Array.isArray(p.saved) ? p.saved : [],
+        camp: p.camp && typeof p.camp === "object" ? p.camp : {},
+        coupons: Array.isArray(p.coupons) ? p.coupons : [],
         visits: Array.isArray(p.visits) && p.visits.length === 24 ? p.visits : base.visits };
     } catch { return defaults(); }
   }
@@ -1674,8 +1776,39 @@
     store:  { name: "超商與宵夜",     icon: "🏪" },
     cafe:   { name: "咖啡廳與工作室", icon: "☕" },
     market: { name: "市場與小吃",     icon: "🍜" },
-    river:  { name: "河堤與水岸",     icon: "🌊" }
+    river:  { name: "河堤與水岸",     icon: "🌊" },
+    camp:   { name: "活動限定",       icon: "🎁" }
   };
+
+  /* ════ 聯名／廣告活動 ══════════════════════════════════
+     這裡的合作對象全部是虛構的：原型不掛真實 IP 或廣告主的名字與識別。
+     欄位就是正式接檔時要填的東西——檔期、主視覺色、獎勵階梯。
+     ──────────────────────────────────────────────────── */
+
+  const CAMPAIGNS = [
+    { id: "forest", kind: "聯名", partner: "森林小獸", title: "十週年一起出門",
+      from: "8/01", to: "9/15", c1: "#4FB477", c2: "#2C7A54", hot: true,
+      blurb: "搭車就長進度，滿了直接掛上車。",
+      tiers: [
+        { need: 2, type: "souv", id: "campleaf", label: "小獸吊牌" },
+        { need: 5, type: "souv", id: "campball", label: "十週年紀念球" },
+        { need: 9, type: "skin", id: "fox",       label: "九尾狐造型" }
+      ] },
+    { id: "arcade", kind: "聯名", partner: "霓虹街機", title: "夜跑季",
+      from: "8/10", to: "8/31", c1: "#7A5CF0", c2: "#3E2C90",
+      blurb: "晚上十點後的每一趟都算兩次。",
+      tiers: [
+        { need: 3, type: "souv", id: "camptoken", label: "代幣吊飾" },
+        { need: 7, type: "skin", id: "neon",      label: "霓虹夜跑造型" }
+      ] },
+    { id: "coffee", kind: "廣告", partner: "日安咖啡", title: "上車就有折價券",
+      from: "8/05", to: "8/25", c1: "#C08552", c2: "#7A5230",
+      blurb: "廣告主投放的活動。搭滿就送對方的東西，不是我們的。",
+      tiers: [
+        { need: 2, type: "souv", id: "campcup", label: "聯名隨行杯" },
+        { need: 4, type: "coupon", id: "c50",    label: "折價券 NT$50" }
+      ] }
+  ];
 
   const SOUV = [
     { id: "badge",  n: "識別證吊牌",     t: "office", r: "N",  m: "soft", c: "#E8ECF0", scl: [0.075,0.11,0.014], slot: "hang" },
@@ -1703,7 +1836,13 @@
 
     { id: "key",    n: "家裡的鑰匙圈",   t: "home",   r: "N",  m: "ring", c: "#C0C6CC", scl: [0.05,0.05,0.05],  slot: "hang" },
     { id: "slipper",n: "一隻拖鞋",       t: "home",   r: "N",  m: "soft", c: "#7FB8D8", scl: [0.08,0.03,0.045], slot: "roof" },
-    { id: "downcat",n: "樓下那隻貓",     t: "home",   r: "R",  m: "sph",  c: "#EFE3D0", scl: [0.06,0.055,0.06], slot: "roof" }
+    { id: "downcat",n: "樓下那隻貓",     t: "home",   r: "R",  m: "sph",  c: "#EFE3D0", scl: [0.06,0.055,0.06], slot: "roof" },
+
+    /* 活動限定：不會從搭車掉落，只能從聯名活動拿 */
+    { id: "campleaf", n: "小獸吊牌",       t: "camp", r: "R",  m: "soft", c: "#4FB477", scl: [0.07,0.09,0.014], slot: "hang" },
+    { id: "campball", n: "十週年紀念球",   t: "camp", r: "SR", m: "sph",  c: "#F0603C", scl: [0.055,0.055,0.055], slot: "hang" },
+    { id: "camptoken",n: "代幣吊飾",       t: "camp", r: "R",  m: "ring", c: "#7A5CF0", scl: [0.05,0.05,0.05],  slot: "hang" },
+    { id: "campcup",  n: "聯名隨行杯",     t: "camp", r: "R",  m: "cyl",  c: "#C08552", scl: [0.05,0.09,0.05],  slot: "hang" }
   ];
   const SOUV_RATE = { N: 0.52, R: 0.34, SR: 0.14 };
 
@@ -2128,6 +2267,39 @@
       <g stroke="#3E7BB5" stroke-width="3.4" stroke-linecap="round" fill="none">
         <path d="M18 9.6 L11.8 17.6"/><path d="M18 9.6 L24.2 17.6"/></g>
       <circle cx="18" cy="8.6" r="2.3" fill="#3E7BB5" ${k}/>`,
+
+    /* 小獸吊牌：葉子形狀的壓克力吊牌 */
+    campleaf: k => `
+      <rect x="15.6" y="1.6" width="4.8" height="4" rx="2" fill="none" stroke="#8E9AA6" stroke-width="1.6"/>
+      <path d="M18 5.6 C26 10 29 18 24.6 26 C21 32.4 15 32.4 11.4 26 C7 18 10 10 18 5.6 Z" fill="#4FB477" ${k}/>
+      <path d="M18 9 C18 16 18 22 18 29" stroke="#2C7A54" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path d="M18 15 L13 12 M18 20 L23 17" stroke="#2C7A54" stroke-width="1.4" fill="none" stroke-linecap="round"/>`,
+
+    /* 十週年紀念章：緞帶 + 齒輪邊獎章，中間刻 10 */
+    campball: k => `
+      <path d="M12 3 L14.6 14 H21.4 L24 3 Z" fill="#E4573F"/>
+      <path d="M12 3 L18 9 L24 3 Z" fill="#B93E2C"/>
+      <circle cx="18" cy="21.6" r="11.4" fill="#EFB748" ${k}/>
+      <circle cx="18" cy="21.6" r="8.4" fill="none" stroke="#C4902E" stroke-width="1.6"/>
+      <text x="18" y="26" text-anchor="middle" font-family="ui-monospace, monospace"
+            font-size="11" font-weight="700" fill="#8A6118">10</text>`,
+
+    /* 代幣吊飾：街機代幣 */
+    camptoken: k => `
+      <circle cx="18" cy="19.4" r="12" fill="#7A5CF0" ${k}/>
+      <circle cx="18" cy="19.4" r="8.6" fill="none" stroke="#C6B8FF" stroke-width="1.6"/>
+      <rect x="12.6" y="2" width="10.8" height="4.4" rx="2.2" fill="none" stroke="#8E9AA6" stroke-width="1.6"/>
+      <path d="M14 16 h3.2 v3.2 h-3.2 Z M18.8 19.2 h3.2 v3.2 h-3.2 Z" fill="#F3EFFF"/>
+      <path d="M14 22.4 h3.2 v3.2 h-3.2 Z" fill="#F3EFFF" opacity=".7"/>`,
+
+    /* 聯名隨行杯：杯身 + 杯蓋 + 杯套 */
+    campcup: k => `
+      <path d="M11.4 9 H24.6 L22.6 31 C22.4 32.6 21.4 33.4 20 33.4 H16
+               C14.6 33.4 13.6 32.6 13.4 31 Z" fill="#F2EEE7" ${k}/>
+      <path d="M12.3 16 H23.7 L22.9 25 H13.1 Z" fill="#C08552"/>
+      <rect x="9.6" y="5.4" width="16.8" height="4.6" rx="2.2" fill="#7A5230" ${k}/>
+      <rect x="16.2" y="1.6" width="3.6" height="4.4" rx="1.6" fill="#7A5230"/>
+      <circle cx="18" cy="20.5" r="2.6" fill="#F2EEE7" opacity=".85"/>`,
 
     /* 樓下那隻貓：一顆貓頭 */
     downcat: k => `
@@ -3455,18 +3627,62 @@
       return;
     }
 
-    const matching = live.state === "match";
+    const st = live.state;                       // match → onway → riding
+    const matching = st === "match";
+    const riding = st === "riding";
     $("hsSpin").className = "hsSpin" + (matching ? "" : " done");
     $("hsSpin").textContent = matching ? "" : "✓";
-    $("hsState").textContent = matching ? "幫你找車" : "司機在路上了";
-    $("hsSub").textContent = `${live.from} → ${live.to} · NT$ ${live.fare} 預估`;
+    $("hsState").textContent = matching ? "幫你找車" : riding ? "行程中" : "司機在路上了";
+    const extra = addOnOf(live.addOn);
+    $("hsSub").textContent = `${live.from} → ${live.to} · NT$ ${live.fare + (extra ? extra.price : 0)}${extra ? "（含加購）" : " 預估"}`;
     $("hsDrv").hidden = matching;
     if (!matching) {
       $("hsDrv").innerHTML = `<span class="who"><span class="pl">${live.plate}</span><span class="dv">${live.driver} · ${live.carName}</span></span>
-        <span class="et">${live.eta} 分</span>`;
+        <span class="et">${riding ? `剩 ${live.left} 分` : `${live.eta} 分`}</span>`;
     }
+
+    $("rideBar").hidden = !riding;
+    if (riding) {
+      const pct = Math.max(4, Math.min(100, Math.round((1 - live.left / live.min) * 100)));
+      $("rbFill").style.width = pct + "%";
+      $("rbCar").style.left = pct + "%";
+      $("rbCar").innerHTML = ICONS.home;
+      $("rbFrom").textContent = live.from;
+      $("rbTo").textContent = live.to;
+    }
+
     $("hsSay").textContent = live.say;
-    $("hsDone").hidden = matching;
+    $("addOn").hidden = matching;
+    if (!matching) renderAddOn();
+    $("hsBoard").hidden = st !== "onway";
+    $("hsDone").hidden = !riding;
+    $("hsCancel").textContent = riding ? "中途下車" : "取消行程";
+  }
+
+  /* ════ 加購：加的錢要換得到看得到的東西 ══════════════════ */
+
+  const ADDONS = [
+    { id: "tip",  n: "請司機喝一杯",  d: "抵達後多開一顆扭蛋",       price: 30, gacha: 1, km: 0 },
+    { id: "view", n: "走風景那條路",  d: "多繞 2 km，扭蛋機率再加一次", price: 50, gacha: 2, km: 2 }
+  ];
+  const addOnOf = id => ADDONS.find(a => a.id === id) || null;
+
+  function renderAddOn() {
+    const cur = S.hail && S.hail.addOn;
+    $("aoNote").textContent = cur ? "已加購，抵達時給你" : "加購都送虛寶";
+    $("aoList").innerHTML = ADDONS.map(a => `
+      <button class="aoItem" data-ao="${a.id}" aria-pressed="${cur === a.id}">
+        <span class="ic">${souvGlyph(SOUV.find(x => x.id === (a.id === "tip" ? "campcup" : "sunset")))}</span>
+        <span class="tx"><b>${a.n}</b><span>${a.d}</span></span>
+        <span class="pr">+${a.price}</span>
+      </button>`).join("");
+    $("aoList").querySelectorAll("[data-ao]").forEach(b => b.addEventListener("click", () => {
+      if (!S.hail) return;
+      const on = S.hail.addOn === b.dataset.ao;
+      S.hail.addOn = on ? null : b.dataset.ao;
+      save(); renderHail(); renderLive();
+      toast(on ? "取消加購" : `加購「${addOnOf(b.dataset.ao).n}」`);
+    }));
   }
 
   function startHail() {
@@ -3503,18 +3719,81 @@
     }, 1700);
   }
 
+  /* 上車：進到行程中，每 900ms 走一格 */
+  let rideTimer = null;
+  function boardHail() {
+    if (!S.hail || S.hail.state !== "onway") return;
+    const h = S.hail;
+    h.state = "riding";
+    h.left = h.min + (addOnOf(h.addOn) ? addOnOf(h.addOn).km * 2 : 0);
+    h.min = h.left;
+    h.say = pick({
+      warm:  [`坐好了嗎？我開慢一點。`, `路上有點顛，你抓著。`],
+      tsun:  [`安全帶。我不會講第二次。`, `坐好。我開車的時候不聊天。`],
+      sunny: [`出發！這條路我熟！`, `走囉！沿路有什麼想看的跟我說！`],
+      gent:  [`已出發，預計準時抵達。`, `行進中，全程平穩。`],
+      misty: [`窗外現在的樣子，值得看一下。`, `這段路很安靜。`]
+    }[S.pers]);
+    save(); renderHail(); renderLive();
+    clearInterval(rideTimer);
+    rideTimer = setInterval(() => {
+      if (!S.hail || S.hail.state !== "riding") { clearInterval(rideTimer); return; }
+      S.hail.left = Math.max(0, S.hail.left - 1);
+      if (S.hail.left === 0) {
+        clearInterval(rideTimer);
+        S.hail.say = "到了。";
+      }
+      save(); renderHail(); renderLive();
+    }, 900);
+  }
+
   function cancelHail() {
+    clearInterval(rideTimer);
+    const wasRiding = S.hail && S.hail.state === "riding";
     S.hail = null; save(); renderHail(); renderLive();
-    toast("行程已取消");
+    toast(wasRiding ? "中途下車，這趟不算" : "行程已取消");
   }
 
   function finishHail() {
     const h = S.hail;
     if (!h) return;
+    clearInterval(rideTimer);
     S.hail = null; save();
     closeHail();
-    doRide(placeOf(h.to));
+    const place = placeOf(h.to);
+    const ad = addOnOf(h.addOn);
+    if (ad && ad.km) place.km = +(place.km + ad.km).toFixed(1);
+    doRide(place);
+    /* 加購的虛寶：一定給，不看機率 */
+    if (ad) {
+      const got = [];
+      for (let i = 0; i < ad.gacha; i++) {
+        const g = gachaSouv(place.t, i > 0);
+        if (g) got.push(g);
+      }
+      if (got.length) {
+        save();
+        setTimeout(() => showReward("加購回饋", `${ad.n}・多付了 NT$ ${ad.price}`, got), 1100);
+      }
+    }
+    campTick();
     renderLive();
+  }
+
+  /* 抽一件紀念品給使用者（加購／活動用，不看掉落機率） */
+  function gachaSouv(type, boost) {
+    const pool = SOUV.filter(x => x.t === type);
+    if (!pool.length) return null;
+    const roll = Math.random() * (boost ? 0.8 : 1);
+    const tier = roll < SOUV_RATE.SR ? "SR" : roll < SOUV_RATE.SR + SOUV_RATE.R ? "R" : "N";
+    const cand = pool.filter(x => x.r === tier);
+    const got = pick(cand.length ? cand : pool);
+    if (!got) return null;
+    const isNew = !S.souv[got.id];
+    S.souv[got.id] = (S.souv[got.id] || 0) + 1;
+    S.today.souv.push({ id: got.id, isNew });
+    if (isNew && S.equip.length < 2) S.equip.push(got.id);
+    return { ...got, isNew };
   }
 
   function renderLive() {
@@ -3525,6 +3804,155 @@
     if (!h) return;
     $("lvTitle").textContent = h.state === "match" ? "幫你找車中" : `${h.plate} 在路上`;
     $("lvSub").textContent = `${h.from} → ${h.to}${h.state === "onway" ? ` · ${h.eta} 分` : ""} · 可以取消`;
+  }
+
+  /* ════ 聯名／廣告活動 ══════════════════════════════════
+     進度來自「參加之後又搭了幾趟」，不是額外的任務。
+     ──────────────────────────────────────────────────── */
+
+  const campState = c => S.camp[c.id] || null;
+  const campProg = c => {
+    const st = campState(c);
+    if (!st) return 0;
+    let n = S.rides - st.base;
+    if (c.id === "arcade") n += (st.night || 0);   // 夜跑季：十點後那趟再算一次
+    return Math.max(0, n);
+  };
+  const campGoal = c => c.tiers[c.tiers.length - 1].need;
+  const campHot = () => CAMPAIGNS.find(c => campState(c) && campProg(c) < campGoal(c)) || CAMPAIGNS.find(c => c.hot) || CAMPAIGNS[0];
+
+  /* 每完成一趟就推進所有已參加的活動 */
+  function campTick() {
+    let hit = null;
+    for (const c of CAMPAIGNS) {
+      const st = campState(c);
+      if (!st) continue;
+      if (c.id === "arcade" && (hour >= 22 || hour < 4)) st.night = (st.night || 0) + 1;
+      const p = campProg(c);
+      const next = c.tiers.find(t => !st.claimed.includes(t.id));
+      if (next && p >= next.need) hit = c;
+    }
+    save();
+    if (currentTab === "tune") renderTune();
+    if (currentTab === "trip") renderCampBar();
+    renderTabs();
+    if (hit) setTimeout(() => toast(`「${hit.partner}」有東西可以領了`), 1500);
+  }
+
+  function joinCamp(c) {
+    S.camp[c.id] = { joined: true, base: S.rides, claimed: [], night: 0 };
+    save(); renderCamps(); renderCampBar(); renderTabs();
+    toast(`參加「${c.partner} × yoxi」`);
+  }
+
+  function claimTier(c, t) {
+    const st = campState(c);
+    if (!st || st.claimed.includes(t.id) || campProg(c) < t.need) return;
+    st.claimed.push(t.id);
+    let got = [];
+    if (t.type === "souv") {
+      const it = souvOf(t.id);
+      if (it) {
+        const isNew = !S.souv[it.id];
+        S.souv[it.id] = (S.souv[it.id] || 0) + 1;
+        if (isNew && S.equip.length < 2) S.equip.push(it.id);
+        got = [{ ...it, isNew }];
+      }
+    } else if (t.type === "skin") {
+      S.skinUnlock = [...new Set([...(S.skinUnlock || []), t.id])];
+    } else if (t.type === "coupon") {
+      S.coupons.unshift({ id: t.id, n: t.label, from: c.partner });
+    }
+    save();
+    showReward(`${c.partner} × yoxi`, `${c.kind}獎勵・搭滿 ${t.need} 趟`, got, t.type === "skin" ? t.id : null);
+    renderCamps(); renderCampBar(); renderTabs();
+    if (t.type === "skin") renderSkins();
+  }
+
+  function renderCampBar() {
+    const bar = $("campBar");
+    if (!bar) return;
+    const c = campHot();
+    if (!c) { bar.hidden = true; return; }
+    bar.hidden = false;
+    bar.style.setProperty("--cb1", c.c1);
+    bar.style.setProperty("--cb2", c.c2);
+    $("cbTag").textContent = c.kind;
+    $("cbTitle").textContent = `${c.partner} × yoxi・${c.title}`;
+    const st = campState(c);
+    $("cbSub").textContent = st ? `已搭 ${campProg(c)} / ${campGoal(c)} 趟` : `${c.from}–${c.to}・點進去看拿得到什麼`;
+  }
+
+  function renderCamps() {
+    const live = CAMPAIGNS.length;
+    $("campCount").textContent = `${live} 檔`;
+    $("campHold").innerHTML = CAMPAIGNS.map((c, ci) => {
+      const st = campState(c);
+      const p = campProg(c), goal = campGoal(c);
+      return `<div class="campCard">
+        <div class="ccTop" style="background:linear-gradient(120deg,${c.c1},${c.c2})">
+          <div class="row"><span class="kind">${c.kind}</span><span class="dt">${c.from} – ${c.to}</span></div>
+          <h3>${c.partner} × yoxi</h3>
+          <div class="bl">${c.title}・${c.blurb}</div>
+        </div>
+        <div class="ccBody">
+          ${st ? `<div class="ccProg"><span>${p} / ${goal} 趟</span>
+            <span class="bar"><i style="width:${Math.min(100, p / goal * 100)}%;background:${c.c1}"></i></span></div>` : ""}
+          ${c.tiers.map(t => {
+            const done = st && st.claimed.includes(t.id);
+            const can = st && !done && p >= t.need;
+            const it = t.type === "souv" ? souvOf(t.id) : null;
+            return `<div class="ccTier${done ? " got" : ""}">
+              <span class="ic">${it ? souvGlyph(it) : t.type === "skin" ? thumb(SKINS.find(x => x.id === t.id) || SKINS[0], t.id) : ICONS.box}</span>
+              <span class="tx"><b>${t.label}</b><span>搭滿 ${t.need} 趟</span></span>
+              <button data-cc="${ci}" data-ct="${t.id}" ${can ? "" : "disabled"}>${done ? "已領取" : can ? "領取" : `還差 ${Math.max(0, t.need - p)}`}</button>
+            </div>`;
+          }).join("")}
+          ${st ? "" : `<button class="nsBtn ccJoin" data-cj="${ci}">參加這檔活動</button>`}
+        </div>
+      </div>`;
+    }).join("");
+    $("campHold").querySelectorAll("[data-cj]").forEach(b =>
+      b.addEventListener("click", () => joinCamp(CAMPAIGNS[+b.dataset.cj])));
+    $("campHold").querySelectorAll("[data-cc]").forEach(b => b.addEventListener("click", () => {
+      const c = CAMPAIGNS[+b.dataset.cc];
+      claimTier(c, c.tiers.find(t => t.id === b.dataset.ct));
+    }));
+  }
+
+  /* 領到東西的小畫面：跟盲盒同一個舞台，語氣輕一點 */
+  function showReward(title, sub, items, skinId) {
+    const R = RARITY[(items[0] && items[0].r) || "R"];
+    $("reveal").hidden = false;
+    $("rvSky").style.background =
+      `radial-gradient(120% 80% at 50% 26%, ${R.c1}55 0%, ${R.c2}22 55%, transparent 78%), #F5F8F2`;
+    $("rvBox").innerHTML = "";
+    $("rvBox").style.display = "none";
+    $("rvHint").style.display = "none";
+    const card = $("rvCard");
+    card.hidden = false;
+    card.style.setProperty("--rr1", R.c1);
+    card.style.setProperty("--rr2", R.c2);
+    /* 兩次抽到同一件就合併成 ×2，不要並排兩個一樣的名字 */
+    const uniq = [];
+    for (const i of items) {
+      const hit = uniq.find(x => x.id === i.id);
+      if (hit) hit.n2 = (hit.n2 || 1) + 1; else uniq.push({ ...i });
+    }
+    const art = skinId ? thumb(SKINS.find(x => x.id === skinId) || SKINS[0], skinId)
+                       : uniq.map(i => souvGlyph(i)).join("");
+    const names = uniq.map(i => i.n + (i.n2 > 1 ? ` ×${i.n2}` : "")).join("・");
+    card.innerHTML = `
+      <div class="rvIn">
+        <div class="rvTop"><span class="rvRar">GET</span><span class="chip">${title}</span></div>
+        <div class="rvHead"><span class="ic${uniq.length > 1 ? " two" : ""}">${art}</span>
+          <span><h3 style="font-size:${names.length > 16 ? 15 : names.length > 10 ? 17 : 20}px">${names || title}</h3>
+            <span class="sl">${sub}</span></span></div>
+        <div class="rvSay">${items.some(i => i.isNew) ? "新的，已經先幫你掛上去了。" : "收進收藏了，去加工頁可以掛上車。"}</div>
+        <div class="rvFoot"><button class="rvGo" id="rvOk" style="flex:1;text-align:center">收下</button></div>
+      </div>`;
+    confetti(22, [R.c1, R.c2, "#FFFFFF"]);
+    $("rvOk").addEventListener("click", closeReveal);
   }
 
   function renderSaved() {
@@ -3547,7 +3975,7 @@
 
   function renderTrip() {
     $("tripWho").textContent = PERSONAS[persona].name;
-    renderNextStop(); renderPlaces(); renderToday();
+    renderNextStop(); renderCampBar(); renderPlaces(); renderToday();
   }
 
   function renderToday() {
@@ -3641,11 +4069,13 @@
     $("tunePrev").innerHTML = carSVG(skin(), "normal", false, true);
     $("tsSkin").hidden = tuneSeg !== "skin";
     $("tsSouv").hidden = tuneSeg !== "souv";
+    $("tsCamp").hidden = tuneSeg !== "camp";
     $("tsPers").hidden = tuneSeg !== "pers";
     $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
       b.setAttribute("aria-pressed", String(b.dataset.ts === tuneSeg)));
     if (tuneSeg === "skin") renderSkins();
     if (tuneSeg === "souv") renderSouv();
+    if (tuneSeg === "camp") renderCamps();
     if (tuneSeg === "pers") renderPers();
   }
 
@@ -3733,11 +4163,11 @@
       </div>`).join("");
   }
 
+  const skinOpen = sk => sk.lv <= level() || (S.skinUnlock || []).includes(sk.id);
   function renderSkins() {
-    const lv = level();
-    $("skinCount").textContent = `Styles ${SKINS.filter(s => s.lv <= lv).length}/${SKINS.length}`;
+    $("skinCount").textContent = `Styles ${SKINS.filter(skinOpen).length}/${SKINS.length}`;
     $("skinGrid").innerHTML = SKINS.map(s => {
-      const lock = s.lv > lv;
+      const lock = !skinOpen(s);
       return `
         <button class="skin${lock ? " locked" : ""}" data-s="${s.id}"
                 aria-pressed="${s.id === S.skin}" ${lock ? "disabled" : ""}>
@@ -4037,6 +4467,8 @@
 
   function closeReveal() {
     $("reveal").hidden = true;
+    $("rvBox").style.display = "";
+    $("rvHint").style.display = "";
     renderBoxPin();
   }
 
@@ -4187,7 +4619,9 @@
     $("hsTo").addEventListener("keydown", e => { if (e.key === "Enter" && !$("hsGo").disabled) startHail(); });
     $("hsGo").addEventListener("click", startHail);
     $("hsCancel").addEventListener("click", cancelHail);
+    $("hsBoard").addEventListener("click", boardHail);
     $("hsDone").addEventListener("click", finishHail);
+    $("campBar").addEventListener("click", () => { tuneSeg = "camp"; go("tune"); $("screens").scrollTop = 0; });
     $("btnGeo").addEventListener("click", askGeo);
     $("btnGeoOff").addEventListener("click", geoOff);
     $("tuneEntry").addEventListener("click", () => go("tune"));
@@ -4219,12 +4653,14 @@
       if (currentTab === "trip") renderTrip();
       if (currentTab === "log") renderLog();
       CarView.set(skin(), moodOf());
+      campTick();
       toast(`跑了 4 趟 · 共 ${S.km.toFixed(1)} km`);
     });
 
     $("btnReset").addEventListener("click", () => {
       S = defaults(); save();
       onbStep = 1; shakeCount = 0;
+      clearInterval(rideTimer);
       closeHail();
       $("onbName").value = "小綠";
       $("onb").hidden = false;
