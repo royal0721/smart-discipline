@@ -705,6 +705,56 @@
   .rvNote { font-size: 11px; color: var(--fog-dim); text-align: center; margin-top: 2px; }
   .conf { position: absolute; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; z-index: 3; }
 
+  /* ── 加工：車車固定在上方 ─────────────────────────────── */
+  .tunePrev {
+    display: grid; place-items: center; height: 196px; border-radius: var(--rXl);
+    background: radial-gradient(120% 90% at 50% 15%, #F3F8EE, #E9EFE2);
+    box-shadow: var(--lift); overflow: hidden;
+  }
+  .tunePrev svg, .tunePrev img { width: 196px; height: auto; max-height: 184px; }
+
+  /* ── 跟車車說話 ───────────────────────────────────────── */
+  .talkBtn {
+    position: absolute; z-index: 6; right: 14px; bottom: 14px;
+    padding: 9px 15px; border: none; border-radius: 20px; cursor: pointer;
+    background: rgba(255,255,255,.94); backdrop-filter: blur(10px);
+    color: var(--chalk); font-family: var(--sans); font-size: 12.5px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(22,32,26,.18); transition: .16s;
+  }
+  .talkBtn:hover { transform: translateY(-2px); }
+  .talkBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+
+  .talkSheet {
+    position: absolute; inset: auto 0 0 0; z-index: 79; max-height: 68%;
+    display: flex; flex-direction: column;
+    background: #FFFFFF; border-radius: 26px 26px 0 0;
+    box-shadow: 0 -14px 40px -14px rgba(22,32,26,.35);
+    animation: sheetUp .34s cubic-bezier(.2,1,.35,1);
+  }
+  .talkSheet[hidden] { display: none; }
+  .tkBar { flex: none; display: flex; align-items: center; padding: 18px 20px 10px; }
+  .tkList { flex: 1; overflow-y: auto; padding: 0 16px 26px; display: flex; flex-direction: column; gap: 9px; scrollbar-width: none; }
+  .tkList::-webkit-scrollbar { display: none; }
+  .tkList > * { flex: none; }
+  .tkItem {
+    width: 100%; text-align: left; padding: 14px 16px; border: none; border-radius: 16px;
+    background: var(--slab-2); color: var(--chalk); font-family: var(--sans);
+    font-size: 14.5px; cursor: pointer; transition: .16s;
+  }
+  .tkItem:hover { background: var(--slab-3); transform: translateX(2px); }
+  .tkItem:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+  .tkItem.hot { background: #FDEEF1; color: #A32E45; }
+  .tkItem.hot:hover { background: #FBE2E8; }
+
+  .carHold.mad { animation: mad .5s ease; }
+  @keyframes mad {
+    0%,100% { transform: translateX(0); }
+    16% { transform: translateX(-9px) rotate(-2deg); }
+    38% { transform: translateX(9px) rotate(2deg); }
+    62% { transform: translateX(-6px) rotate(-1.4deg); }
+    84% { transform: translateX(5px); }
+  }
+
   /* ── 分頁列 ───────────────────────────────────────────── */
   .tabs {
     flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
@@ -906,6 +956,7 @@
               </div>
               <div class="bubble" id="bubble">…</div>
               <div class="carHold" id="carHold"></div>
+              <button class="talkBtn" id="talkBtn">說點什麼</button>
               <button class="boxPin" id="boxPin" hidden>
                 <span class="bpGlow"></span>
                 <span class="bpArt" id="bpArt"></span>
@@ -960,26 +1011,47 @@
             <div id="histHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
-          <!-- 加工 -->
+          <!-- 加工：邊看車車邊改 -->
           <section class="screen" id="sc-tune" hidden>
-            <div class="scTitle"><h2>加工車車</h2><span id="skinCount">Styles 3/8</span></div>
-            <div class="skinGrid" id="skinGrid"></div>
-            <div class="privacy" id="skinNote"></div>
+            <div class="tunePrev" id="tunePrev"></div>
+            <div class="segRow" id="tuneSeg">
+              <button class="seg" data-ts="skin" aria-pressed="true">造型</button>
+              <button class="seg" data-ts="souv" aria-pressed="false">掛件</button>
+              <button class="seg" data-ts="pers" aria-pressed="false">個性</button>
+            </div>
 
-            <div class="scTitle" style="margin-top:8px"><h2 style="font-size:15px">掛件</h2><span id="souvCount">0 / 0</span></div>
-            <div class="cap" style="padding:0 4px">最多掛兩件</div>
-            <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+            <div id="tsSkin">
+              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">造型</h2><span id="skinCount">0/0</span></div>
+              <div class="skinGrid" id="skinGrid"></div>
+              <div class="privacy" id="skinNote"></div>
+            </div>
 
-            <div class="scTitle" style="margin-top:8px"><h2 style="font-size:15px">個性</h2><span>Personality</span></div>
-            <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
-            <div class="pane" style="gap:14px">
-              <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
-              <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
+            <div id="tsSouv" hidden>
+              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">掛件</h2><span id="souvCount">0 / 0</span></div>
+              <div class="cap" style="padding:0 4px 6px">最多掛兩件</div>
+              <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+            </div>
+
+            <div id="tsPers" hidden>
+              <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
+              <div class="pane" style="gap:14px;margin-top:12px">
+                <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
+                <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
+              </div>
             </div>
           </section>
         </div>
 
         <nav class="tabs" id="tabs"></nav>
+      </div>
+
+      <!-- 跟車車說話 -->
+      <div class="talkSheet" id="talkSheet" hidden>
+        <div class="tkBar">
+          <span class="sheetTitle">說點什麼</span>
+          <button class="sheetX" id="talkClose" aria-label="關閉">✕</button>
+        </div>
+        <div class="tkList" id="talkList"></div>
       </div>
 
       <!-- 盲盒開箱 -->
@@ -1225,6 +1297,69 @@
       mid:  ["你在確認我還在嗎？", "我一直都在這裡。", "怎麼了？"],
       low:  ["那裡是我最舊的一塊。", "碰到了。", "有點癢。"],
       spam: ["你今天話很多。", "我不介意。", "再一次也可以。"]
+    }
+  };
+
+  /* 跟車車說話：有些話它會生氣。這是「有個性」最直接的證明 */
+  const TALK = [
+    { id: "porsche", q: "我想坐保時捷", d: -18, sulk: true },
+    { id: "other",   q: "我朋友的車比較新", d: -16, sulk: true },
+    { id: "slow",    q: "你今天有點慢", d: -12, sulk: true },
+    { id: "quit",    q: "我想換一個 app", d: -26, sulk: true },
+    { id: "thanks",  q: "今天謝謝你", d: 14 },
+    { id: "pretty",  q: "你今天很好看", d: 16 },
+    { id: "beach",   q: "明天想去海邊", d: 10 }
+  ];
+
+  const TALK_SAY = {
+    porsche: {
+      warm:  "保時捷後座很低，你腰不好會不舒服。……我沒有在生氣。",
+      tsun:  "那你去坐啊。……你真的去，我就把導航設成最遠那條。",
+      sunny: "保時捷！好啊！那我當你的第二台！第二台也可以吧？可以吧？",
+      gent:  "保時捷是好車。我只是比較清楚您慣走哪條路。",
+      misty: "保時捷載得動你的人，載不動你今天的心情。"
+    },
+    other: {
+      warm:  "新車很好啊。……你還是會回來坐我對吧？",
+      tsun:  "新車不會記得你上禮拜掉在座位上的耳機。我會。",
+      sunny: "那我們去比賽！開玩笑的！我不會贏！",
+      gent:  "新有新的好，舊有舊的默契。",
+      misty: "新的車沒有故事。你要故事，還是要新？"
+    },
+    slow: {
+      warm:  "今天路面濕，我開慢一點比較安全。你很急嗎？",
+      tsun:  "那是塞車。不然你自己下來走？",
+      sunny: "慢？！我明天一定衝給你看！",
+      gent:  "安全與速度，我選前者。恕難從命。",
+      misty: "慢的時候你才會看窗外。"
+    },
+    quit: {
+      warm:  "……好。那我把你常走的路線都存下來，你之後用得到。",
+      tsun:  "隨便你。……你敢按，我就在你要出門那天爆胎。",
+      sunny: "不要啦！！我還有三個地方沒帶你去！！",
+      gent:  "我明白了。感謝這段時間的照顧。",
+      misty: "刪掉之後，這些路線就只剩你記得了。"
+    },
+    thanks: {
+      warm:  "不客氣。你今天也辛苦了。",
+      tsun:  "……喔。我也沒做什麼。",
+      sunny: "不客氣！！明天也載你！！",
+      gent:  "份內之事。",
+      misty: "謝謝這種話，說的人比較舒服。"
+    },
+    pretty: {
+      warm:  "今天剛洗過。被你發現了。",
+      tsun:  "本來就是。……你才發現？",
+      sunny: "對吧！我今天特別亮！",
+      gent:  "今晨剛打過蠟。承蒙誇獎。",
+      misty: "好看是光的問題，不是我的。"
+    },
+    beach: {
+      warm:  "海邊喔。那要早點出發，我幫你算時間。",
+      tsun:  "海邊？沙子會弄髒我。……好啦，幾點。",
+      sunny: "海邊！！我最喜歡海邊！！現在出發嗎！！",
+      gent:  "海線路況我熟。何時出發？",
+      misty: "海邊的話我建議傍晚。理由到了你就知道。"
     }
   };
 
@@ -1564,6 +1699,42 @@
     }
   }
 
+  /* 把一件紀念品畫在指定位置 */
+  function souvShape(it, cx, cy, r) {
+    const c = it.c;
+    switch (it.m) {
+      case "soft": return `<rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * 1.56}" rx="${r * .38}" fill="${c}"/>
+        <rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * .5}" rx="${r * .25}" fill="#FFF" opacity=".25"/>`;
+      case "cyl":  return `<rect x="${cx - r * .52}" y="${cy - r}" width="${r * 1.04}" height="${r * 2}" rx="${r * .5}" fill="${c}"/>
+        <ellipse cx="${cx}" cy="${cy - r * .82}" rx="${r * .5}" ry="${r * .2}" fill="#FFF" opacity=".32"/>`;
+      case "cone": return `<path d="M${cx} ${cy - r} L${cx + r * .95} ${cy + r * .85} H${cx - r * .95} Z" fill="${c}"/>
+        <path d="M${cx} ${cy - r} L${cx + r * .42} ${cy + r * .1} H${cx - r * .42} Z" fill="#FFF" opacity=".2"/>`;
+      case "ring": return `<circle cx="${cx}" cy="${cy}" r="${r * .82}" fill="none" stroke="${c}" stroke-width="${r * .42}"/>`;
+      default:     return `<circle cx="${cx}" cy="${cy}" r="${r * .9}" fill="${c}"/>
+        <circle cx="${cx - r * .3}" cy="${cy - r * .32}" r="${r * .28}" fill="#FFF" opacity=".36"/>`;
+    }
+  }
+
+  /* 掛件：一件吊在擋風玻璃前（最顯眼），一件放車頂 */
+  function svgEquip() {
+    let out = "", roofDone = false;
+    for (const id of (S.equip || [])) {
+      const it = souvOf(id);
+      if (!it) continue;
+      if (it.slot === "hang" || roofDone) {
+        out += `<g class="charm">
+            <path d="M140 58 L140 84" stroke="#8E9AA6" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="140" cy="58" r="3.6" fill="#8E9AA6"/>
+            ${souvShape(it, 140, 102, 18)}
+          </g>`;
+      } else {
+        roofDone = true;
+        out += `<g>${souvShape(it, 86, 30, 16)}</g>`;
+      }
+    }
+    return out;
+  }
+
   function svgMouth(mood) {
     if (mood === "grumpy") return `<path d="M114 192 q26 -13 52 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
     if (mood === "sleepy") return `<ellipse cx="140" cy="188" rx="8" ry="6.5" fill="#1B2430"/>`;
@@ -1571,7 +1742,7 @@
     return `<path d="M114 185 q26 15 52 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   }
 
-  function carSVG(sk, mood, small) {
+  function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
     const u = "s" + s.id + (small ? "m" : "b");
     const body = "M30 158 C30 76 74 38 140 38 C206 38 250 76 250 158 C250 202 232 218 194 218 L86 218 C48 218 30 202 30 158 Z";
@@ -1627,6 +1798,7 @@
               font-size="12" font-weight="700" fill="#FFFFFF" letter-spacing=".5">yoxi</text>
 
         ${s.acc !== "neon" ? svgAcc(s) : ""}
+        ${withEquip ? svgEquip() : ""}
       </svg>`;
   }
 
@@ -2404,7 +2576,7 @@
       kind: "svg",
       ok: () => true,
       mount(h) { host = h; if (cur) this.set(cur.sk, cur.mood); return true; },
-      set(sk, mood) { cur = { sk, mood }; if (host) host.innerHTML = carSVG(sk, mood, false); },
+      set(sk, mood) { cur = { sk, mood }; if (host) host.innerHTML = carSVG(sk, mood, false, true); },
       thumb(sk) { return carSVG(sk, "normal", true); }
     };
   }
@@ -2457,7 +2629,10 @@
 
   /* ════ 推導 ════════════════════════════════════════════ */
 
+  let sulkUntil = 0, sulkTimer = 0;
+
   function moodOf() {
+    if (Date.now() < sulkUntil) return "grumpy";
     if (S.energy < 30) return "sleepy";
     if (S.mood < 35) return "grumpy";
     const sl = slotOf(hour).id;
@@ -2750,15 +2925,24 @@
       const id = b.dataset.sv;
       if (S.equip.includes(id)) S.equip = S.equip.filter(x => x !== id);
       else { S.equip.push(id); if (S.equip.length > 2) S.equip.shift(); }
-      save(); renderSouv();
+      save(); renderTune();
       CarView.set(skin(), moodOf());
       if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
       toast(S.equip.includes(id) ? `掛上「${souvOf(id).n}」` : `收起「${souvOf(id).n}」`);
     }));
   }
 
+  let tuneSeg = "skin";
   function renderTune() {
-    renderSkins(); renderSouv(); renderPers();
+    $("tunePrev").innerHTML = carSVG(skin(), "normal", false, true);
+    $("tsSkin").hidden = tuneSeg !== "skin";
+    $("tsSouv").hidden = tuneSeg !== "souv";
+    $("tsPers").hidden = tuneSeg !== "pers";
+    $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
+      b.setAttribute("aria-pressed", String(b.dataset.ts === tuneSeg)));
+    if (tuneSeg === "skin") renderSkins();
+    if (tuneSeg === "souv") renderSouv();
+    if (tuneSeg === "pers") renderPers();
   }
 
   function renderMap() {
@@ -2827,7 +3011,7 @@
     $("persList").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
       S.pers = b.dataset.p;
       S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
-      save(); renderPers(); renderConsole();
+      save(); renderTune(); renderConsole();
       CarView.set(skin(), moodOf());
       toast(`${S.name} 換成「${pers().type}」了`);
     }));
@@ -2852,7 +3036,7 @@
       return `
         <button class="skin${lock ? " locked" : ""}" data-s="${s.id}"
                 aria-pressed="${s.id === S.skin}" ${lock ? "disabled" : ""}>
-          <span class="prev">${thumb(s, s.id)}</span>
+          <span class="prev">${carSVG(s, "normal", true, false)}</span>
           ${lock ? `<span class="lock">LV.${s.lv} 解鎖</span>` : ""}
           <span class="nm">${s.name}</span>
           <span class="mt">${s.tag}${s.id === S.skin ? " · 使用中" : ""}</span>
@@ -2986,6 +3170,40 @@
                  : ["#FFC46B", "#FFFFFF"];
     sparks(tapN >= 4 ? 12 : 7, colors);
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
+  }
+
+  function openTalk() {
+    $("talkList").innerHTML = TALK.map(t =>
+      `<button class="tkItem${t.d < 0 ? " hot" : ""}" data-tk="${t.id}">${t.q}</button>`).join("");
+    $("talkList").querySelectorAll("[data-tk]").forEach(b =>
+      b.addEventListener("click", () => sayTo(b.dataset.tk)));
+    $("talkSheet").hidden = false;
+  }
+
+  function sayTo(id) {
+    const t = TALK.find(x => x.id === id);
+    $("talkSheet").hidden = true;
+    S.mood = clamp(S.mood + t.d);
+    S.sync = clamp(S.sync + (t.d > 0 ? 1.5 : 0.4));
+    if (t.d < 0) { S.traits.sassy = clamp(S.traits.sassy + 2); sulkUntil = Date.now() + 14000; }
+    else S.traits.romantic = clamp(S.traits.romantic + 1);
+    save();
+
+    const hold = $("carHold");
+    hold.classList.remove("mad", "tapped");
+    void hold.offsetWidth;
+    hold.classList.add(t.d < 0 ? "mad" : "tapped");
+    setTimeout(() => hold.classList.remove("mad", "tapped"), 560);
+
+    CarView.set(skin(), moodOf());
+    $("bubble").textContent = TALK_SAY[id][S.pers];
+    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
+
+    clearTimeout(sulkTimer);
+    if (t.d < 0) sulkTimer = setTimeout(() => {
+      if (currentTab === "home") { CarView.set(skin(), moodOf()); $("homeMood").textContent = MOOD_TEXT[moodOf()]; }
+    }, 14200);
   }
 
   function renderTabs() {
@@ -3263,7 +3481,7 @@
     }));
 
     $("carStage").addEventListener("click", e => {
-      if (e.target.closest("#boxPin")) return;
+      if (e.target.closest("#boxPin") || e.target.closest("#talkBtn")) return;
       const r = $("carStage").getBoundingClientRect();
       tapCar((e.clientY - r.top) / r.height);
     });
@@ -3279,7 +3497,11 @@
     $("nsBtn").addEventListener("click", book);
     $("nsBtn2").addEventListener("click", book);
     $("tuneEntry").addEventListener("click", () => go("tune"));
+    $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
+      b.addEventListener("click", () => { tuneSeg = b.dataset.ts; renderTune(); $("screens").scrollTop = 0; }));
     $("boxPin").addEventListener("click", e => { e.stopPropagation(); openBox(); });
+    $("talkBtn").addEventListener("click", e => { e.stopPropagation(); openTalk(); });
+    $("talkClose").addEventListener("click", () => { $("talkSheet").hidden = true; });
     $("rvClose").addEventListener("click", closeReveal);
 
     $("btnPush").addEventListener("click", autoPush);
@@ -3312,6 +3534,8 @@
       $("onbName").value = "小綠";
       $("onb").hidden = false;
       $("reveal").hidden = true;
+      $("talkSheet").hidden = true;
+      sulkUntil = 0;
       renderOnb(); renderPlan(null); go("home"); renderConsole();
       toast("已清空，重養一台");
     });
