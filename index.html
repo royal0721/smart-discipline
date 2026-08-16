@@ -1949,21 +1949,206 @@
 
   /* 把一件紀念品畫在指定位置。外框線是刻意的——沒有它，白色的東西
      在白車身上會消失，深色的東西在深色車窗上也會消失 */
+  /* ════ 紀念品的樣子 ════════════════════════════════════
+     每一件都照實物畫，不是同一顆球換顏色。全部畫在 36×36 的方框裡，
+     中心在 (18,18)；車上的掛件與收藏頁的縮圖共用同一份圖，改一次兩邊都會變。
+     ──────────────────────────────────────────────────── */
+
+  const SOUV_ART = {
+    /* 識別證吊牌：夾子 + 白卡 + 大頭照 */
+    badge: k => `
+      <rect x="15" y="1" width="6" height="4" rx="1.6" fill="#8E9AA6" ${k}/>
+      <rect x="16.6" y="4" width="2.8" height="3" fill="#8E9AA6"/>
+      <rect x="9" y="6" width="18" height="25" rx="2.6" fill="#EEF2F6" ${k}/>
+      <rect x="11.6" y="9" width="7.4" height="9" rx="1.2" fill="#A7B7C6"/>
+      <circle cx="15.3" cy="12.4" r="2" fill="#EEF2F6"/>
+      <path d="M11.9 18 C12.6 14.8 18 14.8 18.7 18 Z" fill="#EEF2F6"/>
+      <g fill="#C2CDD8"><rect x="20.6" y="10" width="4" height="1.8" rx=".9"/><rect x="20.6" y="13.4" width="4" height="1.8" rx=".9"/>
+        <rect x="11.6" y="21" width="13" height="2.2" rx="1.1"/><rect x="11.6" y="25.4" width="9" height="2.2" rx="1.1"/></g>`,
+
+    /* 原子筆：筆桿 + 筆夾 + 筆尖 */
+    pen: k => `
+      <rect x="14.4" y="3" width="7.2" height="23" rx="1.6" fill="#3B6EA8" ${k}/>
+      <rect x="14.4" y="3" width="7.2" height="5.4" rx="1.6" fill="#22456B"/>
+      <rect x="21" y="5" width="2.4" height="8.4" rx="1.2" fill="#CBD4DD"/>
+      <path d="M14.4 26 H21.6 L18 32.4 Z" fill="#E7D9BC" ${k}/>
+      <path d="M16.8 30 H19.2 L18 33.4 Z" fill="#2A3038"/>`,
+
+    /* 罐裝咖啡：鋁罐頭蓋 + 拉環 + 標籤 */
+    can: k => `
+      <rect x="9.5" y="6" width="17" height="25" rx="4.4" fill="#8A5A2B" ${k}/>
+      <rect x="9.5" y="14" width="17" height="9" fill="#F0E2C6"/>
+      <rect x="9.5" y="14" width="17" height="1.6" fill="#C79A5C"/>
+      <rect x="9.5" y="21.4" width="17" height="1.6" fill="#C79A5C"/>
+      <ellipse cx="18" cy="6.6" rx="8.5" ry="3" fill="#C6CDD3" ${k}/>
+      <ellipse cx="18" cy="6.2" rx="4.6" ry="1.5" fill="#9AA4AC"/>`,
+
+    /* 鳳梨酥：金黃酥皮方磚，切面看得到內餡 */
+    cake: k => `
+      <rect x="4.5" y="10" width="27" height="17" rx="3" fill="#E8C86A" ${k}/>
+      <rect x="4.5" y="10" width="27" height="5.4" rx="3" fill="#F4DEA0"/>
+      <path d="M4.5 24.6 H31.5" stroke="#CFA84E" stroke-width="1.6"/>
+      <rect x="12" y="16.4" width="12" height="6" rx="1.6" fill="#D9A03C" opacity=".55"/>
+      <g fill="#C99A44" opacity=".6"><circle cx="9" cy="19" r=".9"/><circle cx="27" cy="21" r=".9"/><circle cx="18" cy="13" r=".8"/></g>`,
+
+    /* 關東煮：竹籤串兩顆 */
+    stick: k => `
+      <rect x="16.6" y="1" width="2.8" height="34" rx="1.4" fill="#D9C08A" ${k}/>
+      <circle cx="18" cy="12" r="6.6" fill="#F3EADA" ${k}/>
+      <circle cx="15.6" cy="9.6" r="1.8" fill="#FFFFFF" opacity=".7"/>
+      <circle cx="18" cy="24" r="5.8" fill="#E4D2B2" ${k}/>`,
+
+    /* 集點貼紙：模切星星，白邊 */
+    sticker: k => `
+      <path d="M18 2.5 L22 11 L31.4 12.3 L24.6 18.8 L26.2 28 L18 23.6 L9.8 28 L11.4 18.8 L4.6 12.3 L14 11 Z"
+            fill="#F0603C" stroke="#FFFFFF" stroke-width="2.8" stroke-linejoin="round"/>
+      <path d="M18 2.5 L22 11 L31.4 12.3 L24.6 18.8 L26.2 28 L18 23.6 L9.8 28 L11.4 18.8 L4.6 12.3 L14 11 Z"
+            fill="none" ${k}/>
+      <circle cx="18" cy="16" r="3.2" fill="#FFD2C4"/>`,
+
+    /* 御飯糰：三角飯糰 + 海苔 */
+    onigiri: k => `
+      <path d="M18 4 C19.4 4 20.2 4.8 20.8 5.9 L30.4 24.6 C31.4 26.6 30.4 28.6 28 28.6 H8
+               C5.6 28.6 4.6 26.6 5.6 24.6 L15.2 5.9 C15.8 4.8 16.6 4 18 4 Z" fill="#F8F5EC" ${k}/>
+      <path d="M11.6 22 H24.4 L26.6 26.4 C27 27.4 26.6 28.6 25.2 28.6 H10.8
+               C9.4 28.6 9 27.4 9.4 26.4 Z" fill="#2C3830"/>
+      <circle cx="15" cy="14" r="1.1" fill="#E4DCC8"/><circle cx="20" cy="17" r="1.1" fill="#E4DCC8"/>`,
+
+    /* 中獎的發票：撕齒紙邊 + 印字 */
+    receipt: k => `
+      <path d="M9 3 H27 V27.4 L24 25.4 L21 27.4 L18 25.4 L15 27.4 L12 25.4 L9 27.4 Z" fill="#FFFFFF" ${k}/>
+      <rect x="11.8" y="6.4" width="12.4" height="2.6" rx="1" fill="#9AA3AB"/>
+      <g fill="#CFD5DB"><rect x="11.8" y="11.4" width="9" height="1.8" rx=".9"/>
+        <rect x="11.8" y="15" width="12.4" height="1.8" rx=".9"/>
+        <rect x="11.8" y="18.6" width="7" height="1.8" rx=".9"/></g>
+      <circle cx="24.4" cy="19.4" r="4.6" fill="none" stroke="#E0483F" stroke-width="1.6" opacity=".85"/>`,
+
+    /* 拉花拍壞的照片：拍立得白框 + 歪掉的心 */
+    cup: k => `
+      <rect x="4.5" y="3.5" width="27" height="29" rx="2.4" fill="#FCFAF4" ${k}/>
+      <rect x="7.4" y="6.4" width="21.2" height="16.6" fill="#5E4230"/>
+      <circle cx="18" cy="14.7" r="6.4" fill="#B98C66"/>
+      <path d="M18 18.6 C14.4 16.2 13.8 12.8 16.4 12.2 C17.4 12 18 12.7 18 13.3
+               C18.2 12.6 18.9 12 19.8 12.3 C22.2 13.1 21.4 16.4 18 18.6 Z" fill="#F6ECDD"/>
+      <rect x="9.6" y="26.6" width="10" height="2" rx="1" fill="#DCD6C9"/>`,
+
+    /* 咖啡豆：中間那條溝 */
+    bean: k => `
+      <g transform="rotate(-18 18 18)">
+        <ellipse cx="18" cy="18" rx="9.2" ry="12" fill="#6B4526" ${k}/>
+        <path d="M18 7 C14.2 12 14.2 24 18 29" stroke="#3C2716" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="14.4" cy="12.4" rx="2" ry="3" fill="#8A5F3B" opacity=".7"/>
+      </g>`,
+
+    /* 店貓的毛：一撮帶飛毛的絨團 */
+    catfur: k => `
+      <g stroke="#E4DCD0" stroke-width="2" stroke-linecap="round" fill="none">
+        <path d="M14.4 9 L11 4"/><path d="M18 7 L18 2.2"/><path d="M21.6 9 L25 4"/></g>
+      <path d="M18 32.4 C12.6 27 10.2 19.6 12.2 12.2 C13.3 7.8 15.9 5.4 18 5.4
+               C20.1 5.4 22.7 7.8 23.8 12.2 C25.8 19.6 23.4 27 18 32.4 Z" fill="#E7DFD3" ${k}/>
+      <g stroke="#CDC2B2" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".9">
+        <path d="M18 29.6 C16.1 24 15.7 17.4 16.9 10.6"/>
+        <path d="M18 29.6 C19.9 24 20.3 17.4 19.1 10.6"/></g>`,
+
+    /* 常客卡：集章格 */
+    card: k => `
+      <rect x="3.5" y="8.5" width="29" height="19" rx="3" fill="#2E6B52" ${k}/>
+      <g fill="#FFFFFF"><circle cx="9.6" cy="15.4" r="2.5"/><circle cx="16.4" cy="15.4" r="2.5"/></g>
+      <g fill="none" stroke="#FFFFFF" stroke-width="1.4" opacity=".7">
+        <circle cx="23.2" cy="15.4" r="2.5"/><circle cx="30" cy="15.4" r="2.5"/></g>
+      <rect x="7" y="21.4" width="15" height="2.2" rx="1.1" fill="#FFFFFF" opacity=".55"/>`,
+
+    /* 蔥抓餅：圓餅 + 蔥花 */
+    scallion: k => `
+      <circle cx="18" cy="18" r="13.4" fill="#E7C68C" ${k}/>
+      <g fill="none" stroke="#CFA35F" stroke-width="1.4" opacity=".8">
+        <path d="M8 14 C13 12.6 23 12.6 28 14"/><path d="M7 20 C13 21.6 23 21.6 29 20"/>
+        <path d="M10 26 C14 27 22 27 26 26"/></g>
+      <g fill="#5F9139">
+        <ellipse cx="13" cy="13.6" rx="3" ry="1.4" transform="rotate(-22 13 13.6)"/>
+        <ellipse cx="22.6" cy="17" rx="3" ry="1.4" transform="rotate(14 22.6 17)"/>
+        <ellipse cx="16" cy="23" rx="2.6" ry="1.3" transform="rotate(-8 16 23)"/>
+        <ellipse cx="24" cy="24" rx="2.2" ry="1.2" transform="rotate(30 24 24)"/></g>`,
+
+    /* 滷蛋：滷過的深色蛋，帶醬油光 */
+    egg: k => `
+      <ellipse cx="18" cy="19" rx="11" ry="13.2" fill="#8A5C34" ${k}/>
+      <ellipse cx="18" cy="21" rx="9" ry="10" fill="#6F4525" opacity=".35"/>
+      <ellipse cx="13.6" cy="12.6" rx="3.2" ry="4.4" transform="rotate(-26 13.6 12.6)" fill="#FFFFFF" opacity=".34"/>`,
+
+    /* 紅白塑膠袋：兩個提把 + 紅條紋 */
+    bag: k => `
+      <g fill="none" stroke="#E14E4E" stroke-width="2.4" stroke-linecap="round">
+        <path d="M12 12 C12 5.6 14.6 3.2 18 3.2"/><path d="M24 12 C24 5.6 21.4 3.2 18 3.2"/></g>
+      <path d="M8.6 11.4 H27.4 L29.4 32 H6.6 Z" fill="#F7F5F2" ${k}/>
+      <path d="M8.6 11.4 H27.4 L27.9 16.6 H8.1 Z" fill="#E14E4E"/>
+      <path d="M7.7 22 H28.3" stroke="#E14E4E" stroke-width="3.2"/>
+      <path d="M7.1 27.4 H28.9" stroke="#E14E4E" stroke-width="2.4" opacity=".8"/>`,
+
+    /* 河堤的蘆葦：穗 + 莖 + 一片葉 */
+    reed: k => `
+      <path d="M18 34 C17.2 25 17.2 18 18 12" stroke="#7E9052" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M18 22.6 C21.4 21 23.6 18.6 24.6 16" stroke="#7E9052" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="18" cy="10" rx="4.8" ry="8.4" fill="#CDB77C" ${k}/>
+      <g stroke="#E2D0A2" stroke-width="1.3" stroke-linecap="round">
+        <path d="M18 3 L15.4 .8"/><path d="M18 3 L20.6 .8"/><path d="M14.6 8 L12 6.6"/><path d="M21.4 8 L24 6.6"/></g>`,
+
+    /* 拍到的飛機：正上方看下去的機身 */
+    plane: k => `
+      <path d="M18 2.4 C19.5 2.4 20.4 4.4 20.6 8.4 L20.8 14.6 L32 21 V24.4 L20.8 21.4
+               L20.4 27.6 L23.8 30.2 V32.4 L18 30.8 L12.2 32.4 V30.2 L15.6 27.6
+               L15.2 21.4 L4 24.4 V21 L15.2 14.6 L15.4 8.4 C15.6 4.4 16.5 2.4 18 2.4 Z"
+            fill="#DFE6ED" ${k}/>
+      <path d="M18 2.4 C19.5 2.4 20.4 4.4 20.6 8.4 L20.8 14.6 L32 21 V24.4 L20.8 21.4 Z" fill="#C6D0DA" opacity=".55"/>`,
+
+    /* 那天的夕陽：沉到水平線下的太陽 */
+    sunset: k => `
+      <g stroke="#F5B36A" stroke-width="2.2" stroke-linecap="round">
+        <path d="M18 3 V6.6"/><path d="M7.4 7.4 L9.9 9.9"/><path d="M28.6 7.4 L26.1 9.9"/></g>
+      <path d="M7.6 22 A10.4 10.4 0 0 1 28.4 22 Z" fill="#F09040" ${k}/>
+      <path d="M3 22 H33" stroke="#D9622F" stroke-width="2.6" stroke-linecap="round"/>
+      <g stroke="#F0A868" stroke-width="2" stroke-linecap="round" opacity=".8">
+        <path d="M8 26.6 H20"/><path d="M15 30.6 H28"/></g>`,
+
+    /* 家裡的鑰匙圈：圈 + 一把鑰匙 */
+    key: k => `
+      <circle cx="12.4" cy="11.6" r="7" fill="none" stroke="#101B26" stroke-opacity=".28" stroke-width="5.4"/>
+      <circle cx="12.4" cy="11.6" r="7" fill="none" stroke="#C6CCD2" stroke-width="3.6"/>
+      <g stroke="#101B26" stroke-opacity=".28" stroke-width="5.6" stroke-linecap="round">
+        <path d="M17.4 16.6 L28.4 27.6"/></g>
+      <g stroke="#C6CCD2" stroke-width="3.6" stroke-linecap="round">
+        <path d="M17.4 16.6 L28.4 27.6"/><path d="M23.4 22.6 L26.6 19.4"/><path d="M26.6 25.8 L29.4 23"/></g>`,
+
+    /* 一隻拖鞋：正宗藍白拖，白鞋底 + 藍 Y 字帶 */
+    slipper: k => `
+      <path d="M18 2.6 C24.4 2.6 27.6 8.6 27.6 17.4 C27.6 26.6 24 33.4 18 33.4
+               C12 33.4 8.4 26.6 8.4 17.4 C8.4 8.6 11.6 2.6 18 2.6 Z" fill="#F4F6F9" ${k}/>
+      <path d="M18 5.4 C23 5.4 25.4 10 25.4 17.4 C25.4 25 22.6 30.8 18 30.8
+               C13.4 30.8 10.6 25 10.6 17.4 C10.6 10 13 5.4 18 5.4 Z" fill="#E2E7EE"/>
+      <g stroke="#3E7BB5" stroke-width="3.4" stroke-linecap="round" fill="none">
+        <path d="M18 9.6 L11.8 17.6"/><path d="M18 9.6 L24.2 17.6"/></g>
+      <circle cx="18" cy="8.6" r="2.3" fill="#3E7BB5" ${k}/>`,
+
+    /* 樓下那隻貓：一顆貓頭 */
+    downcat: k => `
+      <path d="M9.4 12.6 L7.4 3.4 L15.6 8 Z" fill="#EFE3D0" ${k}/>
+      <path d="M26.6 12.6 L28.6 3.4 L20.4 8 Z" fill="#EFE3D0" ${k}/>
+      <path d="M11 11 L10 6 L14.4 8.6 Z" fill="#F5B8C0"/>
+      <path d="M25 11 L26 6 L21.6 8.6 Z" fill="#F5B8C0"/>
+      <circle cx="18" cy="19.4" r="11.2" fill="#EFE3D0" ${k}/>
+      <g fill="#3A3128"><circle cx="13.8" cy="18" r="1.7"/><circle cx="22.2" cy="18" r="1.7"/></g>
+      <path d="M18 21.6 L16.4 23.2 M18 21.6 L19.6 23.2" stroke="#C98A7E" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <path d="M18 21.4 L18 22.4" stroke="#C98A7E" stroke-width="1.6" stroke-linecap="round"/>
+      <g stroke="#3A3128" stroke-width="1" stroke-linecap="round" opacity=".45">
+        <path d="M5.4 18.6 H10"/><path d="M5.6 22 H10"/><path d="M26 18.6 H30.6"/><path d="M26 22 H30.4"/></g>`
+  };
+
+  const SOUV_LINE = `stroke="#101B26" stroke-opacity=".3" stroke-width="1.2" stroke-linejoin="round"`;
+  const souvArt = it => (SOUV_ART[it.id] || (k => `<circle cx="18" cy="18" r="11" fill="${it.c}" ${k}/>`))(SOUV_LINE);
+
+  /* 把一件紀念品畫在指定位置：art 是 36×36、中心 (18,18)，等比縮到直徑 2r */
   function souvShape(it, cx, cy, r) {
-    const c = it.c;
-    const ln = `stroke="#101B26" stroke-opacity=".34" stroke-width="${Math.max(1.1, r * .09)}"`;
-    switch (it.m) {
-      case "soft": return `<rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * 1.56}" rx="${r * .38}" fill="${c}" ${ln}/>
-        <rect x="${cx - r * .8}" y="${cy - r * .58}" width="${r * 1.6}" height="${r * .4}" rx="${r * .2}" fill="#FFF" opacity=".3"/>`;
-      case "cyl":  return `<rect x="${cx - r * .52}" y="${cy - r}" width="${r * 1.04}" height="${r * 2}" rx="${r * .5}" fill="${c}" ${ln}/>
-        <ellipse cx="${cx}" cy="${cy - r * .8}" rx="${r * .3}" ry="${r * .16}" fill="#FFF" opacity=".38"/>`;
-      case "cone": return `<path d="M${cx} ${cy - r} L${cx + r * .95} ${cy + r * .85} H${cx - r * .95} Z" fill="${c}" ${ln} stroke-linejoin="round"/>
-        <path d="M${cx} ${cy - r * .82} L${cx + r * .38} ${cy + r * .08} H${cx - r * .38} Z" fill="#FFF" opacity=".24"/>`;
-      case "ring": return `<circle cx="${cx}" cy="${cy}" r="${r * .84}" fill="none" stroke="#101B26" stroke-opacity=".34" stroke-width="${r * .56}"/>
-        <circle cx="${cx}" cy="${cy}" r="${r * .84}" fill="none" stroke="${c}" stroke-width="${r * .42}"/>`;
-      default:     return `<circle cx="${cx}" cy="${cy}" r="${r * .9}" fill="${c}" ${ln}/>
-        <circle cx="${cx - r * .3}" cy="${cy - r * .3}" r="${r * .26}" fill="#FFF" opacity=".4"/>`;
-    }
+    return `<g transform="translate(${(cx - r).toFixed(2)} ${(cy - r).toFixed(2)}) scale(${(r * 2 / 36).toFixed(4)})">${souvArt(it)}</g>`;
   }
 
   /* 掛件：一件吊在後照鏡上（擋風玻璃正中央，會擺盪），一件綁在車頂行李架
@@ -2997,20 +3182,10 @@
     }[S.pers]);
   }
 
+  /* 收藏頁的縮圖：跟車上掛的是同一份圖 */
   function souvGlyph(it) {
-    const c = it.c, o = "rgba(0,0,0,.16)";
-    /* 外框線：白色的東西（發票、識別證）在白卡片上會整個消失 */
-    const k = `stroke="#101B26" stroke-opacity=".3" stroke-width="1.3"`;
-    const body = {
-      soft: `<rect x="7" y="10" width="22" height="18" rx="5" fill="${c}" ${k}/><rect x="9" y="12" width="18" height="5" rx="2.5" fill="#fff" opacity=".3"/>`,
-      cyl:  `<rect x="12" y="8" width="12" height="21" rx="5" fill="${c}" ${k}/><ellipse cx="18" cy="10" rx="3.4" ry="1.6" fill="#fff" opacity=".4"/>`,
-      cone: `<path d="M18 6 L28 29 H8 Z" fill="${c}" ${k} stroke-linejoin="round"/><path d="M18 8 L22.5 19 H13.5 Z" fill="#fff" opacity=".24"/>`,
-      sph:  `<circle cx="18" cy="19" r="10" fill="${c}" ${k}/><circle cx="14.5" cy="15.5" r="3.2" fill="#fff" opacity=".4"/>`,
-      ring: `<circle cx="18" cy="19" r="10" fill="none" stroke="#101B26" stroke-opacity=".3" stroke-width="6"/>
-             <circle cx="18" cy="19" r="10" fill="none" stroke="${c}" stroke-width="4.5"/>`
-    }[it.m] || `<circle cx="18" cy="19" r="10" fill="${c}" ${k}/>`;
     return `<svg viewBox="0 0 36 36" width="32" height="32" aria-hidden="true">
-      <ellipse cx="18" cy="31" rx="9" ry="2" fill="${o}"/>${body}</svg>`;
+      <ellipse cx="18" cy="33.4" rx="9" ry="1.8" fill="rgba(0,0,0,.14)"/>${souvArt(it)}</svg>`;
   }
 
   const souvOf = id => SOUV.find(x => x.id === id);
