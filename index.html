@@ -465,7 +465,18 @@
   .skin .prev svg { width: 96px; height: auto; }
   .skin .prev img { max-height: 84px; max-width: 130px; width: auto; height: auto; }
   .skin .nm { font-size: 13.5px; font-weight: 700; padding-left: 3px; }
-  .skin .mt { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--fog-dim); text-transform: uppercase; padding-left: 3px; margin-top: -5px; }
+  .skin .nm .on { font-style: normal; font-size: 9.5px; font-weight: 700; color: var(--grass); margin-left: 4px; }
+  /* 不寫「這台是哪種個性」，直接讓它講一句話——聽得出來就認得出來 */
+  .skin .sq {
+    position: relative; margin-top: 1px; padding: 8px 10px;
+    background: #EFF6E8; border-radius: 3px 12px 12px 12px;
+    font-size: 11.5px; line-height: 1.55; color: #33502C; text-align: left;
+  }
+  .skin .sq::before {
+    content: ""; position: absolute; left: 8px; top: -3px;
+    width: 9px; height: 9px; background: #EFF6E8; transform: rotate(45deg); border-radius: 2px;
+  }
+  .skin[aria-pressed="true"] .sq, .skin[aria-pressed="true"] .sq::before { background: #E3F1D8; }
   .skin.locked { cursor: not-allowed; }
   .skin.locked .prev { filter: grayscale(1) brightness(.42); }
   .skin.locked .nm { color: var(--fog-dim); }
@@ -847,51 +858,6 @@
   }
   .hsKill:hover { background: #F7E1E3; }
 
-  .persNote { font-size: 12px; color: var(--fog); line-height: 1.7; padding: 2px 4px; }
-  .persMap { display: flex; flex-direction: column; gap: 6px; }
-  .pmRow { display: flex; align-items: baseline; gap: 10px; padding: 9px 12px; border-radius: 12px; background: var(--slab-2); }
-  .pmRow.on { background: #EAF4E4; }
-  .pmRow .nm { flex: none; width: 42px; font-size: 12.5px; font-weight: 700; color: var(--chalk); }
-  .pmRow .cars { display: flex; flex-wrap: wrap; gap: 5px; }
-  .pmRow .cars .c { font-size: 11px; color: var(--fog); background: #FFFFFF; padding: 2px 7px; border-radius: 8px; }
-
-  /* 日誌：一頁日記 */
-  .logPage { position: relative; display: flex; flex-direction: column; gap: 13px; }
-  .lpDate {
-    position: absolute; z-index: 3; left: 12px; top: -4px;
-    display: flex; align-items: baseline; gap: 7px;
-    background: #FFFFFF; padding: 7px 12px 8px; border-radius: 14px; box-shadow: var(--lift);
-  }
-  .lpDate b { font-family: var(--mono); font-size: 24px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
-  .lpDate span { font-family: var(--mono); font-size: 9.5px; line-height: 1.35; color: var(--fog); letter-spacing: .08em; }
-
-  /* 連接線畫在整串上，不靠每一列自己撐高——flex 的 stretch 在這裡不吃 */
-  .logTl { position: relative; display: flex; flex-direction: column; }
-  .logTl::before {
-    content: ""; position: absolute; left: 56px; top: 23px; bottom: 23px;
-    width: 2px; background: var(--slab-3);
-  }
-  .tlRow { display: flex; align-items: stretch; gap: 11px; min-height: 46px; }
-  .tlRow > .t, .tlRow > .tx, .tlRow > .sv { align-self: center; }
-  .tlRow .t { flex: none; width: 40px; font-family: var(--mono); font-size: 11px; color: var(--fog); }
-  .tlRow .rail { position: relative; flex: none; width: 12px; display: grid; place-items: center; }
-  .tlRow .rail i { position: relative; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 3px #F5F8F2; }
-  .tlRow .tx { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
-  .tlRow .tx b { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tlRow .tx span { font-family: var(--mono); font-size: 11px; color: var(--fog); flex: none; }
-  .tlRow .sv { flex: none; width: 34px; height: 34px; display: grid; place-items: center; background: #FFFFFF; border-radius: 11px; box-shadow: var(--lift); }
-  .tlRow .sv svg { width: 24px; height: 24px; }
-
-  .lpStick { display: flex; flex-wrap: wrap; gap: 9px; }
-  .lpStick .st {
-    display: flex; flex-direction: column; align-items: center; gap: 3px; width: 74px;
-    padding: 9px 4px 8px; background: #FFFFFF; border-radius: 14px; box-shadow: var(--lift);
-    transform: rotate(var(--r, 0deg));
-  }
-  .lpStick .st:nth-child(2n) { --r: 2.5deg; }
-  .lpStick .st:nth-child(3n) { --r: -2.5deg; }
-  .lpStick .st i { font-style: normal; font-size: 9.5px; color: var(--fog); text-align: center; line-height: 1.25; min-height: 24px; }
-
   /* 裝備位 */
   .slotRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .slotCell {
@@ -1224,6 +1190,11 @@
         <div id="sched" style="display:flex;flex-direction:column;gap:15px"></div>
       </div>
 
+      <div class="bkSec">
+        <h3>個性參數（會自己漂移）</h3>
+        <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
+      </div>
+
       <p class="bkNote">不對使用者顯示。原始紀錄留在裝置端，後台只收到彙總後的標籤。</p>
     </div>
 
@@ -1339,7 +1310,6 @@
               <button class="seg" data-ts="skin" aria-pressed="true">造型</button>
               <button class="seg" data-ts="souv" aria-pressed="false">配件</button>
               <button class="seg" data-ts="camp" aria-pressed="false">聯名</button>
-              <button class="seg" data-ts="pers" aria-pressed="false">個性</button>
             </div>
 
             <div id="tsSkin">
@@ -1360,13 +1330,6 @@
               <div id="campHold" style="display:flex;flex-direction:column;gap:12px"></div>
             </div>
 
-            <div id="tsPers" hidden>
-              <div style="display:flex;flex-direction:column;gap:10px" id="persList"></div>
-              <div class="pane" style="gap:14px;margin-top:12px">
-                <div class="paneTop"><span class="lv">個性微調</span><span class="nx">會自己漂移</span></div>
-                <div id="traits" style="display:flex;flex-direction:column;gap:12px"></div>
-              </div>
-            </div>
           </section>
         </div>
 
@@ -4140,7 +4103,6 @@
         <div class="rvHead"><span class="ic${uniq.length > 1 ? " two" : ""}">${art}</span>
           <span><h3 style="font-size:${names.length > 16 ? 15 : names.length > 10 ? 17 : 20}px">${names || title}</h3>
             <span class="sl">${sub}</span></span></div>
-        <div class="rvSay">${items.some(i => i.isNew) ? "新的，已經先幫你掛上去了。" : "收進收藏了，去加工頁可以掛上車。"}</div>
         <div class="rvFoot"><button class="rvGo" id="rvOk" style="flex:1;text-align:center">收下</button></div>
       </div>`;
     confetti(22, [R.c1, R.c2, "#FFFFFF"]);
@@ -4332,13 +4294,11 @@
     $("tsSkin").hidden = tuneSeg !== "skin";
     $("tsSouv").hidden = tuneSeg !== "souv";
     $("tsCamp").hidden = tuneSeg !== "camp";
-    $("tsPers").hidden = tuneSeg !== "pers";
     $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
       b.setAttribute("aria-pressed", String(b.dataset.ts === tuneSeg)));
     if (tuneSeg === "skin") renderSkins();
     if (tuneSeg === "souv") renderSouv();
     if (tuneSeg === "camp") renderCamps();
-    if (tuneSeg === "pers") renderPers();
   }
 
   function renderMap() {
@@ -4393,29 +4353,8 @@
     $("nsBtn").textContent = rush || left <= 0 ? "馬上叫車" : `預約 ${leaveStr} 的車`;
   }
 
-  function renderPers() {
-    const cur = pers();
-    /* 個性不是選單了——它跟著造型走，這裡只說明現在這台是誰 */
-    $("persList").innerHTML = `
-      <div class="pCard" aria-pressed="true" style="cursor:default">
-        <span class="pFace">${persThumb(cur)}</span>
-        <span class="pBody">
-          <h3>${cur.name}<small>${cur.type}</small></h3>
-          <p>${cur.desc}</p>
-          <p class="quote">${cur.quote.replace(/[「」]/g, "")}</p>
-        </span>
-      </div>
-      <div class="persNote">個性跟著造型走。想換個性，就去<button class="lnk" id="persToSkin">換一台車</button>。</div>
-      <div class="persMap" id="persMap"></div>`;
-    $("persToSkin").addEventListener("click", () => { tuneSeg = "skin"; renderTune(); $("screens").scrollTop = 0; });
-    $("persMap").innerHTML = PERSONALITIES.map(pp => {
-      const cars = SKINS.filter(sk => sk.pers === pp.id);
-      return `<div class="pmRow${pp.id === cur.id ? " on" : ""}">
-        <span class="nm">${pp.name}</span>
-        <span class="cars">${cars.map(sk => `<span class="c">${sk.name}</span>`).join("")}</span>
-      </div>`;
-    }).join("");
-
+  /* 性格參數是內部狀態，跟作息推論一樣收在後台，不對使用者顯示 */
+  function renderTraits() {
     const T = [
       { k: "clingy", n: "黏人度", c: "var(--rose)" }, { k: "sassy", n: "毒舌度", c: "var(--amber)" },
       { k: "talkative", n: "話癆度", c: "var(--sky)" }, { k: "romantic", n: "浪漫度", c: "var(--lime)" }
@@ -4438,8 +4377,8 @@
                 aria-pressed="${s.id === S.skin}" ${lock ? "disabled" : ""}>
           <span class="prev">${carSVG(s, "normal", true, false)}</span>
           ${lock ? `<span class="lock">LV.${s.lv} 解鎖</span>` : ""}
-          <span class="nm">${s.name}</span>
-          <span class="mt">${(PERSONALITIES.find(x => x.id === s.pers) || PERSONALITIES[0]).name}${s.id === S.skin ? " · 使用中" : ""}</span>
+          <span class="nm">${s.name}${s.id === S.skin ? ' <i class="on">使用中</i>' : ""}</span>
+          <span class="sq">${(PERSONALITIES.find(x => x.id === s.pers) || PERSONALITIES[0]).quote.replace(/[「」]/g, "")}</span>
         </button>`;
     }).join("");
     $("skinGrid").querySelectorAll("[data-s]").forEach(b => b.addEventListener("click", () => {
@@ -4471,6 +4410,7 @@
 
   /* 後台：分析口吻，不在 app 裡 */
   function renderConsole() {
+    renderTraits();
     const total = S.visits.reduce((a, b) => a + b, 0);
     $("bkTotal").textContent = `${total} 筆開啟紀錄`;
     const max = Math.max(1, ...S.visits), pk = peakHour();
@@ -4837,17 +4777,17 @@
       $("onbStep1").hidden = false; $("onbStep2").hidden = true;
       $("onbNext").textContent = "下一步";
     } else {
-      $("onbTitle").textContent = `${S.name} 要是什麼個性？`;
-      $("onbSub").textContent = "之後還能改。";
+      $("onbTitle").textContent = `哪一台是 ${S.name}？`;
+      $("onbSub").textContent = "聽它說一句話再決定。之後還能換。";
       $("onbStep1").hidden = true; $("onbStep2").hidden = false;
       $("onbNext").textContent = "開始養";
       $("onbStep2").innerHTML = SKINS.filter(sk => sk.lv <= 1).map(sk => {
         const pp = PERSONALITIES.find(x => x.id === sk.pers) || PERSONALITIES[0];
+        /* 不寫「這台是哪種個性」——讓它自己講一句，聽得出來就選得下去 */
         return `<button class="pCard" data-ok="${sk.id}" aria-pressed="${sk.id === S.skin}">
           <span class="pFace" style="--pf1:${pp.pf[0]};--pf2:${pp.pf[1]}">${thumb(sk, sk.id)}</span>
           <span class="pBody">
-            <h3>${sk.name}<small>${pp.type}</small></h3>
-            <p>${pp.desc}</p>
+            <h3>${sk.name}</h3>
             <p class="quote">${pp.quote.replace(/[「」]/g, "")}</p>
           </span>
         </button>`;
