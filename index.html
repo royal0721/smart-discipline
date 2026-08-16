@@ -276,6 +276,8 @@
   @keyframes blink { 0%,93%,100% { transform: scaleY(1); } 96.5% { transform: scaleY(.08); } }
   .carHold.pet svg { animation: petted .65s ease; }
   @keyframes petted { 0%,100% { transform: none; } 28% { transform: translateY(-18px) rotate(-4deg); } 62% { transform: translateY(-5px) rotate(3deg); } }
+  .charm { transform-box: fill-box; transform-origin: 50% 0; animation: swing 3.4s ease-in-out infinite; }
+  @keyframes swing { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 
   /* ── 面板 ─────────────────────────────────────────────── */
   .pane {
@@ -712,6 +714,12 @@
     box-shadow: var(--lift); overflow: hidden;
   }
   .tunePrev svg, .tunePrev img { width: 196px; height: auto; max-height: 184px; }
+  .tunePrev.swap svg, .tunePrev.swap img { animation: swap .42s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes swap {
+    0% { opacity: 0; transform: scale(.86) translateY(10px); }
+    60% { opacity: 1; transform: scale(1.04); }
+    100% { transform: none; }
+  }
 
   /* ── 跟車車說話 ───────────────────────────────────────── */
   .talkBtn {
@@ -1661,7 +1669,7 @@
      正面平視的扁平插畫。跟 3D 版一樣不畫臉：頭燈就是頭燈，
      只在前保桿留一道細微的笑。
      ──────────────────────────────────────────────────── */
-  function svgAcc(sk) {
+  function svgAcc(sk, u) {
     switch (sk.acc) {
       case "cat": return `
         <path d="M86 52 L74 12 L120 40 Z" fill="${sk.body}"/>
@@ -1672,14 +1680,13 @@
           <path d="M44 172 L10 164"/><path d="M44 182 L8 184"/>
           <path d="M236 172 L270 164"/><path d="M236 182 L272 184"/>
         </g>`;
+      /* 正面看不到車頂條紋（車頂燈箱擋著），所以賽道版走號碼圈＋前下擾流 */
       case "racer": return `
-        <g clip-path="url(#bd)">
-          <rect x="126" y="38" width="12" height="184" fill="#FFFFFF" opacity=".9"/>
-          <rect x="144" y="38" width="12" height="184" fill="#FFFFFF" opacity=".9"/>
-        </g>
-        <rect x="72" y="24" width="136" height="12" rx="6" fill="#1A2028"/>
-        <rect x="84" y="30" width="12" height="18" rx="4" fill="#1A2028"/>
-        <rect x="184" y="30" width="12" height="18" rx="4" fill="#1A2028"/>`;
+        <circle cx="140" cy="163" r="20" fill="#F5F5F5" stroke="#1A2028" stroke-width="2.5"/>
+        <text x="140" y="171" text-anchor="middle" font-family="ui-monospace, monospace"
+              font-size="18" font-weight="700" fill="#E8412F">07</text>
+        <path d="M52 210 C52 226 74 232 110 232 H170 C206 232 228 226 228 210
+                 C228 220 206 224 170 224 H110 C74 224 52 220 52 210 Z" fill="#1A2028"/>`;
       case "neon": return `
         <ellipse cx="140" cy="228" rx="112" ry="16" fill="#7DD3FC" opacity=".3"/>
         <ellipse cx="140" cy="228" rx="76" ry="9" fill="#C9F23A" opacity=".22"/>`;
@@ -1699,39 +1706,49 @@
     }
   }
 
-  /* 把一件紀念品畫在指定位置 */
+  /* 把一件紀念品畫在指定位置。外框線是刻意的——沒有它，白色的東西
+     在白車身上會消失，深色的東西在深色車窗上也會消失 */
   function souvShape(it, cx, cy, r) {
     const c = it.c;
+    const ln = `stroke="#101B26" stroke-opacity=".34" stroke-width="${Math.max(1.1, r * .09)}"`;
     switch (it.m) {
-      case "soft": return `<rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * 1.56}" rx="${r * .38}" fill="${c}"/>
-        <rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * .5}" rx="${r * .25}" fill="#FFF" opacity=".25"/>`;
-      case "cyl":  return `<rect x="${cx - r * .52}" y="${cy - r}" width="${r * 1.04}" height="${r * 2}" rx="${r * .5}" fill="${c}"/>
-        <ellipse cx="${cx}" cy="${cy - r * .82}" rx="${r * .5}" ry="${r * .2}" fill="#FFF" opacity=".32"/>`;
-      case "cone": return `<path d="M${cx} ${cy - r} L${cx + r * .95} ${cy + r * .85} H${cx - r * .95} Z" fill="${c}"/>
-        <path d="M${cx} ${cy - r} L${cx + r * .42} ${cy + r * .1} H${cx - r * .42} Z" fill="#FFF" opacity=".2"/>`;
-      case "ring": return `<circle cx="${cx}" cy="${cy}" r="${r * .82}" fill="none" stroke="${c}" stroke-width="${r * .42}"/>`;
-      default:     return `<circle cx="${cx}" cy="${cy}" r="${r * .9}" fill="${c}"/>
-        <circle cx="${cx - r * .3}" cy="${cy - r * .32}" r="${r * .28}" fill="#FFF" opacity=".36"/>`;
+      case "soft": return `<rect x="${cx - r}" y="${cy - r * .78}" width="${r * 2}" height="${r * 1.56}" rx="${r * .38}" fill="${c}" ${ln}/>
+        <rect x="${cx - r * .8}" y="${cy - r * .58}" width="${r * 1.6}" height="${r * .4}" rx="${r * .2}" fill="#FFF" opacity=".3"/>`;
+      case "cyl":  return `<rect x="${cx - r * .52}" y="${cy - r}" width="${r * 1.04}" height="${r * 2}" rx="${r * .5}" fill="${c}" ${ln}/>
+        <ellipse cx="${cx}" cy="${cy - r * .8}" rx="${r * .3}" ry="${r * .16}" fill="#FFF" opacity=".38"/>`;
+      case "cone": return `<path d="M${cx} ${cy - r} L${cx + r * .95} ${cy + r * .85} H${cx - r * .95} Z" fill="${c}" ${ln} stroke-linejoin="round"/>
+        <path d="M${cx} ${cy - r * .82} L${cx + r * .38} ${cy + r * .08} H${cx - r * .38} Z" fill="#FFF" opacity=".24"/>`;
+      case "ring": return `<circle cx="${cx}" cy="${cy}" r="${r * .84}" fill="none" stroke="#101B26" stroke-opacity=".34" stroke-width="${r * .56}"/>
+        <circle cx="${cx}" cy="${cy}" r="${r * .84}" fill="none" stroke="${c}" stroke-width="${r * .42}"/>`;
+      default:     return `<circle cx="${cx}" cy="${cy}" r="${r * .9}" fill="${c}" ${ln}/>
+        <circle cx="${cx - r * .3}" cy="${cy - r * .3}" r="${r * .26}" fill="#FFF" opacity=".4"/>`;
     }
   }
 
-  /* 掛件：一件吊在擋風玻璃前（最顯眼），一件放車頂 */
+  /* 掛件：一件吊在後照鏡上（擋風玻璃正中央，會擺盪），一件綁在車頂行李架
+     ── 車頂那條桿子是照著車身曲線畫的，直的橫桿在圓車頂上會浮起來 */
   function svgEquip() {
-    let out = "", roofDone = false;
-    for (const id of (S.equip || [])) {
-      const it = souvOf(id);
-      if (!it) continue;
-      if (it.slot === "hang" || roofDone) {
+    const items = (S.equip || []).map(souvOf).filter(Boolean).slice(0, 2);
+    if (!items.length) return "";
+    /* 一定要有一件掛在後照鏡上——那是整台車最顯眼的位置 */
+    let hi = items.findIndex(it => it.slot === "hang");
+    if (hi < 0) hi = 0;
+    let out = "";
+    items.forEach((it, i) => {
+      if (i === hi) {
         out += `<g class="charm">
-            <path d="M140 58 L140 84" stroke="#8E9AA6" stroke-width="2.6" stroke-linecap="round"/>
-            <circle cx="140" cy="58" r="3.6" fill="#8E9AA6"/>
-            ${souvShape(it, 140, 102, 18)}
+            <circle cx="152" cy="64" r="4.4" fill="#5A646F"/>
+            <path d="M152 64 L152 82" stroke="#5A646F" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="152" cy="85" r="3.2" fill="none" stroke="#8E9AA6" stroke-width="2"/>
+            <circle cx="152" cy="104" r="22" fill="#FFFFFF" opacity=".13"/>
+            ${souvShape(it, 152, 104, 17)}
           </g>`;
       } else {
-        roofDone = true;
-        out += `<g>${souvShape(it, 86, 30, 16)}</g>`;
+        /* 另一件擺在儀表板上——一樣在擋風玻璃裡，深色底才看得清楚 */
+        out += `<ellipse cx="100" cy="127" rx="17" ry="4.4" fill="#000000" opacity=".32"/>
+          ${souvShape(it, 100, 115, 15)}`;
       }
-    }
+    });
     return out;
   }
 
@@ -1742,14 +1759,17 @@
     return `<path d="M114 185 q26 15 52 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   }
 
+  let svgUid = 0;
   function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
-    const u = "s" + s.id + (small ? "m" : "b");
+    /* 同一頁會同時出現十幾台車車，id 必須每個實例都不同，
+       否則 url(#…) 會跨實例解析到別人的定義，重繪時整批壞掉 */
+    const u = "s" + s.id + (small ? "m" : "b") + (++svgUid);
     const body = "M30 158 C30 76 74 38 140 38 C206 38 250 76 250 158 C250 202 232 218 194 218 L86 218 C48 218 30 202 30 158 Z";
     return `
       <svg viewBox="0 0 280 246" role="img" aria-label="${S.name || "車車"}">
         <defs>
-          <clipPath id="bd"><path d="${body}"/></clipPath>
+          <clipPath id="bd${u}"><path d="${body}"/></clipPath>
           <linearGradient id="gu${u}" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".26"/>
             <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
@@ -1761,7 +1781,7 @@
         </defs>
 
         <ellipse cx="140" cy="230" rx="86" ry="10" fill="#16201A" opacity=".13"/>
-        ${s.acc === "neon" ? svgAcc(s) : ""}
+        ${s.acc === "neon" ? svgAcc(s, u) : ""}
 
         <rect x="46" y="192" width="46" height="36" rx="17" fill="#2A3038"/>
         <rect x="188" y="192" width="46" height="36" rx="17" fill="#2A3038"/>
@@ -1773,7 +1793,7 @@
               font-size="13" font-weight="700" fill="#FFFFFF" letter-spacing=".5">yoxi</text>
 
         <path d="${body}" fill="${s.lower}"/>
-        <g clip-path="url(#bd)">
+        <g clip-path="url(#bd${u})">
           <path d="M18 26 H262 V118 C214 142 66 142 18 118 Z" fill="${s.body}"/>
           <path d="M18 26 H262 V150 H18 Z" fill="url(#gu${u})"/>
         </g>
@@ -1797,26 +1817,27 @@
         <text x="140" y="212" text-anchor="middle" font-family="ui-monospace, monospace"
               font-size="12" font-weight="700" fill="#FFFFFF" letter-spacing=".5">yoxi</text>
 
-        ${s.acc !== "neon" ? svgAcc(s) : ""}
+        ${s.acc !== "neon" ? svgAcc(s, u) : ""}
         ${withEquip ? svgEquip() : ""}
       </svg>`;
   }
 
   function boxSVG() {
+    const u = ++svgUid;   /* 盲盒同時出現在地圖與開箱畫面，漸層 id 一樣會互相搶 */
     return `
       <svg viewBox="0 0 200 184" role="img" aria-label="盲盒">
         <defs>
-          <linearGradient id="bx" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="bx${u}" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#39445F"/><stop offset="100%" stop-color="#1E2637"/>
           </linearGradient>
-          <linearGradient id="bxl" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="bxl${u}" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#475473"/><stop offset="100%" stop-color="#2B3448"/>
           </linearGradient>
         </defs>
         <ellipse cx="100" cy="166" rx="60" ry="9" fill="#000" opacity=".5"/>
-        <rect x="34" y="68" width="132" height="88" rx="16" fill="url(#bx)"/>
+        <rect x="34" y="68" width="132" height="88" rx="16" fill="url(#bx${u})"/>
         <rect x="88" y="68" width="24" height="88" fill="#FF86AE" opacity=".95"/>
-        <rect x="26" y="46" width="148" height="30" rx="12" fill="url(#bxl)"/>
+        <rect x="26" y="46" width="148" height="30" rx="12" fill="url(#bxl${u})"/>
         <rect x="88" y="46" width="24" height="30" fill="#FF86AE" opacity=".95"/>
         <path d="M100 46 q-32 -6 -28 -23 q17 -11 28 23 Z" fill="#FF86AE"/>
         <path d="M100 46 q32 -6 28 -23 q-17 -11 -28 23 Z" fill="#FFA3C2"/>
@@ -2735,13 +2756,16 @@
 
   function souvGlyph(it) {
     const c = it.c, o = "rgba(0,0,0,.16)";
+    /* 外框線：白色的東西（發票、識別證）在白卡片上會整個消失 */
+    const k = `stroke="#101B26" stroke-opacity=".3" stroke-width="1.3"`;
     const body = {
-      soft: `<rect x="7" y="10" width="22" height="18" rx="5" fill="${c}"/><rect x="7" y="10" width="22" height="6" rx="3" fill="#fff" opacity=".28"/>`,
-      cyl:  `<rect x="12" y="8" width="12" height="21" rx="5" fill="${c}"/><ellipse cx="18" cy="9" rx="6" ry="2.6" fill="#fff" opacity=".35"/>`,
-      cone: `<path d="M18 6 L28 29 H8 Z" fill="${c}"/><path d="M18 6 L23 18 H13 Z" fill="#fff" opacity=".22"/>`,
-      sph:  `<circle cx="18" cy="19" r="10" fill="${c}"/><circle cx="14.5" cy="15.5" r="3.2" fill="#fff" opacity=".38"/>`,
-      ring: `<circle cx="18" cy="19" r="10" fill="none" stroke="${c}" stroke-width="4.5"/>`
-    }[it.m] || `<circle cx="18" cy="19" r="10" fill="${c}"/>`;
+      soft: `<rect x="7" y="10" width="22" height="18" rx="5" fill="${c}" ${k}/><rect x="9" y="12" width="18" height="5" rx="2.5" fill="#fff" opacity=".3"/>`,
+      cyl:  `<rect x="12" y="8" width="12" height="21" rx="5" fill="${c}" ${k}/><ellipse cx="18" cy="10" rx="3.4" ry="1.6" fill="#fff" opacity=".4"/>`,
+      cone: `<path d="M18 6 L28 29 H8 Z" fill="${c}" ${k} stroke-linejoin="round"/><path d="M18 8 L22.5 19 H13.5 Z" fill="#fff" opacity=".24"/>`,
+      sph:  `<circle cx="18" cy="19" r="10" fill="${c}" ${k}/><circle cx="14.5" cy="15.5" r="3.2" fill="#fff" opacity=".4"/>`,
+      ring: `<circle cx="18" cy="19" r="10" fill="none" stroke="#101B26" stroke-opacity=".3" stroke-width="6"/>
+             <circle cx="18" cy="19" r="10" fill="none" stroke="${c}" stroke-width="4.5"/>`
+    }[it.m] || `<circle cx="18" cy="19" r="10" fill="${c}" ${k}/>`;
     return `<svg viewBox="0 0 36 36" width="32" height="32" aria-hidden="true">
       <ellipse cx="18" cy="31" rx="9" ry="2" fill="${o}"/>${body}</svg>`;
   }
@@ -3043,7 +3067,13 @@
         </button>`;
     }).join("");
     $("skinGrid").querySelectorAll("[data-s]").forEach(b => b.addEventListener("click", () => {
-      S.skin = b.dataset.s; save(); renderSkins(); renderHome();
+      S.skin = b.dataset.s; save();
+      /* 上面那台預覽要當場換好，不然改了看不出差別 */
+      renderTune(); renderHome();
+      CarView.set(skin(), moodOf());
+      if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
+      $("tunePrev").classList.remove("swap"); void $("tunePrev").offsetWidth;
+      $("tunePrev").classList.add("swap");
       toast(`換上「${skin().name}」`);
     }));
     $("skinNote").innerHTML = `<span>${skin().hi}</span>`;
