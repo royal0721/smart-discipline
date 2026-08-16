@@ -63,15 +63,18 @@ CTA 換成「馬上叫車」，車車的語氣也從「你慢慢來」轉成「�
 `CAR_SOURCE` 一個常數就好，app 其他邏輯完全不用動：
 
 ```js
-const CAR_SOURCE = { kind: "webgl" };   // 預設，內建佔位模型
+const CAR_SOURCE = { kind: "svg" };     // 目前預設：手繪向量
 ```
+
+**目前預設是向量版**，不是 3D。手刻幾何的即時 3D 做不出角色設定圖那種質感，
+與其擺一個做不好的 3D，不如先用一張畫得乾淨的平面圖；等真的模型到位再切回去。
 
 | kind | 用途 | 設定 |
 | --- | --- | --- |
 | `frames` | **最推薦**。Blender 離線算好的角度序列 PNG，畫質＝離線算圖、效能＝貼圖，還能拖曳轉動 | `{ kind: "frames", frames: { yoxi: ["a/00.png", …], … } }` |
 | `model` | glTF／glb，用 `<model-viewer>` 顯示，自帶 PBR、HDR 環境光、接觸陰影 | `{ kind: "model", glb: { yoxi: "assets/car.glb" } }` |
 | `spline` | Spline 場景，設計師自己就能做，質感接近角色設定圖 | `{ kind: "spline", scene: "https://…/scene.splinecode" }` |
-| `svg` | 手繪向量，永遠可用 | `{ kind: "svg" }` |
+| `svg` | 手繪向量，**目前預設**，永遠可用 | `{ kind: "svg" }` |
 
 `model` 與 `spline` 需要先載入各自的 web component script（CSP 環境要自架）。
 任何一種初始化失敗都會自動退回 `svg`，不會出現白畫面。
@@ -82,9 +85,20 @@ const CAR_SOURCE = { kind: "webgl" };   // 預設，內建佔位模型
 **外觀選型建議**：提案階段用 Spline（設計師不用寫程式，質感直接到位），
 正式產品走 Blender 建模匯出 glTF；若不需要即時旋轉，`frames` 的投報率最高。
 
-## 角色設計：目前的佔位模型
+## 免費的建模方案
 
-車車是**即時 3D**，用原生 WebGL 畫的（CSP 擋外部 CDN，所以沒有用 three.js）。
+手上有角色設定圖的話，這幾個都免費，由易到難：
+
+- **Womp**（womp.com）：瀏覽器上捏黏土球，天生適合這種圓潤造型，可匯出 glb
+- **Meshy／Tripo**：有免費額度，上傳角色設定圖直接生 glb，最短路徑
+- **Spline** 免費方案：瀏覽器建模，內建材質與燈光
+- **Blender**：完全免費、天花板最高、學習曲線最陡
+- **Poly Pizza／Kenney.nl**：CC0 免費模型，抓一台可愛的車改色即可
+
+## 附帶的 WebGL 佔位模型
+
+`kind: "webgl"` 仍然可用，但它是用原生 WebGL 硬刻的幾何（CSP 擋外部 CDN，沒有用 three.js），
+屬於佔位性質。
 比例照參考圖重建：又短又高的泡泡車，不是長條車。
 
 - **車身**：定義一條側面輪廓（車頂線、車底線、車寬）後沿車長放樣。車頭保留完整的
