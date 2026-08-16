@@ -3,6 +3,10 @@
 <title>Yoxi 車車</title>
 
 <style>
+  /* 有自己 display 的元件掛上 hidden 屬性時，class 的 display 會蓋掉瀏覽器
+     預設的 display:none——行程列、按鈕、面板都中過同一個坑，這裡一次擋掉 */
+  [hidden] { display: none !important; }
+
   /* ─────────────────────────────────────────────────────────
      Yoxi 車車 — 夜路上的養成車。刻意單一視覺世界（深夜藍紫），
      每個顏色都明寫，不借用宿主頁面的底色。
@@ -613,21 +617,6 @@
   .bkMeta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--fog); }
   .bkMeta b { color: var(--chalk); font-weight: 600; font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
-  .tuneEntry {
-    display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 16px;
-    border: none; border-radius: var(--rLg); cursor: pointer; text-align: left;
-    background: #FFFFFF; box-shadow: var(--lift); font-family: var(--sans);
-    color: var(--chalk); transition: .18s;
-  }
-  .tuneEntry:hover { transform: translateY(-2px); }
-  .tuneEntry:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
-  .teIc { flex: none; width: 42px; height: 42px; border-radius: 13px; overflow: hidden; display: grid; place-items: center; background: var(--slab-2); }
-  .teIc img { max-height: 38px; max-width: 38px; }
-  .teIc svg { width: 40px; height: auto; }
-  .teTx { display: flex; flex-direction: column; }
-  .teTx b { font-size: 14.5px; font-weight: 700; }
-  .teTx span { font-size: 12px; color: var(--fog); }
-  .teGo { margin-left: auto; color: var(--fog-dim); font-size: 16px; }
 
   /* ── 地圖上的盲盒：最該被看到的東西 ─────────────────────── */
   .boxPin {
@@ -858,6 +847,78 @@
   }
   .hsKill:hover { background: #F7E1E3; }
 
+  .persNote { font-size: 12px; color: var(--fog); line-height: 1.7; padding: 2px 4px; }
+  .persMap { display: flex; flex-direction: column; gap: 6px; }
+  .pmRow { display: flex; align-items: baseline; gap: 10px; padding: 9px 12px; border-radius: 12px; background: var(--slab-2); }
+  .pmRow.on { background: #EAF4E4; }
+  .pmRow .nm { flex: none; width: 42px; font-size: 12.5px; font-weight: 700; color: var(--chalk); }
+  .pmRow .cars { display: flex; flex-wrap: wrap; gap: 5px; }
+  .pmRow .cars .c { font-size: 11px; color: var(--fog); background: #FFFFFF; padding: 2px 7px; border-radius: 8px; }
+
+  /* 日誌：一頁日記 */
+  .logPage { position: relative; display: flex; flex-direction: column; gap: 13px; }
+  .lpDate {
+    position: absolute; z-index: 3; left: 12px; top: -4px;
+    display: flex; align-items: baseline; gap: 7px;
+    background: #FFFFFF; padding: 7px 12px 8px; border-radius: 14px; box-shadow: var(--lift);
+  }
+  .lpDate b { font-family: var(--mono); font-size: 24px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+  .lpDate span { font-family: var(--mono); font-size: 9.5px; line-height: 1.35; color: var(--fog); letter-spacing: .08em; }
+
+  /* 連接線畫在整串上，不靠每一列自己撐高——flex 的 stretch 在這裡不吃 */
+  .logTl { position: relative; display: flex; flex-direction: column; }
+  .logTl::before {
+    content: ""; position: absolute; left: 56px; top: 23px; bottom: 23px;
+    width: 2px; background: var(--slab-3);
+  }
+  .tlRow { display: flex; align-items: stretch; gap: 11px; min-height: 46px; }
+  .tlRow > .t, .tlRow > .tx, .tlRow > .sv { align-self: center; }
+  .tlRow .t { flex: none; width: 40px; font-family: var(--mono); font-size: 11px; color: var(--fog); }
+  .tlRow .rail { position: relative; flex: none; width: 12px; display: grid; place-items: center; }
+  .tlRow .rail i { position: relative; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 3px #F5F8F2; }
+  .tlRow .tx { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
+  .tlRow .tx b { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tlRow .tx span { font-family: var(--mono); font-size: 11px; color: var(--fog); flex: none; }
+  .tlRow .sv { flex: none; width: 34px; height: 34px; display: grid; place-items: center; background: #FFFFFF; border-radius: 11px; box-shadow: var(--lift); }
+  .tlRow .sv svg { width: 24px; height: 24px; }
+
+  .lpStick { display: flex; flex-wrap: wrap; gap: 9px; }
+  .lpStick .st {
+    display: flex; flex-direction: column; align-items: center; gap: 3px; width: 74px;
+    padding: 9px 4px 8px; background: #FFFFFF; border-radius: 14px; box-shadow: var(--lift);
+    transform: rotate(var(--r, 0deg));
+  }
+  .lpStick .st:nth-child(2n) { --r: 2.5deg; }
+  .lpStick .st:nth-child(3n) { --r: -2.5deg; }
+  .lpStick .st i { font-style: normal; font-size: 9.5px; color: var(--fog); text-align: center; line-height: 1.25; min-height: 24px; }
+
+  /* 裝備位 */
+  .slotRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .slotCell {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding: 12px 8px 10px; border: none; border-radius: var(--rLg); cursor: pointer;
+    background: #FFFFFF; box-shadow: var(--lift); font-family: var(--sans); transition: .18s;
+  }
+  .slotCell:hover { transform: translateY(-2px); }
+  .slotCell[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
+  .slotCell .ic { width: 40px; height: 40px; display: grid; place-items: center; background: var(--slab-2); border-radius: 13px; }
+  .slotCell .ic .mt { color: var(--fog-dim); font-size: 17px; }
+  .slotCell .nm { font-size: 12.5px; font-weight: 700; color: var(--chalk); }
+  .slotCell .cur { font-size: 10.5px; color: var(--fog); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .slotHint { font-size: 11.5px; line-height: 1.6; color: var(--fog); padding: 0 4px 2px; }
+
+  .wheelGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .wheelCell {
+    position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 12px 6px 10px; border: none; border-radius: var(--rLg); cursor: pointer;
+    background: #FFFFFF; box-shadow: var(--lift); font-family: var(--sans); transition: .18s;
+  }
+  .wheelCell:hover { transform: translateY(-2px); }
+  .wheelCell[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
+  .wheelCell .nm { font-size: 11.5px; color: var(--chalk); }
+  .wheelCell.lock { opacity: .5; cursor: default; box-shadow: none; background: var(--slab-2); }
+  .wheelCell .lv { font-family: var(--mono); font-size: 9.5px; color: var(--fog); }
+
   /* 盲盒入口 */
   .boxSheet { max-height: 82%; }
   .bsBody { align-items: stretch; gap: 14px; padding-top: 2px; }
@@ -947,6 +1008,8 @@
   .ccTier button:disabled { background: var(--slab-3); color: var(--fog); cursor: default; }
   .ccTier.got .tx b { color: var(--fog); }
   .ccJoin { width: 100%; }
+  .ccDone { font-size: 12.5px; font-weight: 700; color: var(--grass); background: #EAF4E4; padding: 9px 12px; border-radius: 12px; text-align: center; }
+  .campCard.done { opacity: .72; }
 
   /* 進行中的行程：首頁一定要看得到，也一定要能取消 */
   .liveBar {
@@ -1232,11 +1295,6 @@
               <button class="nsBtn" id="nsBtn">預約</button>
             </div>
 
-            <button class="tuneEntry" id="tuneEntry">
-              <span class="teIc" id="teIc"></span>
-              <span class="teTx"><b>加工車車</b><span id="teSub">換造型、掛紀念品、調個性</span></span>
-              <span class="teGo">→</span>
-            </button>
           </section>
 
           <!-- 行程 -->
@@ -1279,7 +1337,7 @@
             <div class="tunePrev" id="tunePrev"></div>
             <div class="segRow" id="tuneSeg">
               <button class="seg" data-ts="skin" aria-pressed="true">造型</button>
-              <button class="seg" data-ts="souv" aria-pressed="false">掛件</button>
+              <button class="seg" data-ts="souv" aria-pressed="false">配件</button>
               <button class="seg" data-ts="camp" aria-pressed="false">聯名</button>
               <button class="seg" data-ts="pers" aria-pressed="false">個性</button>
             </div>
@@ -1291,8 +1349,9 @@
             </div>
 
             <div id="tsSouv" hidden>
-              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">掛件</h2><span id="souvCount">0 / 0</span></div>
-              <div class="cap" style="padding:0 4px 6px">最多掛兩件</div>
+              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">配件</h2><span id="souvCount">0 / 0</span></div>
+              <div class="slotRow" id="slotRow"></div>
+              <div class="slotHint" id="slotHint"></div>
               <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
             </div>
 
@@ -1454,33 +1513,39 @@
     { id: "misty", name: "霧霧", type: "神秘文青型", pf: ["#463A6B", "#1C1730"], tint: "#B0A0EE",
       desc: "常常說一些你要想三秒的話，很愛帶你繞路看東西。",
       quote: "「今天的天空，適合繞遠路。你要不要？」",
-      traits: { clingy: 40, sassy: 42, talkative: 45, romantic: 84 } }
+      traits: { clingy: 40, sassy: 42, talkative: 45, romantic: 84 } },
+    { id: "meme", name: "尬彼", type: "網路廢話型", pf: ["#6B5A1E", "#2A2410"], tint: "#F2D24B",
+      desc: "沒有一句話是正經的。導航正確率意外地高。",
+      quote: "「484 想出門？送啦。」",
+      traits: { clingy: 52, sassy: 74, talkative: 96, romantic: 20 } }
   ];
 
   /* 造型：body = 上半車身，lower = 下半車身，deep = 頂燈與車牌 */
   const SKINS = [
-    { id: "yoxi",   name: "yoxi 原色", tag: "基本", lv: 1, hi: "最正統的一台。",
+    { id: "yoxi",   name: "yoxi 原色", tag: "基本", pers: "warm", lv: 1, hi: "最正統的一台。",
       body: "#5CB947", lower: "#FBFDFA", deep: "#49A337", glass: "#1F2A33", light: "#EAF7FF", acc: "none", bg: ["#20402A", "#121C19"] },
-    { id: "mint",   name: "薄荷牛奶", tag: "基本", lv: 1, hi: "夏天限定。",
+    { id: "mint",   name: "薄荷牛奶", tag: "基本", pers: "misty", lv: 1, hi: "夏天限定。",
       body: "#7FD9C2", lower: "#FFFDF5", deep: "#55BCA2", glass: "#17262E", light: "#FFF6E0", acc: "none", bg: ["#1F3B37", "#141E26"] },
-    { id: "ink",    name: "深夜墨", tag: "基本", lv: 1, hi: "夜行版，頭燈是螢光黃綠。",
+    { id: "ink",    name: "深夜墨", tag: "基本", pers: "gent", lv: 1, hi: "夜行版，頭燈是螢光黃綠。",
       body: "#2F3D50", lower: "#44566E", deep: "#C9F23A", glass: "#0D141A", light: "#C9F23A", acc: "none", bg: ["#222A3B", "#12161F"] },
-    { id: "cat",    name: "貓咪車車", tag: "人氣", lv: 2, hi: "戴上耳朵之後它會多一個喵。",
+    { id: "cat",    name: "貓咪車車", tag: "人氣", pers: "tsun", lv: 2, hi: "戴上耳朵之後它會多一個喵。",
       body: "#E3C39C", lower: "#FCF5EA", deep: "#C39A6E", glass: "#1B2733", light: "#FFE3B8", acc: "cat", bg: ["#3B3324", "#181B24"] },
-    { id: "racer",  name: "熱血賽道", tag: "季節", lv: 3, hi: "掛上尾翼，它會報你的平均時速。",
+    { id: "racer",  name: "熱血賽道", tag: "季節", pers: "sunny", lv: 3, hi: "掛上尾翼，它會報你的平均時速。",
       body: "#E8412F", lower: "#F5F5F5", deep: "#B92B1C", glass: "#141C24", light: "#FFF0C4", acc: "racer", bg: ["#45201C", "#171820"] },
-    { id: "neon",   name: "霓虹夜跑", tag: "季節", lv: 4, hi: "車底會亮。",
+    { id: "neon",   name: "霓虹夜跑", tag: "季節", pers: "misty", lv: 4, hi: "車底會亮。",
       body: "#232B47", lower: "#333D5F", deep: "#7DD3FC", glass: "#0A0E18", light: "#7DD3FC", acc: "neon", bg: ["#1B2B4A", "#0E1320"] },
-    { id: "sakura", name: "櫻花限定", tag: "聯名", lv: 5, hi: "花瓣會一直掉。它說那是頭皮屑。",
+    { id: "sakura", name: "櫻花限定", tag: "聯名", pers: "warm", lv: 5, hi: "花瓣會一直掉。它說那是頭皮屑。",
       body: "#F7A8C0", lower: "#FFF3F7", deep: "#E07A9C", glass: "#25202A", light: "#FFF0F5", acc: "sakura", bg: ["#42283A", "#1A1620"] },
-    { id: "deer",   name: "聖誕小鹿", tag: "聯名", lv: 6, hi: "十二月限定。鼻子會亮。",
+    { id: "deer",   name: "聖誕小鹿", tag: "聯名", pers: "sunny", lv: 6, hi: "十二月限定。鼻子會亮。",
       body: "#C0503F", lower: "#F8F0E5", deep: "#9C3A2E", glass: "#1A222B", light: "#FFE6A8", acc: "deer", bg: ["#3E2320", "#161A1E"] },
-    { id: "boba",   name: "珍珠奶茶", tag: "人氣", lv: 2, hi: "車頂那根吸管是真的。",
+    { id: "boba",   name: "珍珠奶茶", tag: "人氣", pers: "sunny", lv: 2, hi: "車頂那根吸管是真的。",
       body: "#C89A6B", lower: "#F7EBDB", deep: "#8A5F3C", glass: "#241A14", light: "#FFE9C6", acc: "boba", bg: ["#3A2A1E", "#1A1512"] },
-    { id: "fox",    name: "九尾狐", tag: "聯名", lv: 5, hi: "尾巴它自己數過。說九條是上限。",
+    { id: "fox",    name: "九尾狐", tag: "聯名", pers: "tsun", lv: 5, hi: "尾巴它自己數過。說九條是上限。",
       body: "#F0803C", lower: "#FFF4E8", deep: "#C4571F", glass: "#231A18", light: "#FFE0B0", acc: "fox", bg: ["#48291A", "#1C1512"] },
-    { id: "dragon", name: "祥龍出巡", tag: "聯名", lv: 6, hi: "過年限定。整路都在說吉祥話。",
-      body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] }
+    { id: "dragon", name: "祥龍出巡", tag: "聯名", pers: "gent", lv: 6, hi: "過年限定。整路都在說吉祥話。",
+      body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] },
+    { id: "meme",   name: "迷因黃", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆貼紙。它說那叫個人風格。",
+      body: "#F2C230", lower: "#FFFAE6", deep: "#2A2410", glass: "#141208", light: "#FFF3C4", acc: "meme", bg: ["#3E3410", "#1A1708"] }
   ];
 
   const LV_NAMES = ["初次見面", "熟客", "老朋友", "有點在乎", "離不開", "已經是家人"];
@@ -1546,6 +1611,14 @@
       noon:    ["中午的影子最短，你有發現嗎？", "吃飯的時候，順便決定一下今天要不要當個好人。", "便當店的阿姨比你的行事曆更懂你。"],
       after:   ["下午三點是一天裡最曖昧的時間。", "有一條路我一直想帶你走，但今天可能太亮了。", "窗外有雲在移動，你已經三小時沒抬頭了。"],
       evening: ["加班的人跟深夜的計程車一樣，都在等一個可以停下來的理由。", "這個時間的河堤有風，我可以送你過去。", "路燈剛亮，很適合什麼都不做地繞一圈。"]
+    },
+    meme: {
+      night:   ["這個時間還醒著？尊爆。", "凌晨的你，484 又在想那件事。", "睡不著就上車啊，我又不會唸你。"],
+      dawn:    ["這時間出門的人不是很努力就是很慘，你哪一種。", "天還沒亮欸，太狠了吧。", "早鳥沒有蟲，只有我。"],
+      morning: ["早安，今天也是被鬧鐘背刺的一天。", "起來了喔？我還以為你芭比Q了。", "打卡快遲到了啦，走啦走啦。"],
+      noon:    ["吃什麼？我猜又是超商。", "中午 12 點，全公司同時放棄思考。", "便當還是麵？我等你三分鐘。"],
+      after:   ["下午三點，人類效率最低點，科學認證。", "是在忙什麼，出來透氣啦。", "剛剛那個哈欠我聽到了。"],
+      evening: ["下班了沒？沒有的話我幫你按離職單。", "加班到現在，老闆知道嗎（他不知道）。", "走啦，鹹酥雞在呼喚你。"]
     }
   };
 
@@ -1589,6 +1662,14 @@
       noon:    ["中午的影子最短。你有發現嗎？"],
       after:   ["下午三點是一天裡最曖昧的時間。"],
       evening: ["加班的人跟深夜的計程車一樣，都在等一個停下來的理由。", "路燈剛亮了，河堤有風。我送你過去？"]
+    },
+    meme: {
+      night:   ["還沒睡？尊爆。要不要出來繞一圈。"],
+      dawn:    ["這時間出門，你是真的很拚還是真的很慘。"],
+      morning: ["起來了沒。再躺下去就芭比Q了。"],
+      noon:    ["午餐 484 又要吃超商。"],
+      after:   ["下午三點，人類效率最低點。出來透氣啦。"],
+      evening: ["下班沒？沒有的話我幫你按離職單。", "走啦，鹹酥雞在呼喚你。"]
     }
   };
 
@@ -1598,21 +1679,24 @@
       tsun: ["喂！不要隨便摸引擎蓋。……好啦，就一下。", "我沒有很喜歡。真的。"],
       sunny: ["哇哈哈！好癢！再一次！", "摸摸！我今天最棒的事！"],
       gent: ["承蒙關照。", "謝謝您。我的板金今天剛打蠟。"],
-      misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"]
+      misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"],
+      meme:  ["欸幹嘛啦。", "喔喔喔喔喔。", "你在摸我頭喔，484。"]
     },
     wash: {
       warm: ["變乾淨了，謝謝你。", "我現在很好聞。"],
       tsun: ["本來就沒有很髒。", "……好吧，是有比較舒服。"],
       sunny: ["亮亮的！我最亮了！", "洗車！我最愛洗車！"],
       gent: ["整潔是基本的禮貌。多謝。", "這樣我才好意思載您。"],
-      misty: ["洗掉的是灰塵，還是上禮拜？", "乾淨的車窗，看出去的城市會不一樣。"]
+      misty: ["洗掉的是灰塵，還是上禮拜？", "乾淨的車窗，看出去的城市會不一樣。"],
+      meme:  ["變帥了啦，謝謝喔。", "洗好洗滿。"]
     },
     fuel: {
       warm: ["充飽了，隨時可以載你去任何地方。", "有電了，不用擔心。"],
       tsun: ["我本來也還撐得住。", "充這麼滿是要去哪？"],
       sunny: ["滿電！！！可以繞台灣一圈！！", "電量 100！人生 100！"],
       gent: ["電量充足，隨時候命。", "續航無虞，請放心。"],
-      misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"]
+      misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"],
+      meme:  ["電滿，我現在無敵。", "充飽了，送啦。"]
     }
   };
 
@@ -1647,6 +1731,12 @@
       mid:  ["你在確認我還在嗎？", "我一直都在這裡。", "怎麼了？"],
       low:  ["那裡是我最舊的一塊。", "碰到了。", "有點癢。"],
       spam: ["你今天話很多。", "我不介意。", "再一次也可以。"]
+    },
+    meme: {
+      top:  ["欸。", "你在幹嘛。", "喔喔喔。"],
+      mid:  ["484 很閒。", "戳戳戳。", "然後咧。"],
+      low:  ["那邊是保桿欸。", "會癢啦。", "停。"],
+      spam: ["夠了喔。", "我報警了。", "笑死，你真的很閒。"]
     }
   };
 
@@ -1667,77 +1757,84 @@
       tsun:  "那你去坐啊。……你真的去，我就把導航設成最遠那條。",
       sunny: "保時捷！好啊！那我當你的第二台！第二台也可以吧？可以吧？",
       gent:  "保時捷是好車。我只是比較清楚您慣走哪條路。",
-      misty: "保時捷載得動你的人，載不動你今天的心情。"
+      misty: "保時捷載得動你的人，載不動你今天的心情。",
+      meme:  "保時捷？那你 484 先看一下你的餘額。"
     },
     other: {
       warm:  "新車很好啊。……你還是會回來坐我對吧？",
       tsun:  "新車不會記得你上禮拜掉在座位上的耳機。我會。",
       sunny: "那我們去比賽！開玩笑的！我不會贏！",
       gent:  "新有新的好，舊有舊的默契。",
-      misty: "新的車沒有故事。你要故事，還是要新？"
+      misty: "新的車沒有故事。你要故事，還是要新？",
+      meme:  "新的喔。那你去坐啊。……你不要真的去。"
     },
     slow: {
       warm:  "今天路面濕，我開慢一點比較安全。你很急嗎？",
       tsun:  "那是塞車。不然你自己下來走？",
       sunny: "慢？！我明天一定衝給你看！",
       gent:  "安全與速度，我選前者。恕難從命。",
-      misty: "慢的時候你才會看窗外。"
+      misty: "慢的時候你才會看窗外。",
+      meme:  "慢？剛剛那台是紅燈欸，你要我用飛的？"
     },
     quit: {
       warm:  "……好。那我把你常走的路線都存下來，你之後用得到。",
       tsun:  "隨便你。……你敢按，我就在你要出門那天爆胎。",
       sunny: "不要啦！！我還有三個地方沒帶你去！！",
       gent:  "我明白了。感謝這段時間的照顧。",
-      misty: "刪掉之後，這些路線就只剩你記得了。"
+      misty: "刪掉之後，這些路線就只剩你記得了。",
+      meme:  "刪掉喔。好啊。……欸不是，你認真的？"
     },
     thanks: {
       warm:  "不客氣。你今天也辛苦了。",
       tsun:  "……喔。我也沒做什麼。",
       sunny: "不客氣！！明天也載你！！",
       gent:  "份內之事。",
-      misty: "謝謝這種話，說的人比較舒服。"
+      misty: "謝謝這種話，說的人比較舒服。",
+      meme:  "不客氣啦，肉麻死了。"
     },
     pretty: {
       warm:  "今天剛洗過。被你發現了。",
       tsun:  "本來就是。……你才發現？",
       sunny: "對吧！我今天特別亮！",
       gent:  "今晨剛打過蠟。承蒙誇獎。",
-      misty: "好看是光的問題，不是我的。"
+      misty: "好看是光的問題，不是我的。",
+      meme:  "我知道。不用你說。"
     },
     beach: {
       warm:  "海邊喔。那要早點出發，我幫你算時間。",
       tsun:  "海邊？沙子會弄髒我。……好啦，幾點。",
       sunny: "海邊！！我最喜歡海邊！！現在出發嗎！！",
       gent:  "海線路況我熟。何時出發？",
-      misty: "海邊的話我建議傍晚。理由到了你就知道。"
+      misty: "海邊的話我建議傍晚。理由到了你就知道。",
+      meme:  "海邊喔？送啦，防曬自己擦。"
     }
   };
 
   const PLANS = [
     { r: "N", pt: "store", title: "深夜補給線", slot: "23:10 出發 · 約 40 分", from: "你家樓下", to: "24 小時全家 + 河堤繞一圈", fare: 145,
-      say: { warm: "你冰箱空了對吧，我都看到了。", tsun: "順路而已，不要多想。", sunny: "宵夜！宵夜！", gent: "夜間補給，我陪您走一趟。", misty: "深夜的便利商店，是城市裡最誠實的地方。" } },
+      say: { warm: "你冰箱空了對吧，我都看到了。", tsun: "順路而已，不要多想。", sunny: "宵夜！宵夜！", gent: "夜間補給，我陪您走一趟。", misty: "深夜的便利商店，是城市裡最誠實的地方。", meme: "宵夜場，走。錢包放好。" } },
     { r: "N", pt: "market", title: "早餐店巡邏", slot: "08:00 出發 · 約 25 分", from: "住處", to: "巷口蛋餅 → 公司", fare: 95,
-      say: { warm: "先吃了再上班，好不好？", tsun: "我不是特地繞的，剛好會經過。", sunny: "蛋餅加辣！走！", gent: "早餐是一天的基礎。", misty: "早餐店的油煙，是很好的開場。" } },
+      say: { warm: "先吃了再上班，好不好？", tsun: "我不是特地繞的，剛好會經過。", sunny: "蛋餅加辣！走！", gent: "早餐是一天的基礎。", misty: "早餐店的油煙，是很好的開場。", meme: "蛋餅不加辣的都是外送員的敵人。" } },
     { r: "N", pt: "office", title: "午休逃亡 20 分", slot: "12:20 出發 · 約 20 分", from: "公司", to: "有樹的那個小公園", fare: 110,
-      say: { warm: "二十分鐘，什麼都不用想。", tsun: "蹺班喔？我沒看到。", sunny: "偷跑！我掩護你！", gent: "短暫的離席是被允許的。", misty: "中午的樹影，一年只有幾天這麼好。" } },
+      say: { warm: "二十分鐘，什麼都不用想。", tsun: "蹺班喔？我沒看到。", sunny: "偷跑！我掩護你！", gent: "短暫的離席是被允許的。", misty: "中午的樹影，一年只有幾天這麼好。", meme: "翹班二十分鐘，我沒看到你上車。" } },
     { r: "N", pt: "office", title: "加班救援專車", slot: "22:30 出發 · 約 30 分", from: "公司樓下", to: "鹹酥雞 → 你家", fare: 165,
-      say: { warm: "今天到這裡就好，剩下的明天再說。", tsun: "你再加班，我氣囊就自己爆給你看。上車。", sunny: "解放！鹹酥雞！大份的！", gent: "工時已逾合理範圍。請上車。", misty: "加班的人跟深夜的計程車一樣，都在等一個停下來的理由。" } },
+      say: { warm: "今天到這裡就好，剩下的明天再說。", tsun: "你再加班，我氣囊就自己爆給你看。上車。", sunny: "解放！鹹酥雞！大份的！", gent: "工時已逾合理範圍。請上車。", misty: "加班的人跟深夜的計程車一樣，都在等一個停下來的理由。", meme: "下班！鹹酥雞！走！" } },
     { r: "R", pt: "river", title: "河堤看飛機", slot: "17:40 出發 · 約 1 小時", from: "市區", to: "濱江街街底 · 看降落", fare: 210,
-      say: { warm: "看飛機的時候人會變小一點，壓力也是。", tsun: "只是剛好那邊好停車。", sunny: "飛機超近的！超大聲！", gent: "航班約每七分鐘一班。", misty: "看別人離開，也是一種休息。" } },
+      say: { warm: "看飛機的時候人會變小一點，壓力也是。", tsun: "只是剛好那邊好停車。", sunny: "飛機超近的！超大聲！", gent: "航班約每七分鐘一班。", misty: "看別人離開，也是一種休息。", meme: "看飛機欸，超廢但超爽。" } },
     { r: "R", pt: "cafe", title: "書店打烊前", slot: "21:00 出發 · 約 1.5 小時", from: "住處", to: "還沒關的獨立書店", fare: 260,
-      say: { warm: "你上次說想看的那本，我記得。", tsun: "書店而已，又不是約會。", sunny: "我在外面等你！不要買太多！", gent: "打烊前的書店最安靜。", misty: "打烊前一小時，書才會開始講話。" } },
+      say: { warm: "你上次說想看的那本，我記得。", tsun: "書店而已，又不是約會。", sunny: "我在外面等你！不要買太多！", gent: "打烊前的書店最安靜。", misty: "打烊前一小時，書才會開始講話。", meme: "書店喔。你進去別買太多，我沒地方放。" } },
     { r: "R", pt: "market", title: "老市場早鳥局", slot: "06:30 出發 · 約 1 小時", from: "住處", to: "傳統市場 · 現做飯糰", fare: 180,
-      say: { warm: "早起一次，你會覺得賺到。", tsun: "起得來再說。", sunny: "早市！人生高峰！", gent: "市場的節奏值得體驗一次。", misty: "六點半的市場，是城市醒著的證據。" } },
+      say: { warm: "早起一次，你會覺得賺到。", tsun: "起得來再說。", sunny: "早市！人生高峰！", gent: "市場的節奏值得體驗一次。", misty: "六點半的市場，是城市醒著的證據。", meme: "六點半欸，你起得來我當場吃輪胎。" } },
     { r: "SR", pt: "river", title: "山上看整座城市", slot: "19:30 出發 · 約 2.5 小時", from: "市區", to: "碧山巖 · 夜景第一排", fare: 480,
-      say: { warm: "上去以後，你今天的事會小很多。", tsun: "彎道很多，你不要吐在我身上。", sunny: "衝上山！視野無敵！", gent: "山路我會開得穩一些。", misty: "從上面看，你的煩惱只有一格路燈那麼大。" } },
+      say: { warm: "上去以後，你今天的事會小很多。", tsun: "彎道很多，你不要吐在我身上。", sunny: "衝上山！視野無敵！", gent: "山路我會開得穩一些。", misty: "從上面看，你的煩惱只有一格路燈那麼大。", meme: "上山看夜景，超級 chill，走。" } },
     { r: "SR", pt: "river", title: "海邊看日出", slot: "04:20 出發 · 約 4 小時", from: "台北", to: "外木山 · 日出線", fare: 620,
-      say: { warm: "睡不著就別睡了，我載你去看天亮。", tsun: "你確定？現在四點欸。……好啦。", sunny: "熬夜看日出！最狂的行程！", gent: "日出時間 05:12，我們來得及。", misty: "有些夜晚不該被浪費在床上。" } },
+      say: { warm: "睡不著就別睡了，我載你去看天亮。", tsun: "你確定？現在四點欸。……好啦。", sunny: "熬夜看日出！最狂的行程！", gent: "日出時間 05:12，我們來得及。", misty: "有些夜晚不該被浪費在床上。", meme: "四點看日出？瘋子。……我喜歡。" } },
     { r: "SR", pt: "home", title: "雨天不下車路線", slot: "隨時 · 約 1 小時", from: "你在的地方", to: "繞城一圈，不下車", fare: 390,
-      say: { warm: "下雨天不想見人，那就都在車上。", tsun: "反正你也不想講話對吧。", sunny: "雨聲超好聽的！我開慢一點！", gent: "雨天車內，是很好的獨處空間。", misty: "雨打在車頂的聲音，比任何歌單都好。" } },
+      say: { warm: "下雨天不想見人，那就都在車上。", tsun: "反正你也不想講話對吧。", sunny: "雨聲超好聽的！我開慢一點！", gent: "雨天車內，是很好的獨處空間。", misty: "雨打在車頂的聲音，比任何歌單都好。", meme: "下雨不下車，最強行程，沒有之一。" } },
     { r: "SSR", pt: "market", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午", from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
-      say: { warm: "今天就翹掉吧，我負責開，你負責睡。", tsun: "……我早就把油加滿了。不要問。", sunny: "私奔！！我準備好了！！", gent: "行李我已備妥。請上車。", misty: "有些早上，不該在原本的城市醒來。" } },
+      say: { warm: "今天就翹掉吧，我負責開，你負責睡。", tsun: "……我早就把油加滿了。不要問。", sunny: "私奔！！我準備好了！！", gent: "行李我已備妥。請上車。", misty: "有些早上，不該在原本的城市醒來。", meme: "私奔啦，油我加滿了，別問。" } },
     { r: "SSR", pt: "home", title: "你生日那天的路線", slot: "只會出現一次", from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
-      say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。" } }
+      say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。", meme: "生日快樂啦。我沒有記，是它自己跳出來的。" } }
   ];
 
   const RARITY = {
@@ -1773,14 +1870,14 @@
 
   const KEY = "yoxi.car.v4";
   const defaults = () => ({
-    onboarded: false, name: "小綠", pers: "warm",
+    onboarded: false, name: "小綠",
     traits: { ...PERSONALITIES[0].traits },
     skin: "yoxi", intimacy: 40, energy: 78, mood: 84, sync: 41,
     visits: new Array(24).fill(0), weekendVisits: 0, totalVisits: 0,
     boxLeft: 3, history: [],
     // 皮克敏式：親密度只由真實搭車餵養
     km: 0, rides: 0, rideLog: [],
-    placeVisits: {}, souv: {}, equip: [],
+    placeVisits: {}, souv: {}, equip: { hang: null, dash: null, wheel: "std" },
     today: { rides: [], souv: [], events: [] },
     geo: { on: false, mode: null, place: null },   // 定位：on 之前不能指定位置
     saved: [],                                     // 收起來的盲盒約會，還沒約車
@@ -1801,6 +1898,7 @@
       return { ...base, ...p,
         traits: { ...base.traits, ...(p.traits || {}) },
         geo: { ...base.geo, ...(p.geo || {}) },
+        equip: p.equip,                 /* 形狀在 boot() 的 migrateEquip 才轉，這裡碰不到 SOUV */
         saved: Array.isArray(p.saved) ? p.saved : [],
         camp: p.camp && typeof p.camp === "object" ? p.camp : {},
         coupons: Array.isArray(p.coupons) ? p.coupons : [],
@@ -1812,7 +1910,9 @@
   const $ = id => document.getElementById(id);
   const clamp = (n, a = 0, b = 100) => Math.max(a, Math.min(b, n));
   const pad = n => String(n).padStart(2, "0");
-  const pers = () => PERSONALITIES.find(p => p.id === S.pers) || PERSONALITIES[0];
+  /* 個性綁在造型上：一台車就是一個角色，不另外選 */
+  const persId = () => skin().pers;
+  const pers = () => PERSONALITIES.find(p => p.id === persId()) || PERSONALITIES[0];
   const skin = () => SKINS.find(s => s.id === S.skin) || SKINS[0];
   const level = () => Math.min(6, Math.floor(S.intimacy / 100) + 1);
   const slotOf = h => SLOTS.find(s => s.hrs.includes(h)) || SLOTS[0];
@@ -1823,6 +1923,10 @@
      皮克敏的做法：收集品由「你去過哪裡」決定，不是憑空抽。
      所以每個地點類型有自己的一組紀念品，搭車回來才會帶到。
      ──────────────────────────────────────────────────── */
+  const TYPE_C = {
+    office: "#4E8CC4", home: "#5CB947", store: "#E4885A",
+    cafe: "#8A6A4E", market: "#D9A13B", river: "#4FB0A8", camp: "#B36BD6"
+  };
   const PLACE_TYPE = {
     office: { name: "客戶端與辦公室", icon: "🏢" },
     home:   { name: "家",             icon: "🏠" },
@@ -1899,6 +2003,29 @@
   ];
   const SOUV_RATE = { N: 0.52, R: 0.34, SR: 0.14 };
 
+  /* ════ 裝備位 ══════════════════════════════════════════
+     每個位子只放一件，而且事先講清楚這一格放什麼。
+     ──────────────────────────────────────────────────── */
+
+  const SLOTS_DEF = [
+    { id: "hang",  n: "掛件", where: "後照鏡", hint: "吊在後照鏡上，開車會擺盪。扁平、能穿繩的東西才掛得住。" },
+    { id: "dash",  n: "擺飾", where: "儀表板", hint: "擺在儀表板上，從擋風玻璃看得到。立得住的東西放這裡。" },
+    { id: "wheel", n: "輪胎", where: "四個輪子", hint: "整組換掉，四個輪子一起。" }
+  ];
+  const slotDef = id => SLOTS_DEF.find(x => x.id === id) || SLOTS_DEF[0];
+  /* 舊資料的 roof 一律當成擺飾 */
+  const fitSlot = it => (it.slot === "hang" ? "hang" : "dash");
+
+  const WHEELS = [
+    { id: "std",   n: "原廠",     lv: 1, tyre: "#242B33", rim: "#767F89", hub: "#4C555E" },
+    { id: "steel", n: "鋼圈蓋",   lv: 1, tyre: "#2A3038", rim: "#C7CDD4", hub: "#8E9AA6" },
+    { id: "gold",  n: "鍍金圈",   lv: 2, tyre: "#20262E", rim: "#E5BE63", hub: "#A8802A" },
+    { id: "wood",  n: "木紋蓋",   lv: 3, tyre: "#262B31", rim: "#C08552", hub: "#7A5230" },
+    { id: "sport", n: "五幅運動", lv: 4, tyre: "#1D242B", rim: "#DCE2E8", hub: "#39424B", spokes: true },
+    { id: "glow",  n: "夜光圈",   lv: 5, tyre: "#1A2030", rim: "#7DD3FC", hub: "#2B4E67", glow: true }
+  ];
+  const wheelOf = id => WHEELS.find(w => w.id === id) || WHEELS[0];
+
   /* ════ 使用者情境 ══════════════════════════════════════
      yoxi 的常客多半在趕路：乙方跑客戶、自由接案、通勤上班族。
      情境決定行程、常跑地點、地圖上的既有路線。
@@ -1969,7 +2096,9 @@
     gent:  { calm: (a, l) => `${l} 出發即可。我會提前五分鐘抵達，車內已整理。`,
              rush: () => `時間已緊。建議立刻出發，我改走替代道路。` },
     misty: { calm: (a, l) => `${l} 出門，剛好可以看一段天色。${a.loc} 我熟。`,
-             rush: () => `現在出門你會準時，但會錯過今天的天空。要嗎？` }
+             rush: () => `現在出門你會準時，但會錯過今天的天空。要嗎？` },
+    meme:  { calm: (a, l) => `${a.loc} 啦，${a.ride} 分鐘。${l} 出門，不要again遲到。`,
+             rush: () => `快遲到了欸！我引擎都熱了，你484還在找襪子。` }
   };
 
   /* ════ 路線地圖 ════════════════════════════════════════ */
@@ -2123,7 +2252,25 @@
         </g>
         <circle cx="140" cy="162" r="19" fill="#F5C64B" stroke="#A31F1C" stroke-width="2.5"/>
         <text x="140" y="170" text-anchor="middle" font-size="19" font-weight="700" fill="#A31F1C">福</text>`;
+      /* 迷因車：貼紙牆。貼紙是斜的、疊在一起的，才像真的隨手貼 */
+      case "meme": return `
+        <g transform="rotate(-8 60 150)">
+          <rect x="40" y="140" width="42" height="20" rx="5" fill="#FFFFFF" stroke="#2A2410" stroke-width="2"/>
+          <text x="61" y="154.5" text-anchor="middle" font-family="ui-monospace, monospace"
+                font-size="12" font-weight="700" fill="#E4573F">484</text>
+        </g>
+        <g transform="rotate(7 220 148)">
+          <rect x="198" y="138" width="44" height="20" rx="10" fill="#2A2410"/>
+          <text x="220" y="152.5" text-anchor="middle" font-size="11" font-weight="700" fill="#F2C230">笑死</text>
+        </g>
+        <g transform="rotate(-4 140 170)">
+          <rect x="112" y="160" width="56" height="19" rx="5" fill="#FFFFFF" stroke="#2A2410" stroke-width="2"/>
+          <text x="140" y="174" text-anchor="middle" font-size="11" font-weight="700" fill="#2A2410">送啦</text>
+        </g>
+        <path d="M62 60 L74 40 L86 60 Z" fill="#FFFFFF" stroke="#2A2410" stroke-width="2" stroke-linejoin="round"/>
+        <text x="74" y="57" text-anchor="middle" font-size="10" font-weight="700" fill="#2A2410">!</text>`;
       case "sakura": return `
+
         <g fill="#FF9BB8">
           <circle cx="34" cy="70" r="6"/><circle cx="252" cy="92" r="5"/>
           <circle cx="236" cy="44" r="4"/><circle cx="52" cy="34" r="4"/><circle cx="20" cy="122" r="4"/>
@@ -2376,30 +2523,25 @@
     return `<g transform="translate(${(cx - r).toFixed(2)} ${(cy - r).toFixed(2)}) scale(${(r * 2 / 36).toFixed(4)})">${souvArt(it)}</g>`;
   }
 
-  /* 掛件：一件吊在後照鏡上（擋風玻璃正中央，會擺盪），一件綁在車頂行李架
-     ── 車頂那條桿子是照著車身曲線畫的，直的橫桿在圓車頂上會浮起來 */
+  /* 掛件與擺飾：一個位子一件，位置固定，不再看誰先被點到 */
   function svgEquip() {
-    const items = (S.equip || []).map(souvOf).filter(Boolean).slice(0, 2);
-    if (!items.length) return "";
-    /* 一定要有一件掛在後照鏡上——那是整台車最顯眼的位置 */
-    let hi = items.findIndex(it => it.slot === "hang");
-    if (hi < 0) hi = 0;
+    const eq = S.equip || {};
     let out = "";
-    items.forEach((it, i) => {
-      if (i === hi) {
-        out += `<g class="charm">
-            <circle cx="152" cy="64" r="4.4" fill="#5A646F"/>
-            <path d="M152 64 L152 82" stroke="#5A646F" stroke-width="2.6" stroke-linecap="round"/>
-            <circle cx="152" cy="85" r="3.2" fill="none" stroke="#8E9AA6" stroke-width="2"/>
-            <circle cx="152" cy="104" r="22" fill="#FFFFFF" opacity=".13"/>
-            ${souvShape(it, 152, 104, 17)}
-          </g>`;
-      } else {
-        /* 另一件擺在儀表板上——一樣在擋風玻璃裡，深色底才看得清楚 */
-        out += `<ellipse cx="100" cy="127" rx="17" ry="4.4" fill="#000000" opacity=".32"/>
-          ${souvShape(it, 100, 115, 15)}`;
-      }
-    });
+    const hang = souvOf(eq.hang);
+    if (hang) {
+      out += `<g class="charm">
+          <circle cx="152" cy="64" r="4.4" fill="#5A646F"/>
+          <path d="M152 64 L152 82" stroke="#5A646F" stroke-width="2.6" stroke-linecap="round"/>
+          <circle cx="152" cy="85" r="3.2" fill="none" stroke="#8E9AA6" stroke-width="2"/>
+          <circle cx="152" cy="104" r="22" fill="#FFFFFF" opacity=".13"/>
+          ${souvShape(hang, 152, 104, 17)}
+        </g>`;
+    }
+    const dash = souvOf(eq.dash);
+    if (dash) {
+      out += `<ellipse cx="100" cy="127" rx="17" ry="4.4" fill="#000000" opacity=".32"/>
+        ${souvShape(dash, 100, 115, 15)}`;
+    }
     return out;
   }
 
@@ -2422,6 +2564,7 @@
        所以綠白分界直接用車身曲線在 y=118 切開後的那兩段 */
     const top = "M34.14 118 C46.53 63.56 85.87 38 140 38 C194.13 38 233.47 63.56 245.86 118 "
               + "C204.2 142 75.8 142 34.14 118 Z";
+    const W = wheelOf((S.equip || {}).wheel);
     return `
       <svg viewBox="0 0 280 246" role="img" aria-label="${S.name || "車車"}">
         <defs>
@@ -2449,8 +2592,8 @@
 
         <!-- 輪胎：本來只從車身下緣露出一條黑邊，看不出是輪子。
              加高加寬到真的看得到胎壁，鋼圈畫在 y=218 以下才不會被車身蓋掉 -->
-        <rect x="42" y="182" width="50" height="52" rx="24" fill="#242B33"/>
-        <rect x="188" y="182" width="50" height="52" rx="24" fill="#242B33"/>
+        <rect x="42" y="182" width="50" height="52" rx="24" fill="${W.tyre}"/>
+        <rect x="188" y="182" width="50" height="52" rx="24" fill="${W.tyre}"/>
 
         <rect x="110" y="19" width="60" height="24" rx="10" fill="${s.deep}"/>
         <text x="140" y="36" text-anchor="middle" font-family="ui-monospace, monospace"
@@ -2463,10 +2606,15 @@
 
 
         <!-- 鋼圈：畫在車身之後，露出來的那一段才有東西看 -->
-        <ellipse cx="64" cy="226" rx="11" ry="6.4" fill="#767F89"/>
-        <ellipse cx="216" cy="226" rx="11" ry="6.4" fill="#767F89"/>
-        <ellipse cx="64" cy="226" rx="4.2" ry="2.6" fill="#4C555E"/>
-        <ellipse cx="216" cy="226" rx="4.2" ry="2.6" fill="#4C555E"/>
+        ${W.glow ? `<ellipse cx="64" cy="228" rx="20" ry="10" fill="${W.rim}" opacity=".3"/>
+                    <ellipse cx="216" cy="228" rx="20" ry="10" fill="${W.rim}" opacity=".3"/>` : ""}
+        <ellipse cx="64" cy="226" rx="11" ry="6.4" fill="${W.rim}"/>
+        <ellipse cx="216" cy="226" rx="11" ry="6.4" fill="${W.rim}"/>
+        ${W.spokes ? `<g stroke="${W.hub}" stroke-width="1.6" stroke-linecap="round">
+            <path d="M64 220 v12 M55 224 l18 4 M55 228 l18 -4"/>
+            <path d="M216 220 v12 M207 224 l18 4 M207 228 l18 -4"/></g>` : ""}
+        <ellipse cx="64" cy="226" rx="4.2" ry="2.6" fill="${W.hub}"/>
+        <ellipse cx="216" cy="226" rx="4.2" ry="2.6" fill="${W.hub}"/>
 
         <!-- 後照鏡：小而緊、略微下傾，鏡面用深色。拉長會變觸角，拉平會變翅膀 -->
         <g transform="rotate(-8 36 112)">
@@ -3011,50 +3159,22 @@
     P.push({ m: "quad", mode: 3, text: "yoxi", bg: sk.deep, fg: "#FFFFFF", amb: 0.72, spec: 0.1,
              pos: [0,pY,pZ+0.05], scl: [0.24,0.075,1] });
 
-    // 帶回來的紀念品：一件放車頂、一件掛在後照鏡下
-    let roofSlot = 0;
-    for (const id of (S.equip || [])) {
-      const it = souvOf(id);
-      if (!it) continue;
-      if (it.slot === "roof") {
-        const x = roofSlot === 0 ? -0.40 : 0.40;
-        roofSlot++;
-        P.push({ m: it.m, a: it.c, spec: 0.6, shin: 46, amb: 0.54,
-                 pos: [x, 0.88 + (it.scl[1] || 0.06), -0.34],
-                 rot: it.m === "cyl" ? [0.35,0,0.2] : [0,0.4,0], scl: it.scl });
-      } else {
-        P.push({ m: "cyl", a: "#9AA3AA", spec: 0.4, amb: 0.55,
-                 pos: [1.00, 0.02, 0.40], scl: [0.009,0.11,0.009] });
-        P.push({ m: it.m, a: it.c, spec: 0.65, shin: 46, amb: 0.56,
-                 pos: [1.00, -0.10 - (it.scl[1] || 0.05), 0.40],
-                 rot: it.m === "ring" ? [0,Math.PI/2,0] : [0,0.35,0], scl: it.scl });
-      }
+    // 帶回來的紀念品：掛件吊在後照鏡下，擺飾放在儀表板上
+    const eqR = S.equip || {};
+    const dashIt = souvOf(eqR.dash);
+    if (dashIt) {
+      P.push({ m: dashIt.m, a: dashIt.c, spec: 0.6, shin: 46, amb: 0.54,
+               pos: [-0.34, 0.88 + (dashIt.scl[1] || 0.06), -0.34],
+               rot: dashIt.m === "cyl" ? [0.35,0,0.2] : [0,0.4,0], scl: dashIt.scl });
+    }
+    const hangIt = souvOf(eqR.hang);
+    if (hangIt) {
+      P.push({ m: "cyl", a: "#9AA3AA", spec: 0.4, amb: 0.55,
+               pos: [0, 0.92, 0.30], scl: [0.006, 0.09, 0.006] });
+      P.push({ m: hangIt.m, a: hangIt.c, spec: 0.55, shin: 40, amb: 0.6,
+               pos: [0, 0.78, 0.30], rot: [0,0.3,0], scl: hangIt.scl });
     }
 
-    // 造型配件
-    if (sk.acc === "cat") {
-      for (const x of [-0.50, 0.50]) {
-        P.push({ m: "cone", a: sk.body, spec: 0.5, amb: 0.44, pos: [x,0.98,0.0], rot: [0.16,0, x<0 ? 0.26 : -0.26], scl: [0.23,0.30,0.16] });
-        P.push({ m: "cone", a: "#FF9BB3", spec: 0.5, amb: 0.52, pos: [x,0.96,0.08], rot: [0.16,0, x<0 ? 0.26 : -0.26], scl: [0.13,0.19,0.10] });
-      }
-    }
-    if (sk.acc === "racer") {
-      P.push({ m: "soft", a: "#1A2028", spec: 0.5, amb: 0.30, pos: [0,0.62,-1.06], scl: [0.56,0.045,0.10] });
-      for (const x of [-0.44, 0.44])
-        P.push({ m: "soft", a: "#1A2028", spec: 0.4, amb: 0.30, pos: [x,0.48,-1.02], scl: [0.05,0.15,0.05] });
-    }
-    if (sk.acc === "deer") {
-      for (const x of [-0.42, 0.42]) {
-        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x,1.06,0.0], rot: [0,0, x<0 ? 0.34 : -0.34], scl: [0.035,0.24,0.035] });
-        P.push({ m: "cyl", a: "#8A5730", spec: 0.35, amb: 0.34, pos: [x*1.5,1.28,0.0], rot: [0,0, x<0 ? 1.15 : -1.15], scl: [0.03,0.16,0.03] });
-      }
-      P.push({ m: "sph", a: "#FF4D4D", spec: 0.9, shin: 50, amb: 0.55, pos: [0,-0.50,1.12], scl: [0.13,0.13,0.10] });
-    }
-    if (sk.acc === "sakura") {
-      P.push({ m: "ring", a: "#FF9BB8", spec: 0.6, amb: 0.45, pos: [0,0.92,0.02], rot: [Math.PI/2,0,0], scl: [0.40,0.40,0.40] });
-      for (const [x, y, z] of [[-0.95,1.05,0.4],[1.0,1.12,-0.25],[0.72,0.70,0.95],[-1.08,0.60,-0.6]])
-        P.push({ m: "sph", a: "#FF9BB8", spec: 0.6, amb: 0.52, pos: [x,y,z], scl: [0.065,0.02,0.065] });
-    }
     return P;
   }
 
@@ -3347,7 +3467,7 @@
     if (top && Math.random() < 0.3) return pick(HABIT_LINES[top.h.id]);
     if (S.intimacy >= 400 && Math.random() < 0.22)
       return pick(["……欸。沒事，就是想確認你還在。", "我今天沒載別人。真的。", "你不用回我，我看到你打開就好。"]);
-    return pick(LINES[S.pers][sl]);
+    return pick(LINES[persId()][sl]);
   }
 
   function topHabit() {
@@ -3369,10 +3489,10 @@
   function schedule() {
     if (S.visits.reduce((a, b) => a + b, 0) < 6) return [];
     const hs = allHabits(), pk = peakHour(), pre = Math.max(0, pk - 1);
-    const ev = PUSHES[S.pers].evening;
+    const ev = PUSHES[persId()].evening;
     const out = [
-      { h: pre, t: `${pad(pre)}:50`, b: "出門前提醒", d: PUSHES[S.pers][slotOf(pre).id][0] },
-      { h: 12, t: "12:10", b: "午餐時段", d: PUSHES[S.pers].noon[0] },
+      { h: pre, t: `${pad(pre)}:50`, b: "出門前提醒", d: PUSHES[persId()][slotOf(pre).id][0] },
+      { h: 12, t: "12:10", b: "午餐時段", d: PUSHES[persId()].noon[0] },
       { h: hs[0].h.id === "owl" ? 23 : 21, t: hs[0].h.id === "owl" ? "23:30" : "21:20",
         b: "盲盒約會投放", d: `${S.name} 抽好了一張行程，等你點開。` }
     ];
@@ -3407,7 +3527,7 @@
         const isNew = !S.souv[got.id];
         S.souv[got.id] = (S.souv[got.id] || 0) + 1;
         S.today.souv.push({ id: got.id, isNew });
-        if (isNew && S.equip.length < 2) S.equip.push(got.id);
+        if (isNew) autoEquip(got);
       }
     }
     S.today.events.push(rideEvent(place, got));
@@ -3421,15 +3541,17 @@
       tsun:  [`「${got.n}」。不是特地幫你撿的，剛好在腳踏墊上。`, `${place.n}掉了個「${got.n}」，我順手而已。`],
       sunny: [`「${got.n}」！${place.n}的戰利品！超讚！`, `我從${place.n}帶回「${got.n}」！要不要掛起來！`],
       gent:  [`自${place.n}帶回一件「${got.n}」，已為您安置妥當。`, `「${got.n}」，${place.n}所得。`],
-      misty: [`${place.n}留下了「${got.n}」，我覺得它想跟著你。`, `「${got.n}」。有些東西只會在那個地方出現。`]
-    }[S.pers]);
+      misty: [`${place.n}留下了「${got.n}」，我覺得它想跟著你。`, `「${got.n}」。有些東西只會在那個地方出現。`],
+      meme:  [`${place.n}撿到「${got.n}」，賺爛了。`, `「${got.n}」欸。這個我有印象，超稀有的吧（沒有）。`]
+    }[persId()]);
     return pick({
       warm:  [`載你到${place.n}，路上很順。`, `${place.n}這趟很安靜，你好像在想事情。`],
       tsun:  [`${place.n}。又是這裡。我沒有在記。`, `到${place.n}了。你下車前手機差點忘了拿。`],
       sunny: [`${place.n}到囉！這條路我越開越熟！`, `衝到${place.n}！今天路況超好！`],
       gent:  [`已抵達${place.n}，全程平穩。`, `${place.n}，準時到達。`],
-      misty: [`往${place.n}的那段路，天色剛好。`, `${place.n}。我們好像常在這個時間來。`]
-    }[S.pers]);
+      misty: [`往${place.n}的那段路，天色剛好。`, `${place.n}。我們好像常在這個時間來。`],
+      meme:  [`${place.n}到了，下車小心啦。`, `${place.n}這趟很順，我覺得我今天很可以。`]
+    }[persId()]);
   }
 
   /* 收藏頁的縮圖：跟車上掛的是同一份圖 */
@@ -3439,6 +3561,11 @@
   }
 
   const souvOf = id => SOUV.find(x => x.id === id);
+  /* 新拿到的東西，只在對應的位子還空著時自動裝上，不擠掉已經裝好的 */
+  function autoEquip(it) {
+    const sl = fitSlot(it);
+    if (!S.equip[sl]) S.equip[sl] = it.id;
+  }
   const souvOwned = () => SOUV.filter(x => S.souv[x.id]).length;
 
   function recordVisit(h) {
@@ -3490,7 +3617,7 @@
       <span>抵達 <b>${pad(a.h)}:${pad(a.m)}</b></span>
       <span>車程 <b>${a.ride}</b> 分</span>
       <span>建議 <b>${leaveStr}</b> 出發</span>`;
-    const say = NS_SAY[S.pers];
+    const say = NS_SAY[persId()];
     $("nsSay").textContent = rush || left <= 0 ? say.rush(a) : say.calm(a, leaveStr);
     $("nsBtn").textContent = rush || left <= 0 ? "馬上叫車 · 它已經在路上" : `預約 ${leaveStr} 的車`;
   }
@@ -3510,8 +3637,9 @@
           tsun: [`又是${pinned}。你最近很常去欸，我沒有在記。`, `${pinned}？走啦。`],
           sunny: [`${pinned}！我知道那邊哪裡好停！`, `出發！${pinned}我熟！`],
           gent: [`了解，${pinned}。我已規劃最省時的路線。`, `${pinned}，預計不會塞。`],
-          misty: [`${pinned}。那邊傍晚的光很好。`, `又是${pinned}。你在那裡留了不少時間。`]
-        }[S.pers]);
+          misty: [`${pinned}。那邊傍晚的光很好。`, `又是${pinned}。你在那裡留了不少時間。`],
+          meme:  [`${pinned}喔，我熟啦。`, `又是${pinned}。你484住那邊。`]
+        }[persId()]);
         toast(`目的地設為「${pinned}」`);
       }
     }));
@@ -3750,8 +3878,9 @@
         tsun:  [`叫得那麼急。我又不是不會來。`, `等一下。我還在路上。`],
         sunny: [`收到！${to}對吧！我衝了！`, `準備出發囉！安全帶先想一下！`],
         gent:  [`已受理。目的地：${to}。`, `正在為您安排車輛。`],
-        misty: [`往${to}的路，這個時間應該很安靜。`, `我在來的路上了。`]
-      }[S.pers])
+        misty: [`往${to}的路，這個時間應該很安靜。`, `我在來的路上了。`],
+        meme:  [`${to}是吧，收到。等我一下下。`, `幫你找車中，稍等啦。`]
+      }[persId()])
     };
     save(); renderHail(); renderLive();
     setTimeout(() => {
@@ -3765,8 +3894,9 @@
         tsun:  [`到了。你最好已經在門口了。`, `${S.hail.eta} 分鐘。我不會等太久喔。`],
         sunny: [`接到啦！${S.hail.eta} 分鐘就到！`, `路況超順！馬上到！`],
         gent:  [`車輛已指派，預計 ${S.hail.eta} 分鐘後抵達。`, `司機已出發，請稍候。`],
-        misty: [`它在往你那邊移動。${S.hail.eta} 分鐘。`, `車已經在路上了。`]
-      }[S.pers]);
+        misty: [`它在往你那邊移動。${S.hail.eta} 分鐘。`, `車已經在路上了。`],
+        meme:  [`${S.hail.eta} 分鐘到，你先去門口站好。`, `接到了！${S.hail.eta} 分鐘，別讓我等喔。`]
+      }[persId()]);
       save(); renderHail(); renderLive();
       toast(`${S.hail.plate} 接單了`);
     }, 1700);
@@ -3785,8 +3915,9 @@
       tsun:  [`安全帶。我不會講第二次。`, `坐好。我開車的時候不聊天。`],
       sunny: [`出發！這條路我熟！`, `走囉！沿路有什麼想看的跟我說！`],
       gent:  [`已出發，預計準時抵達。`, `行進中，全程平穩。`],
-      misty: [`窗外現在的樣子，值得看一下。`, `這段路很安靜。`]
-    }[S.pers]);
+      misty: [`窗外現在的樣子，值得看一下。`, `這段路很安靜。`],
+      meme:  [`安全帶啦，不然罰單你付。`, `走囉。要聽歌自己接藍牙。`]
+    }[persId()]);
     save(); renderHail(); renderLive();
     clearInterval(rideTimer);
     rideTimer = setInterval(() => {
@@ -3845,7 +3976,7 @@
     const isNew = !S.souv[got.id];
     S.souv[got.id] = (S.souv[got.id] || 0) + 1;
     S.today.souv.push({ id: got.id, isNew });
-    if (isNew && S.equip.length < 2) S.equip.push(got.id);
+    if (isNew) autoEquip(got);
     return { ...got, isNew };
   }
 
@@ -3864,15 +3995,21 @@
      ──────────────────────────────────────────────────── */
 
   const campState = c => S.camp[c.id] || null;
+  const campGoal = c => c.tiers[c.tiers.length - 1].need;
+  /* 進度就是「參加之後又搭了幾趟」，不加權也不超過目標——
+     顯示成「5 / 3 趟」只會讓人覺得壞掉 */
   const campProg = c => {
     const st = campState(c);
     if (!st) return 0;
-    let n = S.rides - st.base;
-    if (c.id === "arcade") n += (st.night || 0);   // 夜跑季：十點後那趟再算一次
-    return Math.max(0, n);
+    return Math.min(campGoal(c), Math.max(0, S.rides - st.base));
   };
-  const campGoal = c => c.tiers[c.tiers.length - 1].need;
-  const campHot = () => CAMPAIGNS.find(c => campState(c) && campProg(c) < campGoal(c)) || CAMPAIGNS.find(c => c.hot) || CAMPAIGNS[0];
+  const campDone = c => {
+    const st = campState(c);
+    return !!st && c.tiers.every(t => st.claimed.includes(t.id));
+  };
+  const campHot = () => CAMPAIGNS.find(c => campState(c) && !campDone(c))
+    || CAMPAIGNS.find(c => !campState(c) && c.hot)
+    || CAMPAIGNS.find(c => !campState(c)) || CAMPAIGNS[0];
 
   /* 每完成一趟就推進所有已參加的活動 */
   function campTick() {
@@ -3880,7 +4017,6 @@
     for (const c of CAMPAIGNS) {
       const st = campState(c);
       if (!st) continue;
-      if (c.id === "arcade" && (hour >= 22 || hour < 4)) st.night = (st.night || 0) + 1;
       const p = campProg(c);
       const next = c.tiers.find(t => !st.claimed.includes(t.id));
       if (next && p >= next.need) hit = c;
@@ -3893,7 +4029,7 @@
   }
 
   function joinCamp(c) {
-    S.camp[c.id] = { joined: true, base: S.rides, claimed: [], night: 0 };
+    S.camp[c.id] = { joined: true, base: S.rides, claimed: [] };
     save(); renderCamps(); renderCampBar(); renderTabs();
     toast(`參加「${c.partner} × yoxi」`);
   }
@@ -3908,7 +4044,7 @@
       if (it) {
         const isNew = !S.souv[it.id];
         S.souv[it.id] = (S.souv[it.id] || 0) + 1;
-        if (isNew && S.equip.length < 2) S.equip.push(it.id);
+        if (isNew) autoEquip(it);
         got = [{ ...it, isNew }];
       }
     } else if (t.type === "skin") {
@@ -3933,7 +4069,9 @@
     $("cbTag").textContent = c.kind;
     $("cbTitle").textContent = `${c.partner} × yoxi・${c.title}`;
     const st = campState(c);
-    $("cbSub").textContent = st ? `已搭 ${campProg(c)} / ${campGoal(c)} 趟` : `${c.from}–${c.to}・點進去看拿得到什麼`;
+    $("cbSub").textContent = campDone(c) ? "已完成，獎勵都領了"
+      : st ? `已搭 ${campProg(c)} / ${campGoal(c)} 趟`
+      : `${c.from}–${c.to}・點進去看拿得到什麼`;
   }
 
   function renderCamps() {
@@ -3941,24 +4079,25 @@
     $("campCount").textContent = `${live} 檔`;
     $("campHold").innerHTML = CAMPAIGNS.map((c, ci) => {
       const st = campState(c);
-      const p = campProg(c), goal = campGoal(c);
-      return `<div class="campCard">
+      const p = campProg(c), goal = campGoal(c), done = campDone(c);
+      return `<div class="campCard${done ? " done" : ""}">
         <div class="ccTop" style="background:linear-gradient(120deg,${c.c1},${c.c2})">
           <div class="row"><span class="kind">${c.kind}</span><span class="dt">${c.from} – ${c.to}</span></div>
           <h3>${c.partner} × yoxi</h3>
           <div class="bl">${c.title}・${c.blurb}</div>
         </div>
         <div class="ccBody">
-          ${st ? `<div class="ccProg"><span>${p} / ${goal} 趟</span>
+          ${done ? `<div class="ccDone">已完成・獎勵都領了</div>`
+            : st ? `<div class="ccProg"><span>${p} / ${goal} 趟</span>
             <span class="bar"><i style="width:${Math.min(100, p / goal * 100)}%;background:${c.c1}"></i></span></div>` : ""}
           ${c.tiers.map(t => {
-            const done = st && st.claimed.includes(t.id);
-            const can = st && !done && p >= t.need;
+            const got = st && st.claimed.includes(t.id);
+            const can = st && !got && p >= t.need;
             const it = t.type === "souv" ? souvOf(t.id) : null;
-            return `<div class="ccTier${done ? " got" : ""}">
+            return `<div class="ccTier${got ? " got" : ""}">
               <span class="ic">${it ? souvGlyph(it) : t.type === "skin" ? thumb(SKINS.find(x => x.id === t.id) || SKINS[0], t.id) : ICONS.box}</span>
               <span class="tx"><b>${t.label}</b><span>搭滿 ${t.need} 趟</span></span>
-              <button data-cc="${ci}" data-ct="${t.id}" ${can ? "" : "disabled"}>${done ? "已領取" : can ? "領取" : `還差 ${Math.max(0, t.need - p)}`}</button>
+              <button data-cc="${ci}" data-ct="${t.id}" ${can ? "" : "disabled"}>${got ? "已領取" : can ? "領取" : `還差 ${Math.max(0, t.need - p)}`}</button>
             </div>`;
           }).join("")}
           ${st ? "" : `<button class="nsBtn ccJoin" data-cj="${ci}">參加這檔活動</button>`}
@@ -4053,29 +4192,42 @@
     openLog();
   }
 
+  /* 日誌是一頁日記，不是一份報告：地圖、貼紙、時間軸，
+     車車的話一天只留一句，不要每一趟都寫一段。 */
   function openLog() {
     const t = S.today;
     const km = t.rides.reduce((a, r) => a + r.km, 0);
     const newSouv = t.souv.filter(x => x.isNew);
-    const types = [...new Set(t.rides.map(r => r.t))];
     const list = trips();
+    /* 每一趟撿到什麼，對到時間軸上那一格 */
+    const rideSouv = t.rides.map((_, i) => t.souv[i] ? souvOf(t.souv[i].id) : null);
+
     $("logBody").innerHTML = `
-      <div class="logHero">${mapSVG(list, 0)}</div>
-      <div class="logStat">
-        <div><b>${t.rides.length}</b><span>今天的趟數</span></div>
-        <div><b>${km.toFixed(1)}</b><span>公里</span></div>
-        <div><b>${newSouv.length}</b><span>新紀念品</span></div>
-      </div>
-      <div class="logSay">${t.events.length ? t.events[t.events.length - 1] : dayIdleLine()}</div>
-      ${t.rides.length ? `<div class="logSec">今天去過</div>` + t.rides.map((r, i) =>
-        `<div class="logItem"><span class="tm">${r.at}</span><span>${r.n}　<span style="color:var(--fog-dim)">${r.km} km</span><br>${t.events[i] || ""}</span></div>`).join("") : ""}
-      ${newSouv.length ? `<div class="logSec">帶回來的東西</div>` + newSouv.map(x => {
-        const it = souvOf(x.id);
-        return `<div class="logItem"><span class="tm" style="color:${it.c}">●</span><span><b style="color:var(--chalk)">${it.n}</b>　<span style="color:var(--fog-dim)">${PLACE_TYPE[it.t].name}</span></span></div>`;
-      }).join("") : ""}
-      ${types.length ? `<div class="logSec">今天的路線</div><div class="logItem"><span class="tm">▸</span><span>${types.map(x => PLACE_TYPE[x].name).join("、")}</span></div>` : ""}
-    `;
+      <div class="logPage">
+        <div class="lpDate"><b>${logDate().d}</b><span>${logDate().m}<br>${weekend ? "週末" : "平日"}</span></div>
+        <div class="logHero">${mapSVG(list, 0)}</div>
+        <div class="logStat">
+          <div><b>${t.rides.length}</b><span>趟</span></div>
+          <div><b>${km.toFixed(1)}</b><span>公里</span></div>
+          <div><b>${newSouv.length}</b><span>新收藏</span></div>
+        </div>
+        <div class="logSay">${t.events.length ? t.events[t.events.length - 1] : dayIdleLine()}</div>
+        ${t.rides.length ? `<div class="logTl">${t.rides.map((r, i) => `
+          <div class="tlRow">
+            <span class="t">${r.at}</span>
+            <span class="rail"><i style="background:${TYPE_C[r.t] || "#9AA79F"}"></i></span>
+            <span class="tx"><b>${r.n}</b><span>${r.km} km</span></span>
+            ${rideSouv[i] ? `<span class="sv" title="${rideSouv[i].n}">${souvGlyph(rideSouv[i])}</span>` : ""}
+          </div>`).join("")}</div>` : ""}
+        ${newSouv.length ? `<div class="lpStick">${newSouv.map(x => {
+          const it = souvOf(x.id);
+          return `<span class="st" title="${it.n}">${souvGlyph(it)}<i>${it.n}</i></span>`;
+        }).join("")}</div>` : ""}
+      </div>`;
   }
+
+  /* 日記的日期：示範用固定日，不去碰真實時間（時光滑桿才是這裡的時鐘） */
+  const logDate = () => ({ d: "16", m: "AUG" });
 
   function dayIdleLine() {
     return pick({
@@ -4083,22 +4235,68 @@
       tsun:  ["今天一趟都沒有。我沒有在等，只是紀錄一下。", "停一整天。你是不是忘了我。"],
       sunny: ["今天沒跑！那明天要跑兩倍！", "休息也是一種訓練！我這樣說服自己！"],
       gent:  ["今日無行程。車輛狀態良好。", "休息日。我把車內整理過了。"],
-      misty: ["空白的一天也是一頁。", "今天的日誌沒有路線，只有停在原地的光。"]
-    }[S.pers]);
+      misty: ["空白的一天也是一頁。", "今天的日誌沒有路線，只有停在原地的光。"],
+      meme:  ["今天 0 趟。你484在家長蘑菇。", "空白的一天，也是一種行為藝術。"]
+    }[persId()]);
   }
 
+  let souvSlot = "hang";
+
   function renderSouv() {
+    const eq = S.equip || {};
     $("souvCount").textContent = `${souvOwned()} / ${SOUV.length}`;
+
+    /* 上面三格先講清楚：哪一格、現在裝什麼 */
+    $("slotRow").innerHTML = SLOTS_DEF.map(sl => {
+      const on = souvSlot === sl.id;
+      const cur = sl.id === "wheel" ? wheelOf(eq.wheel) : souvOf(eq[sl.id]);
+      const art = sl.id === "wheel" ? wheelGlyph(cur) : cur ? souvGlyph(cur) : `<span class="mt">＋</span>`;
+      return `<button class="slotCell" data-sl="${sl.id}" aria-pressed="${on}">
+          <span class="ic">${art}</span>
+          <span class="nm">${sl.n}</span>
+          <span class="cur">${cur ? cur.n : "空的"}</span>
+        </button>`;
+    }).join("");
+    $("slotRow").querySelectorAll("[data-sl]").forEach(b => b.addEventListener("click", () => {
+      souvSlot = b.dataset.sl; renderSouv();
+    }));
+
+    const def = slotDef(souvSlot);
+    $("slotHint").textContent = `${def.where}・${def.hint}`;
+
+    if (souvSlot === "wheel") {
+      const lv = level();
+      $("souvHold").innerHTML = `<div class="souvGroup">
+        <div class="souvHead"><span class="n">整組更換</span><span class="c">${WHEELS.filter(w => w.lv <= lv).length} / ${WHEELS.length}</span></div>
+        <div class="wheelGrid">${WHEELS.map(w => {
+          const lock = w.lv > lv;
+          return `<button class="wheelCell${lock ? " lock" : ""}" data-wh="${w.id}"
+                    aria-pressed="${eq.wheel === w.id}" ${lock ? "disabled" : ""}>
+            ${wheelGlyph(w)}<span class="nm">${w.n}</span>
+            ${lock ? `<span class="lv">LV.${w.lv}</span>` : ""}
+          </button>`;
+        }).join("")}</div>
+      </div>`;
+      $("souvHold").querySelectorAll("[data-wh]").forEach(b => b.addEventListener("click", () => {
+        S.equip.wheel = b.dataset.wh; save(); renderTune();
+        CarView.set(skin(), moodOf());
+        toast(`換上「${wheelOf(b.dataset.wh).n}」`);
+      }));
+      return;
+    }
+
+    /* 只列得進這一格的東西，裝不上的不要出現在這裡 */
+    const fits = SOUV.filter(x => fitSlot(x) === souvSlot);
     $("souvHold").innerHTML = Object.entries(PLACE_TYPE).map(([k, v]) => {
-      const pool = SOUV.filter(x => x.t === k);
+      const pool = fits.filter(x => x.t === k);
+      if (!pool.length) return "";
       const own = pool.filter(x => S.souv[x.id]).length;
       return `<div class="souvGroup">
         <div class="souvHead"><span class="n">${v.name}</span><span class="c">${own} / ${pool.length}</span></div>
         <div class="souvGrid">${pool.map(x => {
           const n = S.souv[x.id] || 0;
           if (!n) return `<div class="souvCell lock"><span class="dot2"></span></div>`;
-          const on = S.equip.includes(x.id);
-          return `<button class="souvCell" data-sv="${x.id}" aria-pressed="${on}" title="${x.n}">
+          return `<button class="souvCell" data-sv="${x.id}" aria-pressed="${eq[souvSlot] === x.id}" title="${x.n}">
                     ${souvGlyph(x)}
                     ${n > 1 ? `<span class="qty">×${n}</span>` : ""}
                   </button>`;
@@ -4108,13 +4306,24 @@
     }).join("");
     $("souvHold").querySelectorAll("[data-sv]").forEach(b => b.addEventListener("click", () => {
       const id = b.dataset.sv;
-      if (S.equip.includes(id)) S.equip = S.equip.filter(x => x !== id);
-      else { S.equip.push(id); if (S.equip.length > 2) S.equip.shift(); }
+      const off = S.equip[souvSlot] === id;
+      S.equip[souvSlot] = off ? null : id;
       save(); renderTune();
       CarView.set(skin(), moodOf());
-      if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
-      toast(S.equip.includes(id) ? `掛上「${souvOf(id).n}」` : `收起「${souvOf(id).n}」`);
+      toast(off ? `收起「${souvOf(id).n}」` : `裝上「${souvOf(id).n}」·${slotDef(souvSlot).where}`);
     }));
+  }
+
+  /* 輪胎縮圖：跟車上是同一組顏色 */
+  function wheelGlyph(w) {
+    return `<svg viewBox="0 0 36 36" width="32" height="32" aria-hidden="true">
+      <circle cx="18" cy="18" r="15" fill="${w.tyre}"/>
+      ${w.glow ? `<circle cx="18" cy="18" r="15" fill="none" stroke="${w.rim}" stroke-width="2" opacity=".45"/>` : ""}
+      <circle cx="18" cy="18" r="9" fill="${w.rim}"/>
+      ${w.spokes ? `<g stroke="${w.hub}" stroke-width="1.6" stroke-linecap="round">
+          <path d="M18 10 v16 M11 14 l14 8 M11 22 l14 -8"/></g>` : ""}
+      <circle cx="18" cy="18" r="3.4" fill="${w.hub}"/>
+    </svg>`;
   }
 
   let tuneSeg = "skin";
@@ -4167,8 +4376,6 @@
     renderMap();
     renderBoxPin();
     renderBook();
-    $("teIc").innerHTML = thumb(skin(), skin().id);
-    $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
   }
 
   /* 首頁的預約卡：只留最少的必要資訊 */
@@ -4187,22 +4394,27 @@
   }
 
   function renderPers() {
-    $("persList").innerHTML = PERSONALITIES.map(p => `
-      <button class="pCard" data-p="${p.id}" aria-pressed="${p.id === S.pers}">
-        <span class="pFace">${persThumb(p)}</span>
+    const cur = pers();
+    /* 個性不是選單了——它跟著造型走，這裡只說明現在這台是誰 */
+    $("persList").innerHTML = `
+      <div class="pCard" aria-pressed="true" style="cursor:default">
+        <span class="pFace">${persThumb(cur)}</span>
         <span class="pBody">
-          <h3>${p.name}<small>${p.type}</small></h3>
-          <p>${p.desc}</p>
-          <p class="quote">${p.quote.replace(/[「」]/g, "")}</p>
+          <h3>${cur.name}<small>${cur.type}</small></h3>
+          <p>${cur.desc}</p>
+          <p class="quote">${cur.quote.replace(/[「」]/g, "")}</p>
         </span>
-      </button>`).join("");
-    $("persList").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => {
-      S.pers = b.dataset.p;
-      S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
-      save(); renderTune(); renderConsole();
-      CarView.set(skin(), moodOf());
-      toast(`${S.name} 換成「${pers().type}」了`);
-    }));
+      </div>
+      <div class="persNote">個性跟著造型走。想換個性，就去<button class="lnk" id="persToSkin">換一台車</button>。</div>
+      <div class="persMap" id="persMap"></div>`;
+    $("persToSkin").addEventListener("click", () => { tuneSeg = "skin"; renderTune(); $("screens").scrollTop = 0; });
+    $("persMap").innerHTML = PERSONALITIES.map(pp => {
+      const cars = SKINS.filter(sk => sk.pers === pp.id);
+      return `<div class="pmRow${pp.id === cur.id ? " on" : ""}">
+        <span class="nm">${pp.name}</span>
+        <span class="cars">${cars.map(sk => `<span class="c">${sk.name}</span>`).join("")}</span>
+      </div>`;
+    }).join("");
 
     const T = [
       { k: "clingy", n: "黏人度", c: "var(--rose)" }, { k: "sassy", n: "毒舌度", c: "var(--amber)" },
@@ -4227,15 +4439,16 @@
           <span class="prev">${carSVG(s, "normal", true, false)}</span>
           ${lock ? `<span class="lock">LV.${s.lv} 解鎖</span>` : ""}
           <span class="nm">${s.name}</span>
-          <span class="mt">${s.tag}${s.id === S.skin ? " · 使用中" : ""}</span>
+          <span class="mt">${(PERSONALITIES.find(x => x.id === s.pers) || PERSONALITIES[0]).name}${s.id === S.skin ? " · 使用中" : ""}</span>
         </button>`;
     }).join("");
     $("skinGrid").querySelectorAll("[data-s]").forEach(b => b.addEventListener("click", () => {
-      S.skin = b.dataset.s; save();
+      S.skin = b.dataset.s;
+      S.traits = { ...pers().traits };   /* 換車＝換角色，性格參數跟著回到那台的基準 */
+      save();
       /* 上面那台預覽要當場換好，不然改了看不出差別 */
       renderTune(); renderHome();
       CarView.set(skin(), moodOf());
-      if ($("teSub")) $("teSub").textContent = `${skin().name}・掛了 ${S.equip.length} 件・${pers().type.replace("型", "")}`;
       $("tunePrev").classList.remove("swap"); void $("tunePrev").offsetWidth;
       $("tunePrev").classList.add("swap");
       toast(`換上「${skin().name}」`);
@@ -4306,7 +4519,7 @@
     tapN = now - tapT < 2600 ? tapN + 1 : 1;
     tapT = now;
     const zone = ratio < 0.42 ? "top" : ratio < 0.74 ? "mid" : "low";
-    const bank = TAP[S.pers];
+    const bank = TAP[persId()];
     const line = tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
 
     S.mood = clamp(S.mood + (tapN >= 4 ? 1 : 3));
@@ -4357,7 +4570,7 @@
     setTimeout(() => hold.classList.remove("mad", "tapped"), 560);
 
     CarView.set(skin(), moodOf());
-    $("bubble").textContent = TALK_SAY[id][S.pers];
+    $("bubble").textContent = TALK_SAY[id][persId()];
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
@@ -4451,14 +4664,16 @@
       tsun:  ["不是我想去。是剛好抽到。", "抽吧。反正你也不會挑。"],
       sunny: ["來了來了！我超期待這個！", "抽！我已經在想路線了！"],
       gent:  ["行程已備妥，請抽選。", "每一張都排過時間了。"],
-      misty: ["有些地方只有那個時間才好看。", "抽出來的那張，通常會剛好。"]
-    }[S.pers]) : pick({
+      misty: ["有些地方只有那個時間才好看。", "抽出來的那張，通常會剛好。"],
+      meme:  ["抽啦，反正又不用錢。", "手氣爛的話不要怪我喔。"]
+    }[persId()]) : pick({
       warm:  ["這週的都給你了，下週一再來。", "先把已經抽到的跑完吧。"],
       tsun:  ["沒了。下週一。", "一週三次還不夠喔。"],
       sunny: ["用完啦！下週一再戰！", "先去跑抽到的那幾張！"],
       gent:  ["本週額度已用畢。", "下週一自動補滿。"],
-      misty: ["這週的緣分用完了。", "下週一會再有。"]
-    }[S.pers]);
+      misty: ["這週的緣分用完了。", "下週一會再有。"],
+      meme:  ["沒了啦，下週一。", "抽完了。你484把一週份一次用光。"]
+    }[persId()]);
 
     const h = (S.history || []).slice(0, 3);
     $("bsHist").innerHTML = h.length
@@ -4492,8 +4707,9 @@
       tsun:  ["它假裝不在意地把盒子推過來…", "「不是特地準備的。」它說。"],
       sunny: ["它超興奮地把盒子抱過來！", "「快打開快打開！」"],
       gent:  ["它把盒子端正地放好…", "「請過目。」"],
-      misty: ["它從後座拿出一個盒子…", "「這個只有今天會出現。」"]
-    }[S.pers]);
+      misty: ["它從後座拿出一個盒子…", "「這個只有今天會出現。」"],
+      meme:  ["它從後座拿出一個盒子…", "「開了不要罵我喔。」"]
+    }[persId()]);
 
     setTimeout(() => {
       $("rvBox").className = "rvBox pop";
@@ -4534,7 +4750,7 @@
           <div class="rail"></div>
           <div class="stop"><span class="dot end"></span><span class="ln">${p.to}</span><span class="tm">抵達</span></div>
         </div>
-        <div class="rvSay">${p.say[S.pers] || p.say.warm}</div>
+        <div class="rvSay">${p.say[persId()] || p.say.warm}</div>
         <div class="rvFoot">
           <span class="rvFare">NT$ ${p.fare} <small>預估</small></span>
           <button class="rvSkip" id="rvSkip">這次不要</button>
@@ -4607,7 +4823,7 @@
     } else if (S.boxLeft > 0 && Math.random() < 0.32) {
       msg = `盲盒還剩 ${S.boxLeft} 次。${S.name} 說今天手氣不錯，要不要抽？`;
     } else {
-      msg = pick(PUSHES[S.pers][sl]);
+      msg = pick(PUSHES[persId()][sl]);
     }
     showPush(msg);
   }
@@ -4625,25 +4841,45 @@
       $("onbSub").textContent = "之後還能改。";
       $("onbStep1").hidden = true; $("onbStep2").hidden = false;
       $("onbNext").textContent = "開始養";
-      $("onbStep2").innerHTML = PERSONALITIES.map(p => `
-        <button class="pCard" data-op="${p.id}" aria-pressed="${p.id === S.pers}">
-          <span class="pFace">${persThumb(p)}</span>
+      $("onbStep2").innerHTML = SKINS.filter(sk => sk.lv <= 1).map(sk => {
+        const pp = PERSONALITIES.find(x => x.id === sk.pers) || PERSONALITIES[0];
+        return `<button class="pCard" data-ok="${sk.id}" aria-pressed="${sk.id === S.skin}">
+          <span class="pFace" style="--pf1:${pp.pf[0]};--pf2:${pp.pf[1]}">${thumb(sk, sk.id)}</span>
           <span class="pBody">
-            <h3>${p.name}<small>${p.type}</small></h3>
-            <p class="quote">${p.quote.replace(/[「」]/g, "")}</p>
+            <h3>${sk.name}<small>${pp.type}</small></h3>
+            <p>${pp.desc}</p>
+            <p class="quote">${pp.quote.replace(/[「」]/g, "")}</p>
           </span>
-        </button>`).join("");
-      $("onbStep2").querySelectorAll("[data-op]").forEach(b => b.addEventListener("click", () => {
-        S.pers = b.dataset.op;
-        S.traits = { ...PERSONALITIES.find(p => p.id === S.pers).traits };
+        </button>`;
+      }).join("");
+      $("onbStep2").querySelectorAll("[data-ok]").forEach(b => b.addEventListener("click", () => {
+        S.skin = b.dataset.ok;
+        S.traits = { ...pers().traits };
         renderOnb();
-      }));
+            }));
     }
   }
 
   /* ════ 啟動 ════════════════════════════════════════════ */
 
+  /* 舊版把 equip 存成一個最多兩件的陣列。轉檔要在資料表都初始化完之後做——
+     放在 load() 裡會踩到 SOUV 的 TDZ，例外被 try/catch 吃掉，整包存檔就被當成壞的 */
+  function migrateEquip() {
+    const base = { hang: null, dash: null, wheel: "std" };
+    if (!Array.isArray(S.equip)) {
+      S.equip = { ...base, ...(S.equip && typeof S.equip === "object" ? S.equip : {}) };
+      return;
+    }
+    const out = { ...base };
+    for (const id of S.equip) {
+      const it = souvOf(id);
+      if (it && !out[fitSlot(it)]) out[fitSlot(it)] = id;
+    }
+    S.equip = out; save();
+  }
+
   function boot() {
+    migrateEquip();
     renderClock(); renderTabs(); go("home"); renderConsole(); renderGeo(); renderHail();
 
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
@@ -4719,7 +4955,6 @@
     $("campBar").addEventListener("click", () => { tuneSeg = "camp"; go("tune"); $("screens").scrollTop = 0; });
     $("btnGeo").addEventListener("click", askGeo);
     $("btnGeoOff").addEventListener("click", geoOff);
-    $("tuneEntry").addEventListener("click", () => go("tune"));
     $("tuneSeg").querySelectorAll("[data-ts]").forEach(b =>
       b.addEventListener("click", () => { tuneSeg = b.dataset.ts; renderTune(); $("screens").scrollTop = 0; }));
     $("boxPin").addEventListener("click", e => { e.stopPropagation(); openBoxSheet(); });
