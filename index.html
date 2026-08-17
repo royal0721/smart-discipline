@@ -858,6 +858,41 @@
   }
   .hsKill:hover { background: #F7E1E3; }
 
+  /* ── 日誌：一頁日記 ─────────────────────────────────── */
+  .logPage { position: relative; display: flex; flex-direction: column; gap: 18px; }
+  .lpDate {
+    position: absolute; z-index: 3; left: 12px; top: -6px;
+    display: flex; align-items: baseline; gap: 8px;
+    background: #FFFFFF; padding: 8px 13px 9px; border-radius: 15px; box-shadow: var(--lift);
+  }
+  .lpDate b { font-family: var(--mono); font-size: 25px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+  .lpDate span { font-family: var(--mono); font-size: 9.5px; line-height: 1.4; color: var(--fog); letter-spacing: .08em; }
+
+  .logTl { position: relative; display: flex; flex-direction: column; padding: 2px 0; }
+  .logTl::before {
+    content: ""; position: absolute; left: 56px; top: 26px; bottom: 26px;
+    width: 2px; background: var(--slab-3);
+  }
+  .tlRow { display: flex; align-items: center; gap: 12px; min-height: 52px; }
+  .tlRow .t { flex: none; width: 40px; font-family: var(--mono); font-size: 11px; color: var(--fog); }
+  .tlRow .rail { flex: none; width: 12px; display: grid; place-items: center; }
+  .tlRow .rail i { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 4px #F5F8F2; }
+  .tlRow .tx { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 9px; }
+  .tlRow .tx b { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tlRow .tx span { flex: none; font-family: var(--mono); font-size: 10.5px; color: var(--fog); }
+  .tlRow .sv { flex: none; width: 36px; height: 36px; display: grid; place-items: center; background: #FFFFFF; border-radius: 12px; box-shadow: var(--lift); }
+  .tlRow .sv svg { width: 25px; height: 25px; }
+
+  .lpStick { display: flex; flex-wrap: wrap; gap: 11px; padding-top: 2px; }
+  .lpStick .st {
+    display: flex; flex-direction: column; align-items: center; gap: 5px; width: 78px;
+    padding: 11px 5px 10px; background: #FFFFFF; border-radius: 15px; box-shadow: var(--lift);
+    transform: rotate(var(--r, 0deg));
+  }
+  .lpStick .st:nth-child(2n) { --r: 2.5deg; }
+  .lpStick .st:nth-child(3n) { --r: -2.5deg; }
+  .lpStick .st i { font-style: normal; font-size: 9.5px; color: var(--fog); text-align: center; line-height: 1.3; }
+
   /* 裝備位 */
   .slotRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .slotCell {
@@ -884,6 +919,19 @@
   .wheelCell .nm { font-size: 11.5px; color: var(--chalk); }
   .wheelCell.lock { opacity: .5; cursor: default; box-shadow: none; background: var(--slab-2); }
   .wheelCell .lv { font-family: var(--mono); font-size: 9.5px; color: var(--fog); }
+
+  /* 配件的第二層切換：一次只看一種地點，七組疊在一起會擠爆 */
+  .typeRow { display: flex; gap: 7px; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: none; }
+  .typeRow::-webkit-scrollbar { display: none; }
+  .typeRow button {
+    flex: none; display: flex; align-items: baseline; gap: 5px; cursor: pointer;
+    padding: 7px 12px; border: none; border-radius: 20px; background: var(--slab-2);
+    color: var(--fog); font-family: var(--sans); font-size: 12.5px; transition: .16s;
+  }
+  .typeRow button b { font-weight: 600; }
+  .typeRow button i { font-style: normal; font-family: var(--mono); font-size: 10px; opacity: .8; }
+  .typeRow button[aria-pressed="true"] { background: var(--chalk); color: #FFFFFF; }
+  .typeRow button:hover { transform: translateY(-1px); }
 
   /* 盲盒入口 */
   .boxSheet { max-height: 82%; }
@@ -1296,10 +1344,10 @@
             <div class="scTitle"><h2>日誌</h2><span id="logCount">還沒出門</span></div>
             <div id="logBody" style="display:flex;flex-direction:column;gap:14px"></div>
 
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
-            <div style="display:flex;flex-direction:column;gap:8px" id="tripLog"></div>
+            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
+            <div style="display:flex;flex-direction:column;gap:9px" id="tripLog"></div>
 
-            <div class="scTitle" style="margin-top:10px"><h2 style="font-size:15px">收起來的約會</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
+            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">收起來的約會</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
             <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
@@ -1322,6 +1370,7 @@
               <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">配件</h2><span id="souvCount">0 / 0</span></div>
               <div class="slotRow" id="slotRow"></div>
               <div class="slotHint" id="slotHint"></div>
+              <div class="typeRow" id="typeRow"></div>
               <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
             </div>
 
@@ -4202,7 +4251,7 @@
     }[persId()]);
   }
 
-  let souvSlot = "hang";
+  let souvSlot = "hang", souvType = null;
 
   function renderSouv() {
     const eq = S.equip || {};
@@ -4220,13 +4269,14 @@
         </button>`;
     }).join("");
     $("slotRow").querySelectorAll("[data-sl]").forEach(b => b.addEventListener("click", () => {
-      souvSlot = b.dataset.sl; renderSouv();
+      souvSlot = b.dataset.sl; souvType = null; renderSouv();
     }));
 
     const def = slotDef(souvSlot);
     $("slotHint").textContent = `${def.where}・${def.hint}`;
 
     if (souvSlot === "wheel") {
+      $("typeRow").hidden = true;
       const lv = level();
       $("souvHold").innerHTML = `<div class="souvGroup">
         <div class="souvHead"><span class="n">整組更換</span><span class="c">${WHEELS.filter(w => w.lv <= lv).length} / ${WHEELS.length}</span></div>
@@ -4247,15 +4297,28 @@
       return;
     }
 
-    /* 只列得進這一格的東西，裝不上的不要出現在這裡 */
+    /* 只列得進這一格的東西，裝不上的不要出現在這裡；
+       地點再切一層，一次只看一組——七組疊起來會擠爆 */
     const fits = SOUV.filter(x => fitSlot(x) === souvSlot);
-    $("souvHold").innerHTML = Object.entries(PLACE_TYPE).map(([k, v]) => {
-      const pool = fits.filter(x => x.t === k);
-      if (!pool.length) return "";
-      const own = pool.filter(x => S.souv[x.id]).length;
-      return `<div class="souvGroup">
-        <div class="souvHead"><span class="n">${v.name}</span><span class="c">${own} / ${pool.length}</span></div>
-        <div class="souvGrid">${pool.map(x => {
+    const groups = Object.entries(PLACE_TYPE)
+      .map(([k, v]) => ({ k, v, pool: fits.filter(x => x.t === k) }))
+      .filter(g => g.pool.length);
+    if (!groups.some(g => g.k === souvType))
+      souvType = (groups.find(g => g.pool.some(x => S.souv[x.id])) || groups[0]).k;
+
+    $("typeRow").hidden = false;
+    $("typeRow").innerHTML = groups.map(g => {
+      const own = g.pool.filter(x => S.souv[x.id]).length;
+      return `<button data-ty="${g.k}" aria-pressed="${g.k === souvType}">
+        <b>${g.v.name}</b><i>${own}/${g.pool.length}</i></button>`;
+    }).join("");
+    $("typeRow").querySelectorAll("[data-ty]").forEach(b => b.addEventListener("click", () => {
+      souvType = b.dataset.ty; renderSouv();
+    }));
+
+    const g = groups.find(x => x.k === souvType) || groups[0];
+    $("souvHold").innerHTML = !g ? "" : `<div class="souvGroup">
+        <div class="souvGrid">${g.pool.map(x => {
           const n = S.souv[x.id] || 0;
           if (!n) return `<div class="souvCell lock"><span class="dot2"></span></div>`;
           return `<button class="souvCell" data-sv="${x.id}" aria-pressed="${eq[souvSlot] === x.id}" title="${x.n}">
@@ -4263,9 +4326,8 @@
                     ${n > 1 ? `<span class="qty">×${n}</span>` : ""}
                   </button>`;
         }).join("")}</div>
-        <div class="souvName">${pool.filter(x => S.souv[x.id]).map(x => x.n).join("・") || "—"}</div>
+        <div class="souvName">${g.pool.filter(x => S.souv[x.id]).map(x => x.n).join("・") || "這一組還沒有東西"}</div>
       </div>`;
-    }).join("");
     $("souvHold").querySelectorAll("[data-sv]").forEach(b => b.addEventListener("click", () => {
       const id = b.dataset.sv;
       const off = S.equip[souvSlot] === id;
@@ -4313,7 +4375,8 @@
       : `<span class="tx"><b>還沒有路線</b><span>叫一次車就會畫上去</span></span>`;
 
     $("tripCount").textContent = `${list.length} 條`;
-    $("tripLog").innerHTML = list.map((t, i) => `
+    /* 只列最近四條——地圖上本來就看得到全部，清單長了整頁會擠 */
+    $("tripLog").innerHTML = list.slice(0, 4).map((t, i) => `
       <button class="trip" data-tr="${i}" aria-pressed="${i === mapHl}">
         <span class="idx" style="background:${t.color}">${i + 1}</span>
         <span>${t.name}</span>
