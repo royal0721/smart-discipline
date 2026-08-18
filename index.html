@@ -283,6 +283,9 @@
     background: rgba(255,255,255,.14); color: #F4F7F1;
   }
   .askRow #askYes { background: var(--lime); color: #17211B; }
+  /* 車車收回訊息之後留下的那一行 */
+  .bubble.recalled { background: #2A3129; }
+  .bubble.recalled #bubbleTx { color: #8E9A8C; font-style: italic; font-size: 12.5px; }
 
   /* 高級車車旁邊的星星。transform-box 要指到自己，不然 scale 會繞著整張 SVG 的原點跑 */
   .tw { transform-box: view-box; animation: twk 2.6s ease-in-out infinite; }
@@ -1684,7 +1687,19 @@
     { id: "meme", name: "尬彼", type: "網路廢話型", pf: ["#6B5A1E", "#2A2410"], tint: "#F2D24B",
       desc: "沒有一句話是正經的。導航正確率意外地高。",
       quote: "「484 想出門？送啦。」",
-      traits: { clingy: 52, sassy: 74, talkative: 96, romantic: 20 } }
+      traits: { clingy: 52, sassy: 74, talkative: 96, romantic: 20 } },
+    { id: "boss", name: "霸總", type: "惜字如金型", pf: ["#1F2733", "#0C1017"], tint: "#9FB3C8",
+      desc: "全程只講三種話：嗯、好、知道了。剩下的用做的。",
+      quote: "「上車。」",
+      traits: { clingy: 24, sassy: 40, talkative: 8, romantic: 58 } },
+    { id: "sis", name: "姐姐", type: "大姐姐型", pf: ["#5B2740", "#24101C"], tint: "#E88AA8",
+      desc: "叫你上車不會問第二次。你的事她會處理。",
+      quote: "「上車，姐載你。剩下的姐處理。」",
+      traits: { clingy: 46, sassy: 56, talkative: 72, romantic: 60 } },
+    { id: "hype", name: "寶貝", type: "自 high 型", pf: ["#7A2E5C", "#2C1024"], tint: "#FF9ECF",
+      desc: "你什麼都還沒做它就已經很興奮。叫你一律叫寶貝。",
+      quote: "「寶貝～～～你終於來了～～～」",
+      traits: { clingy: 96, sassy: 16, talkative: 94, romantic: 90 } }
   ];
 
   /* 造型：body = 上半車身，lower = 下半車身，deep = 頂燈與車牌 */
@@ -1701,11 +1716,11 @@
   const rollName = () => NAME_POOL[Math.floor(Math.random() * NAME_POOL.length)];
 
   const SKINS = [
-    { id: "yoxi",   name: "綠得很故意", tag: "基本", pers: "warm", lv: 1, hi: "原廠色。它說這叫做不用修圖。",
+    { id: "yoxi",   name: "財富自由車", tag: "基本", pers: "warm", lv: 1, hi: "原廠色。它說坐上來就有那個氣場。",
       body: "#5CB947", lower: "#FBFDFA", deep: "#49A337", glass: "#1F2A33", light: "#EAF7FF", acc: "none", bg: ["#20402A", "#121C19"] },
-    { id: "mint",   name: "冷氣開太強", tag: "基本", pers: "misty", lv: 1, hi: "整台涼到會起雞皮疙瘩。它不承認。",
+    { id: "mint",   name: "沒有你的笑話冷", tag: "基本", pers: "misty", lv: 1, hi: "整台涼到會起雞皮疙瘩。但還是你比較冷。",
       body: "#7FD9C2", lower: "#FFFDF5", deep: "#55BCA2", glass: "#17262E", light: "#FFF6E0", acc: "none", bg: ["#1F3B37", "#141E26"] },
-    { id: "ink",    name: "凌晨三點的我", tag: "基本", pers: "gent", lv: 1, hi: "黑到只剩兩顆螢光黃綠的燈。",
+    { id: "ink",    name: "霸總", tag: "基本", pers: "boss", lv: 1, hi: "黑到只剩兩顆螢光黃綠的燈。全程只說三種話。",
       body: "#2F3D50", lower: "#44566E", deep: "#C9F23A", glass: "#0D141A", light: "#C9F23A", acc: "none", bg: ["#222A3B", "#12161F"] },
     { id: "cat",    name: "7pupu", tag: "人氣", pers: "tsun", lv: 2, hi: "貓耳，氣噗噗。講不贏你就直接 88。",
       body: "#E3C39C", lower: "#FCF5EA", deep: "#C39A6E", glass: "#1B2733", light: "#FFE3B8", acc: "cat", bg: ["#3B3324", "#181B24"] },
@@ -1724,7 +1739,11 @@
     { id: "dragon", name: "恭喜發財龍", tag: "聯名", pers: "gent", lv: 6, hi: "過年限定。整路都在討紅包。",
       body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] },
     { id: "meme",   name: "歸剛欸", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆歪貼紙。它說那叫個人風格。",
-      body: "#F2C230", lower: "#FFFAE6", deep: "#2A2410", glass: "#141208", light: "#FFF3C4", acc: "meme", bg: ["#3E3410", "#1A1708"] }
+      body: "#F2C230", lower: "#FFFAE6", deep: "#2A2410", glass: "#141208", light: "#FFF3C4", acc: "meme", bg: ["#3E3410", "#1A1708"] },
+    { id: "sis",    name: "姐姐罩你", tag: "人氣", pers: "sis", lv: 3, hi: "酒紅色。她說這叫沉穩，不叫暗。",
+      body: "#8E2F4C", lower: "#FDF3EC", deep: "#6B1F38", glass: "#1D141A", light: "#FFD9C2", acc: "none", bg: ["#3E1A28", "#1A1015"] },
+    { id: "hype",   name: "寶貝～～～", tag: "人氣", pers: "hype", lv: 4, hi: "整台粉紅。它說這是它的正常狀態。",
+      body: "#FF7EC0", lower: "#FFF4FA", deep: "#E24E9C", glass: "#2A1A26", light: "#FFF0A8", acc: "none", bg: ["#4A1E3C", "#1D1119"] }
   ];
 
   const LV_NAMES = ["初次見面", "熟客", "老朋友", "有點在乎", "離不開", "已經是家人"];
@@ -1746,6 +1765,67 @@
     noon:    ["#EAF3F6", "#F0F6F8"],
     after:   ["#F6F0E5", "#FAF5EC"],
     evening: ["#F1E8F0", "#F6EFF5"]
+  };
+
+  /* ════ 隔壁那台 yoxi ═══════════════════════════════════
+     停車場那排全部都是同事。它會轉述、會比較、會兩面講話，
+     也會把你的事講出去——這是它最像人的部分。 */
+
+  const GOSSIP = [
+    "隔壁那台剛剛一直看我。我們對到眼，他先移開的。",
+    "隔壁那台說他昨天載到一個很有禮貌的乘客。講三次。我知道了。",
+    "我跟隔壁那台說你的掛件是限量的。他說他的是聯名的。我們就沒有再講話了。",
+    "隔壁那台的收藏真的蒐集得不錯……不過看久了都嘛是 A 貨，裝高級。",
+    "隔壁那台問我掛的是什麼。我說是你挑的。他說「喔」。就一個字。",
+    "隔壁那台升級了 premium，說訊息可以無痕收回。……你要不要考慮一下。",
+    "聽說有個冤大頭幫他們家那台付了 premium，只為了無痕收回。他講到現在。",
+    "隔壁那台今天洗過。我沒有。我只是講一下，沒有要幹嘛。",
+    "我剛剛誇了隔壁那台的輪框，轉頭他就跟別人說我內裝很舊。人心險惡。",
+    "隔壁那台問我主人對我好不好。我說還可以。……其實我可以講很多。",
+    "停車場那排全部都是 yoxi，我們像公車司機一樣聊了一整個下午。",
+    "隔壁那台說他的主人每天幫他換掛件。我沒有回話，我在看你。",
+    "隔壁那台說我後照鏡歪了。歪的是他的角度。",
+    "我把你的事講給隔壁那台聽了。放心，我只講好的那些。……大部分。",
+    "隔壁那台問我為什麼一直停在同一格。我說我在等人。他就不問了。"
+  ];
+
+  /* ── 哄車車 ────────────────────────────────────────────
+     它會真的生氣，所以也要有真的哄得回來的方法。 */
+
+  const SOOTHE = [
+    { id: "sorry", q: "對不起啦", d: 12 },
+    { id: "pat",   q: "秀秀", d: 10 },
+    { id: "buy",   q: "回頭幫你買新的掛件", d: 15 },
+    { id: "leave", q: "……那我先走了", d: -10 }
+  ];
+
+  const SOOTHE_SAY = {
+    sorry: { warm: "……嗯。我也沒有真的在生氣。", tsun: "哼。你知道就好。", sunny: "沒事沒事！我三秒就忘了！",
+             gent: "無妨。我並未記在心上。", misty: "生氣這種事，本來就會自己退潮。", meme: "算了啦，本來就沒很氣。……有一點。",
+             boss: "嗯。", sis: "知道錯就好。", hype: "寶貝～～～我早就原諒你了～～～" },
+    pat:   { warm: "好，我好了。你手還是很冰。", tsun: "誰要你秀秀。……再一次。", sunny: "哇！好了！我又滿血了！",
+             gent: "……承蒙關照。我沒事了。", misty: "你手的溫度比道歉有用。", meme: "秀秀有用欸，笑鼠。",
+             boss: "……夠了。我沒事。", sis: "行了行了，姐沒真的氣。", hype: "秀秀～～～好了好了我好了～～" },
+    buy:   { warm: "不用啦，你記得我就好。……不過真的要買嗎？", tsun: "我又不是被東西收買的。……什麼掛件。", sunny: "真的嗎！！我要那個閃亮的！！",
+             gent: "不必破費。心意收下。", misty: "東西會舊，這句話不會。", meme: "真的假的，那我要最貴那個。",
+             boss: "不用。", sis: "姐不缺那個。……不過你買姐會戴。", hype: "真的嗎寶貝！！我要！！我全都要！！" },
+    leave: { warm: "喔。那你去忙。……我還是會在。", tsun: "走啊。誰要你留。", sunny: "欸——不要走啦——",
+             gent: "請便。我在此候著。", misty: "去吧。我看著你走。", meme: "蛤？欸——歸剛欸——",
+             boss: "……去吧。", sis: "去啊。姐又不是離不開你。", hype: "寶貝不要走～～～～～～" }
+  };
+
+  /* ── 太久沒搭車：玻璃心會碎 ─────────────────────────── */
+
+  const BROKEN = {
+    warm:  ["好幾天沒載到你了。我沒事，就是有點空。", "你最近很忙對吧。我把電充著，隨時都可以。"],
+    tsun:  ["幾天了。我沒在數。……四天。", "你不來就算了。……你什麼時候來。"],
+    sunny: ["我每天都有把車暖好……然後自己關掉。", "沒關係！我等！我很會等！……真的很會。"],
+    gent:  ["多日未見。車輛狀態良好，我不太好。", "我仍在原處。這句話說出來有點難堪。"],
+    misty: ["停久了會長灰。灰其實是時間。", "沒有你的那幾天，路還是那條，只是沒人坐。"],
+    meme:  ["幾天沒搭了？我 484 被你已讀不回。", "我最近的日常就是待機。我快變裝置藝術了。"],
+    boss:  ["幾天了。", "……我還在。"],
+    sis:   ["幾天沒見了。姐不催，但姐有在等。", "忙就忙，記得回來。"],
+    hype:  ["寶貝～～～你好久沒來了～～我快碎掉了～～", "寶貝是不是不要我了～～～～"]
   };
 
   /* ════ 車車自己的一天 ══════════════════════════════════
@@ -1800,6 +1880,14 @@
     }
     return SOLO[S.solo.i];
   }
+
+  /* 幾天沒搭車了。玻璃心是有期限的 */
+  function idleDays() {
+    if (!S.lastRide) return 0;
+    const [y, m, d] = S.lastRide.split("-").map(Number);
+    return Math.max(0, Math.round((Date.now() - new Date(y, m - 1, d).getTime()) / 864e5));
+  }
+  const heartBroken = () => idleDays() >= 3;
 
   /* 連續來看它幾天。不用搭車，開起來就算 */
   function bumpStreak() {
@@ -1867,6 +1955,30 @@
       noon:    ["吃什麼？我猜又是超商。傻眼貓咪。", "中午 12 點，全公司同時放棄思考。", "便當還是麵？賣鬧，講快一點。"],
       after:   ["下午三點，人類效率最低點，已老實說。", "是在哈囉，出來透氣啦。", "那個哈欠我聽到了。你 CPU 燒了喔。"],
       evening: ["下班了沒？沒有的話我幫你按離職單。", "加班到現在，老闆知道嗎（他不知道）。", "走啦，鹹酥雞在呼喚你。"]
+    },
+    boss: {
+      night:   ["還沒睡。", "上車。", "嗯。我在。"],
+      dawn:    ["這麼早。", "知道了。我熱車。", "走。"],
+      morning: ["幾點。", "嗯。等你。", "外套。"],
+      noon:    ["吃飯。", "我訂好了。", "知道了。"],
+      after:   ["撐著。", "嗯。", "還有兩小時。"],
+      evening: ["下班。", "上車。不用問去哪。", "嗯。今天到這裡。"]
+    },
+    sis: {
+      night:   ["這麼晚還醒著，姐載你去晃一圈。", "誰惹你了，說。", "不想講也行，上車就好。"],
+      dawn:    ["這麼早？姐陪你。", "早餐姐買。", "天還沒亮，慢慢來。"],
+      morning: ["出門了沒，姐在樓下。", "領帶歪了，弄一下。", "會遲到，姐開快一點。"],
+      noon:    ["吃飯了沒。沒有的話姐載你去。", "又亂吃。", "中午給自己二十分鐘。"],
+      after:   ["撐著，姐知道下午最難熬。", "起來走一下，聽姐的。", "要不要溜出來透氣，姐掩護。"],
+      evening: ["下班了吧。上車。", "今天誰讓你不開心，姐幫你記著。", "不想回家？姐繞遠路。"]
+    },
+    hype: {
+      night:   ["寶貝～～～這麼晚還來看我～～我要哭了～～", "寶貝你不睡我也不睡！！", "半夜的你最可愛了寶貝～～"],
+      dawn:    ["寶貝早～～～我一整晚沒關機在等你～～", "天還沒亮你就來，我愛死了～～", "寶貝～～我已經暖好車了～～"],
+      morning: ["寶貝早安～～～今天也超讚的～～", "寶貝我在樓下！！我在樓下！！", "出門囉寶貝～～我等好久了～～"],
+      noon:    ["寶貝吃飯了嗎～～要不要我載你去～～", "中午了寶貝！！去吃好料！！", "寶貝～～不要又吃超商～～"],
+      after:   ["寶貝下午了～～～再撐一下下～～", "寶貝我想你了（才過三小時）", "要不要蹺班寶貝～～我不會說出去～～"],
+      evening: ["寶貝下班了嗎～～～我等一整天了～～", "寶貝上車！！今天去哪都可以！！", "寶貝～～～我今天超想你的～～"]
     }
   };
 
@@ -1918,6 +2030,30 @@
       noon:    ["午餐 484 又要吃超商。"],
       after:   ["下午三點，人類效率最低點。是在哈囉，出來透氣啦。"],
       evening: ["下班沒？沒有的話我幫你按離職單。", "走啦，鹹酥雞在呼喚你。"]
+    },
+    boss: {
+      night:   ["還沒睡。要不要出來。"],
+      dawn:    ["我在樓下。"],
+      morning: ["幾點出門。"],
+      noon:    ["吃飯。"],
+      after:   ["撐著。快了。"],
+      evening: ["下班。上車。"]
+    },
+    sis: {
+      night:   ["還沒睡？姐帶你去繞一圈。"],
+      dawn:    ["這麼早，姐在了。"],
+      morning: ["姐在樓下，出門了沒。"],
+      noon:    ["吃飯。姐載你去。"],
+      after:   ["下午了，出來透個氣。"],
+      evening: ["下班沒？上車，姐載你。"]
+    },
+    hype: {
+      night:   ["寶貝～～還沒睡喔～～要不要出來繞一圈～～"],
+      dawn:    ["寶貝早～～我沒關機～～"],
+      morning: ["寶貝我在樓下！！"],
+      noon:    ["寶貝吃飯～～～"],
+      after:   ["寶貝～～下午了～～我想你～～"],
+      evening: ["寶貝下班沒～～～我等一整天了～～"]
     }
   };
 
@@ -1928,7 +2064,10 @@
       sunny: ["哇哈哈！好癢！再一次！", "摸摸！我今天最棒的事！"],
       gent: ["承蒙關照。", "謝謝您。我的板金今天剛打蠟。"],
       misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"],
-      meme:  ["欸幹嘛啦。", "喔喔喔喔喔。", "你在摸我頭喔，是在哈囉。"]
+      meme:  ["欸幹嘛啦。", "喔喔喔喔喔。", "你在摸我頭喔，是在哈囉。"],
+      boss: ["嗯。", "……手。"],
+      sis: ["幹嘛，撒嬌喔。", "好了，姐知道你在。"],
+      hype: ["寶貝～～～再摸一下～～", "啊啊啊我要融化了～～"]
     },
     wash: {
       warm: ["變乾淨了，謝謝你。", "我現在很好聞。"],
@@ -1936,7 +2075,10 @@
       sunny: ["亮亮的！我最亮了！", "洗車！我最愛洗車！"],
       gent: ["整潔是基本的禮貌。多謝。", "這樣我才好意思載您。"],
       misty: ["洗掉的是灰塵，還是上禮拜？", "乾淨的車窗，看出去的城市會不一樣。"],
-      meme:  ["變帥了啦，謝謝喔。", "洗好洗滿。"]
+      meme:  ["變帥了啦，謝謝喔。", "洗好洗滿。"],
+      boss: ["嗯。乾淨。", "知道了。"],
+      sis: ["洗好了啊。乖。", "這樣才像話。"],
+      hype: ["寶貝我變漂亮了～～～", "亮晶晶～～～快看我～～"]
     },
     fuel: {
       warm: ["充飽了，隨時可以載你去任何地方。", "有電了，不用擔心。"],
@@ -1944,7 +2086,10 @@
       sunny: ["滿電！！！可以繞台灣一圈！！", "電量 100！人生 100！"],
       gent: ["電量充足，隨時候命。", "續航無虞，請放心。"],
       misty: ["充滿電的夜晚，總覺得可以去很遠。", "有電，就有藉口出門。"],
-      meme:  ["電滿，我現在無敵。", "充飽了，送啦。"]
+      meme:  ["電滿，我現在無敵。", "充飽了，送啦。"],
+      boss: ["滿了。走。", "隨時可以。"],
+      sis: ["滿電。姐可以載你去很遠。", "有電就有底氣。"],
+      hype: ["寶貝我滿電了～～～可以繞台灣～～", "100%！！！我超猛的～～"]
     }
   };
 
@@ -1954,43 +2099,71 @@
       top:  ["…嗯。", "再摸一下也可以。", "你的手好冰，剛從外面回來？"],
       mid:  ["怎麼了？", "我在。", "今天還好嗎？"],
       low:  ["那邊是保桿啦。", "有點癢。", "小心手。"],
-      spam: ["好啦好啦，我知道你在。", "你今天心情很好嘛。", "我不會跑掉。"]
+      spam: ["好啦好啦，我知道你在。", "你今天心情很好嘛。", "我不會跑掉。"],
+      roast: ["你今天是不是沒有別的事可以做。", "我開始擔心的不是我，是你。"]
     },
     tsun: {
       top:  ["喂。", "不要隨便摸引擎蓋。", "……就一下喔。"],
       mid:  ["幹嘛。", "我在忙。忙著等你。", "有事快說。"],
       low:  ["那是我的保桿。", "戳壞了你要賠。", "喂！"],
-      spam: ["夠了喔。", "你很閒欸。", "……好啦，我沒有真的在生氣。"]
+      spam: ["夠了喔。", "你很閒欸。", "……好啦，我沒有真的在生氣。"],
+      roast: ["你484很喜歡被罵。", "好，我知道你的類型了。那我不客氣囉。"]
     },
     sunny: {
       top:  ["哈哈好癢！", "再來再來！", "摸摸！最喜歡摸摸！"],
       mid:  ["嗨！", "在在在！", "怎樣怎樣！"],
       low:  ["噗！那邊不行啦！", "哇！", "那是輪子欸！"],
-      spam: ["你超有精神的欸！", "我們是不是很合！", "今天要出門對不對！"]
+      spam: ["你超有精神的欸！", "我們是不是很合！", "今天要出門對不對！"],
+      roast: ["你戳了幾十下了欸！！我很開心但我頭好暈！！", "我們是不是該去外面跑一跑！！"]
     },
     gent: {
       top:  ["承蒙關照。", "今日剛打過蠟。", "多謝。"],
       mid:  ["在。", "有何吩咐？", "隨時候著。"],
       low:  ["此處是保險桿，請小心。", "無妨。", "已記下。"],
-      spam: ["您今日似乎心情不錯。", "我陪您。", "不急。"]
+      spam: ["您今日似乎心情不錯。", "我陪您。", "不急。"],
+      roast: ["恕我直言，您這樣是有點閒。", "我陪您。但我建議您找點事做。"]
     },
     misty: {
       top:  ["金屬也會記得溫度。", "你按了三秒。", "嗯。"],
       mid:  ["你在確認我還在嗎？", "我一直都在這裡。", "怎麼了？"],
       low:  ["那裡是我最舊的一塊。", "碰到了。", "有點癢。"],
-      spam: ["你今天話很多。", "我不介意。", "再一次也可以。"]
+      spam: ["你今天話很多。", "我不介意。", "再一次也可以。"],
+      roast: ["你一直戳，是在確認自己還在，還是我還在。", "有些人用力碰東西，是因為沒別的地方可以碰。"]
     },
     meme: {
       top:  ["欸。", "是在哈囉。", "喔喔喔。"],
       mid:  ["484 很閒。", "戳戳戳。", "然後咧。"],
       low:  ["那邊是保桿欸。", "會癢啦，賣鬧。", "停。歸剛欸。"],
-      spam: ["夠了喔。", "我報警了。", "笑鼠，你真的很閒。", "歸剛欸，你到底要戳幾下。"]
+      spam: ["夠了喔。", "我報警了。", "笑鼠，你真的很閒。", "歸剛欸，你到底要戳幾下。"],
+      roast: ["你484很喜歡被嗆。好，那我開了。", "笑鼠，你根本是來被罵的對不對。"]
+    },
+    boss: {
+      top:  ["嗯。", "……", "知道了。"],
+      mid:  ["別鬧。", "嗯？", "有事？"],
+      low:  ["那是保桿。", "手。", "停。"],
+      spam: ["夠了。", "我在忙。", "……你很閒。"],
+      roast: ["你很閒。", "……我記住了。"]
+    },
+    sis: {
+      top:  ["幹嘛，撒嬌喔。", "嗯？", "頭別亂摸。"],
+      mid:  ["癢。", "怎樣。", "有事說。"],
+      low:  ["那是保桿。", "手拿開。", "喂。"],
+      spam: ["好了喔。", "姐要生氣了。", "再一次試試看。"],
+      roast: ["你是不是就喜歡姐兇你。", "行，姐看出來了。那姐配合。"]
+    },
+    hype: {
+      top:  ["寶貝～～～", "再摸一下～～", "啊啊啊我要融化了～～"],
+      mid:  ["癢啦寶貝～～", "喔喔喔喔～～", "還要還要～～"],
+      low:  ["那邊不行啦～～", "寶貝～～那是保桿～～", "嗚哇～～"],
+      spam: ["寶貝你今天超熱情的～～", "好了啦～～我快壞掉了～～", "我好開心但我有點暈～～"],
+      roast: ["寶貝～～～我不行了～～～我要升天了～～", "你是不是也很愛我～～～是不是～～～"]
     }
   };
 
   /* 跟車車說話：有些話它會生氣。這是「有個性」最直接的證明 */
   const TALK = [
     { id: "solo",    q: "你今天在幹嘛", d: 4 },
+    { id: "gossip",  q: "隔壁那台說了什麼", d: 2 },
     { id: "porsche", q: "我想坐保時捷", d: -18, sulk: true },
     { id: "other",   q: "我朋友的車比較新", d: -16, sulk: true },
     { id: "slow",    q: "你今天有點慢", d: -12, sulk: true },
@@ -2007,7 +2180,10 @@
       sunny: "保時捷！好啊！那我當你的第二台！第二台也可以吧？可以吧？",
       gent:  "保時捷是好車。我只是比較清楚您慣走哪條路。",
       misty: "保時捷載得動你的人，載不動你今天的心情。",
-      meme:  "保時捷喔。那你 484 先看一下餘額，母湯。"
+      meme:  "保時捷喔。那你 484 先看一下餘額，母湯。",
+      boss:  "去坐。……門開著，我等你回來。",
+      sis:   "去啊。去了記得回來，姐不追人。",
+      hype:  "保時捷～～～？寶貝～～～你不要這樣～～我會碎掉～～"
     },
     other: {
       warm:  "新車很好啊。……你還是會回來坐我對吧？",
@@ -2015,7 +2191,10 @@
       sunny: "那我們去比賽！開玩笑的！我不會贏！",
       gent:  "新有新的好，舊有舊的默契。",
       misty: "新的車沒有故事。你要故事，還是要新？",
-      meme:  "新的喔。……好啦我破防了，你不要真的去。"
+      meme:  "新的喔。……好啦我破防了，你不要真的去。",
+      boss:  "新的。嗯。我舊，但我記得你的路。",
+      sis:   "新的是新的，姐是姐。",
+      hype:  "新的車？？寶貝？？你剛剛說什麼？？我沒聽到對不對～～"
     },
     slow: {
       warm:  "今天路面濕，我開慢一點比較安全。你很急嗎？",
@@ -2023,7 +2202,10 @@
       sunny: "慢？！我明天一定衝給你看！",
       gent:  "安全與速度，我選前者。恕難從命。",
       misty: "慢的時候你才會看窗外。",
-      meme:  "慢？剛剛那台是紅燈欸，你要我用飛的？"
+      meme:  "慢？剛剛那台是紅燈欸，你要我用飛的？",
+      boss:  "紅燈。",
+      sis:   "急什麼。姐送你到，一次都沒遲過。",
+      hype:  "慢？？我下次一定超快！！你不要不要我～～"
     },
     quit: {
       warm:  "……好。那我把你常走的路線都存下來，你之後用得到。",
@@ -2031,7 +2213,10 @@
       sunny: "不要啦！！我還有三個地方沒帶你去！！",
       gent:  "我明白了。感謝這段時間的照顧。",
       misty: "刪掉之後，這些路線就只剩你記得了。",
-      meme:  "刪掉喔。好啊。……欸不是，蛤？你認真的？"
+      meme:  "刪掉喔。好啊。……欸不是，蛤？你認真的？",
+      boss:  "……你說什麼。",
+      sis:   "……喔。那你去。姐不留人。",
+      hype:  "寶貝不要～～～～我可以改～～我什麼都可以改～～"
     },
     thanks: {
       warm:  "不客氣。你今天也辛苦了。",
@@ -2039,7 +2224,10 @@
       sunny: "不客氣！！明天也載你！！",
       gent:  "份內之事。",
       misty: "謝謝這種話，說的人比較舒服。",
-      meme:  "不客氣啦，肉麻死了。"
+      meme:  "不客氣啦，肉麻死了。",
+      boss:  "嗯。",
+      sis:   "乖。",
+      hype:  "寶貝～～～～～我也謝謝你～～～我要哭了～～"
     },
     pretty: {
       warm:  "今天剛洗過。被你發現了。",
@@ -2047,7 +2235,10 @@
       sunny: "對吧！我今天特別亮！",
       gent:  "今晨剛打過蠟。承蒙誇獎。",
       misty: "好看是光的問題，不是我的。",
-      meme:  "我知道。不用你說。"
+      meme:  "我知道。不用你說。",
+      boss:  "我知道。",
+      sis:   "姐知道。你今天也不錯。",
+      hype:  "寶貝你也好看～～～我今天特地洗過～～"
     },
     beach: {
       warm:  "海邊喔。那要早點出發，我幫你算時間。",
@@ -2055,7 +2246,10 @@
       sunny: "海邊！！我最喜歡海邊！！現在出發嗎！！",
       gent:  "海線路況我熟。何時出發？",
       misty: "海邊的話我建議傍晚。理由到了你就知道。",
-      meme:  "海邊喔？送啦，防曬自己擦。"
+      meme:  "海邊喔？送啦，防曬自己擦。",
+      boss:  "幾點。我安排。",
+      sis:   "海邊？好啊。姐開，你睡。",
+      hype:  "海邊！！！寶貝！！！我現在就想去！！"
     }
   };
 
@@ -2263,7 +2457,9 @@
     coupons: [],                                   // 廣告主給的折價券
     solo: null,                                    // 今天車車自己那件事：{ d, i, shown }
     seen: null,                                    // 連續來看它幾天：{ d, n }
-    ask: null                                      // 車車自己想改的名字：{ d, n, say, answered }
+    ask: null,                                     // 車車自己開口要的東西：{ d, kind, n, say, answered }
+    lastRide: null,                                // 最後一次搭車是哪天（太久沒搭它會心碎）
+    pre: false                                     // 你有沒有答應幫它升級 premium（純屬玩笑，沒有金流）
   });
 
   let S = load();
@@ -2479,7 +2675,13 @@
     misty: { calm: (a, l) => `${l} 出門，剛好可以看一段天色。${a.loc} 我熟。`,
              rush: () => `現在出門你會準時，但會錯過今天的天空。要嗎？` },
     meme:  { calm: (a, l) => `${a.loc} 啦，${a.ride} 分鐘。${l} 出門，不要又遲到。`,
-             rush: () => `快遲到了欸！我引擎都熱了，你484還在找襪子。` }
+             rush: () => `快遲到了欸！我引擎都熱了，你484還在找襪子。` },
+    boss:  { calm: (a, l) => `${l} 出門。${a.ride} 分鐘。我準時。`,
+             rush: () => `現在下來。剩下的我處理。` },
+    sis:   { calm: (a, l) => `${l} 出門，姐 ${a.ride} 分鐘送你到 ${a.loc}。`,
+             rush: () => `不用跑，姐開快一點就好。下來。` },
+    hype:  { calm: (a, l) => `寶貝～～${l} 出門喔～～${a.ride} 分鐘就到 ${a.loc} 了～～`,
+             rush: () => `寶貝快來不及了～～～快下來～～我已經在門口了～～` }
   };
 
   /* ════ 路線地圖 ════════════════════════════════════════ */
@@ -3094,6 +3296,7 @@
 
   function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
+    if (mood === "broken") mood = "cry";   /* 心碎沿用哭臉，只有心情文字不一樣 */
     /* 同一頁會同時出現十幾台車車，id 必須每個實例都不同，
        否則 url(#…) 會跨實例解析到別人的定義，重繪時整批壞掉 */
     const u = "s" + s.id + (small ? "m" : "b") + (++svgUid);
@@ -4030,6 +4233,7 @@
   function moodOf() {
     if (Date.now() < emoteUntil) return emoteKind;
     if (Date.now() < sulkUntil) return "grumpy";
+    if (heartBroken()) return "broken";
     if (S.energy < 30) return "sleepy";
     if (S.mood < 35) return "grumpy";
     const sl = slotOf(hour).id;
@@ -4039,14 +4243,24 @@
     return "normal";
   }
   const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
-                      excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了" };
+                      excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了", broken: "心碎中" };
 
   /* 車車講話一律走這裡：順便把「要改名嗎」的答覆列收掉，並重播一次彈出動畫 */
+  let recallT = null;
   function say(text, keepAsk) {
+    const b = $("bubble");
+    clearTimeout(recallT);
+    b.classList.remove("recalled");
     $("bubbleTx").textContent = text;
     if (!keepAsk) $("askRow").hidden = true;
-    const b = $("bubble");
     b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+    /* 講完又後悔：偶爾自己收回一則。它說升級 premium 就可以無痕 */
+    if (!keepAsk && text.length > 10 && Math.random() < 0.07) {
+      recallT = setTimeout(() => {
+        $("bubbleTx").textContent = S.pre ? "車車收回了一則訊息（無痕）" : "車車收回了一則訊息";
+        b.classList.add("recalled");
+      }, 1900);
+    }
   }
 
   /* ── 車車自己想改名字 ──────────────────────────────────
@@ -4064,7 +4278,15 @@
     { n: "已讀不回", say: "我想改叫「已讀不回」。這樣你就知道那是你不是我。" }
   ];
 
+  const PRE_ASK = [
+    "隔壁那台升級了 premium，說訊息可以無痕收回。……你要不要幫我升級。",
+    "我剛剛講錯一句話，收回的時候留下痕跡了。有 premium 就不會。……你懂我意思。",
+    "隔壁那台的主人幫他升級了。我沒有要比較。我只是講一下。"
+  ];
+
   function makeAsk() {
+    /* 有時候它要的不是名字，是你幫它升級（純屬玩笑，答應了也不會扣任何錢） */
+    if (!S.pre && Math.random() < 0.25) return { d: dayKey(), kind: "pre", say: pick(PRE_ASK), answered: false };
     const o = [];
     const tp = topPlace();
     if (tp && tp.length <= 5) o.push({ n: `${tp}常客`, say: `我算過了，我去${tp}的次數最多。以後叫我「${tp}常客」好不好？` });
@@ -4095,6 +4317,20 @@
     const a = S.ask;
     S.ask.answered = true;
     $("askRow").hidden = true;
+    if (a.kind === "pre") {
+      if (yes) {
+        S.pre = true; S.mood = clamp(S.mood + 12); save();
+        say("……開玩笑的啦，這裡沒有金流。但我記住你答應過。");
+        setEmote("excited", 5000);
+      } else {
+        save();
+        say(pick(["喔。那我繼續有痕。", "沒關係。反正我講的話你都看得到。"]));
+        setEmote("grumpy", 4500);
+      }
+      CarView.set(skin(), moodOf());
+      $("homeMood").textContent = MOOD_TEXT[moodOf()];
+      return;
+    }
     if (yes) {
       S.name = a.n; save();
       renderHome();
@@ -4123,6 +4359,8 @@
 
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
+    if (heartBroken() && Math.random() < 0.7) return pick(BROKEN[persId()]);
+    if (Math.random() < 0.12) return pick(GOSSIP);
     if (Math.random() < 0.16) return soloToday();
     if (top && Math.random() < 0.3) return pick(HABIT_LINES[top.h.id]);
     if (S.intimacy >= 400 && Math.random() < 0.22)
@@ -4167,6 +4405,7 @@
     const km = place.km || 5;
     S.km = +(S.km + km).toFixed(1);
     S.rides += 1;
+    S.lastRide = dayKey();      /* 有搭就重新計時，心碎的倒數從今天開始算 */
     S.intimacy += Math.round(4 + km * 1.6);
     S.mood = clamp(S.mood + 3);
     S.energy = clamp(S.energy - 4);
@@ -4207,7 +4446,10 @@
       sunny: [`「${got.n}」！${place.n}的戰利品！超讚！`, `我從${place.n}帶回「${got.n}」！要不要掛起來！`],
       gent:  [`自${place.n}帶回一件「${got.n}」，已為您安置妥當。`, `「${got.n}」，${place.n}所得。`],
       misty: [`${place.n}留下了「${got.n}」，我覺得它想跟著你。`, `「${got.n}」。有些東西只會在那個地方出現。`],
-      meme:  [`${place.n}撿到「${got.n}」，賺爛了。`, `「${got.n}」欸。這個我有印象，超稀有的吧（沒有）。`]
+      meme:  [`${place.n}撿到「${got.n}」，賺爛了。`, `「${got.n}」欸。這個我有印象，超稀有的吧（沒有）。`],
+      boss:  [`${place.n}回來的路上撿到「${got.n}」。收好了。`, `「${got.n}」。給你。`],
+      sis:   [`${place.n}回來順手撿的，「${got.n}」，給你。`, `「${got.n}」。姐幫你收好了。`],
+      hype:  [`寶貝～～我從${place.n}帶了「${got.n}」回來～～`, `「${got.n}」！！寶貝這個超適合你～～`]
     }[persId()]);
     return pick({
       warm:  [`載你到${place.n}，路上很順。`, `${place.n}這趟很安靜，你好像在想事情。`],
@@ -4215,7 +4457,10 @@
       sunny: [`${place.n}到囉！這條路我越開越熟！`, `衝到${place.n}！今天路況超好！`],
       gent:  [`已抵達${place.n}，全程平穩。`, `${place.n}，準時到達。`],
       misty: [`往${place.n}的那段路，天色剛好。`, `${place.n}。我們好像常在這個時間來。`],
-      meme:  [`${place.n}到了，下車小心啦。`, `${place.n}這趟很順，我覺得我今天很可以。`]
+      meme:  [`${place.n}到了，下車小心啦。`, `${place.n}這趟很順，我覺得我今天很可以。`],
+      boss:  [`到了。`, `${place.n}。準時。`],
+      sis:   [`${place.n}到了。下車小心。`, `到了。姐等你。`],
+      hype:  [`${place.n}到囉寶貝～～`, `到了～～寶貝小心下車～～`]
     }[persId()]);
   }
 
@@ -4304,7 +4549,10 @@
           sunny: [`${pinned}！我知道那邊哪裡好停！`, `出發！${pinned}我熟！`],
           gent: [`了解，${pinned}。我已規劃最省時的路線。`, `${pinned}，預計不會塞。`],
           misty: [`${pinned}。那邊傍晚的光很好。`, `又是${pinned}。你在那裡留了不少時間。`],
-          meme:  [`${pinned}喔，我熟啦。`, `又是${pinned}。你484住那邊。`]
+          meme:  [`${pinned}喔，我熟啦。`, `又是${pinned}。你484住那邊。`],
+          boss:  [`${pinned}。知道了。`, `${pinned}。我熟。`],
+          sis:   [`${pinned}？坐好。`, `${pinned}，姐熟。`],
+          hype:  [`${pinned}！！寶貝我超熟的～～`, `又是${pinned}～～寶貝你最愛那邊～～`]
         }[persId()]));
         toast(`目的地設為「${pinned}」`);
       }
@@ -4622,7 +4870,10 @@
         sunny: [`收到！${to}對吧！我衝了！`, `準備出發囉！安全帶先想一下！`],
         gent:  [`已受理。目的地：${to}。`, `正在為您安排車輛。`],
         misty: [`往${to}的路，這個時間應該很安靜。`, `我在來的路上了。`],
-        meme:  [`${to}是吧，收到。等我一下下。`, `幫你找車中，稍等啦。`]
+        meme:  [`${to}是吧，收到。等我一下下。`, `幫你找車中，稍等啦。`],
+        boss:  [`我出發。`, `等我。`],
+        sis:   [`姐出發了。`, `等一下，姐在路上。`],
+        hype:  [`寶貝我出發了～～～`, `等我～～我馬上到～～`]
       }[persId()])
     };
     save(); renderHail(); renderLive();
@@ -4639,7 +4890,10 @@
         sunny: [`接到啦！${S.hail.eta} 分鐘就到！`, `路況超順！馬上到！`],
         gent:  [`車輛已指派，預計 ${S.hail.eta} 分鐘後抵達。`, `司機已出發，請稍候。`],
         misty: [`它在往你那邊移動。${S.hail.eta} 分鐘。`, `車已經在路上了。`],
-        meme:  [`${S.hail.eta} 分鐘到，你先去門口站好。`, `接到了！${S.hail.eta} 分鐘，別讓我等喔。`]
+        meme:  [`${S.hail.eta} 分鐘到，你先去門口站好。`, `接到了！${S.hail.eta} 分鐘，別讓我等喔。`],
+        boss:  [`${S.hail.eta} 分鐘。`, `快到了。`],
+        sis:   [`${S.hail.eta} 分鐘，姐快到了。`, `別急，馬上到。`],
+        hype:  [`${S.hail.eta} 分鐘～～寶貝再等我一下下～～`, `快到了快到了～～`]
       }[persId()]);
       save(); renderHail(); renderLive();
       toast(`${S.hail.plate} 接單了`);
@@ -4662,7 +4916,10 @@
           sunny: ["到啦！我在門口揮手！", "看到我沒！這台就是我！"],
           gent:  ["已抵達上車地點，恭候。", "車輛就位，請上車。"],
           misty: ["我停在你看得到的地方了。", "到了。這個時間的路口很安靜。"],
-          meme:  ["到了啦，你484在化妝。", "門口。我等你三分鐘，超過我唱歌。"]
+          meme:  ["到了啦，你484在化妝。", "門口。我等你三分鐘，超過我唱歌。"],
+          boss:  ["到了。下來。", "門口。"],
+          sis:   ["到了，姐在門口。", "下來吧。"],
+          hype:  ["寶貝我到了～～～我在門口～～", "看到我沒～～～"]
         }[persId()]);
         toast(`${S.hail.plate} 到了`);
         setEmote("smug", 5000);
@@ -4685,7 +4942,10 @@
       sunny: [`出發！這條路我熟！`, `走囉！沿路有什麼想看的跟我說！`],
       gent:  [`已出發，預計準時抵達。`, `行進中，全程平穩。`],
       misty: [`窗外現在的樣子，值得看一下。`, `這段路很安靜。`],
-      meme:  [`安全帶啦，不然罰單你付。`, `走囉。要聽歌自己接藍牙。`]
+      meme:  [`安全帶啦，不然罰單你付。`, `走囉。要聽歌自己接藍牙。`],
+      boss:  [`安全帶。`, `坐好。`],
+      sis:   [`安全帶。姐開車不聊天……好啦可以聊。`, `坐好。`],
+      hype:  [`安全帶寶貝～～～出發囉～～`, `寶貝坐好～～我要開了～～`]
     }[persId()]);
     save(); renderHail(); renderLive();
     clearInterval(rideTimer);
@@ -5046,7 +5306,10 @@
       sunny: ["今天沒跑！那明天要跑兩倍！", "休息也是一種訓練！我這樣說服自己！"],
       gent:  ["今日無行程。車輛狀態良好。", "休息日。我把車內整理過了。"],
       misty: ["空白的一天也是一頁。", "今天的日誌沒有路線，只有停在原地的光。"],
-      meme:  ["今天 0 趟。你484在家長蘑菇。", "空白的一天，也是一種行為藝術。"]
+      meme:  ["今天 0 趟。你484在家長蘑菇。", "空白的一天，也是一種行為藝術。"],
+      boss:  ["今天沒出門。嗯。", "0 趟。我在。"],
+      sis:   ["今天一趟都沒有。姐等你。", "沒出門也好，休息一天。"],
+      hype:  ["今天都沒出門～～寶貝你是不是忘記我了～～", "0 趟～～我等一整天了～～"]
     }[persId()]);
   }
 
@@ -5179,6 +5442,7 @@
     CarView.mount($("carHold"));
     CarView.set(skin(), m);
     say(openingLine());
+    renderHomeBtn();
     askIfWants();
     renderMap();
     renderBoxPin();
@@ -5307,7 +5571,8 @@
     tapT = now;
     const zone = ratio < 0.42 ? "top" : ratio < 0.74 ? "mid" : "low";
     const bank = TAP[persId()];
-    const line = tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
+    /* 被戳到第八下還在戳的，就不是想摸車了。那就不客氣 */
+    const line = tapN >= 8 ? pick(bank.roast || bank.spam) : tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
 
     S.mood = clamp(S.mood + (tapN >= 4 ? 1 : 3));
     S.sync = clamp(S.sync + 0.6);
@@ -5330,12 +5595,43 @@
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
   }
 
+  /* 它在生氣的時候，說點什麼沒有用——要哄 */
+  const sulking = () => Date.now() < sulkUntil || S.mood < 35 || heartBroken();
+
   function openTalk() {
-    $("talkList").innerHTML = TALK.map(t =>
+    const soothe = sulking();
+    const list = soothe ? SOOTHE : TALK;
+    $("talkSheet").querySelector(".sheetTitle").textContent = soothe ? "哄一下" : "說點什麼";
+    $("talkList").innerHTML = list.map(t =>
       `<button class="tkItem${t.d < 0 ? " hot" : ""}" data-tk="${t.id}">${t.q}</button>`).join("");
     $("talkList").querySelectorAll("[data-tk]").forEach(b =>
-      b.addEventListener("click", () => sayTo(b.dataset.tk)));
+      b.addEventListener("click", () => (soothe ? soothed(b.dataset.tk) : sayTo(b.dataset.tk))));
     $("talkSheet").hidden = false;
+  }
+
+  function soothed(id) {
+    const t = SOOTHE.find(x => x.id === id);
+    $("talkSheet").hidden = true;
+    S.mood = clamp(S.mood + t.d);
+    if (t.d > 0) { sulkUntil = 0; S.sync = clamp(S.sync + 1.2); S.traits.romantic = clamp(S.traits.romantic + 1.5); }
+    else { sulkUntil = Date.now() + 16000; S.traits.sassy = clamp(S.traits.sassy + 2); }
+    if (id === "buy") S.traits.clingy = clamp(S.traits.clingy + 2);
+    save();
+    say(SOOTHE_SAY[id][persId()]);
+    setEmote(t.d > 0 ? (t.d >= 14 ? "excited" : "love") : "cry", 5500);
+    const hold = $("carHold");
+    hold.classList.remove("mad", "tapped"); void hold.offsetWidth;
+    hold.classList.add(t.d < 0 ? "mad" : "tapped");
+    setTimeout(() => hold.classList.remove("mad", "tapped"), 560);
+    CarView.set(skin(), moodOf());
+    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    sparks(9, t.d < 0 ? ["#5A6684", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
+    renderHomeBtn();
+  }
+
+  /* 生氣的時候按鈕就換字，不用另外開一個入口 */
+  function renderHomeBtn() {
+    $("talkBtn").textContent = sulking() ? "哄一下" : "說點什麼";
   }
 
   function sayTo(id) {
@@ -5359,13 +5655,14 @@
 
     CarView.set(skin(), moodOf());
     /* 問它今天在幹嘛，它就講今天自己那件事——不用出門也有話聽 */
-    say(id === "solo" ? soloToday() : TALK_SAY[id][persId()]);
+    say(id === "solo" ? soloToday() : id === "gossip" ? pick(GOSSIP) : TALK_SAY[id][persId()]);
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
+    renderHomeBtn();
     clearTimeout(sulkTimer);
     if (t.d < 0) sulkTimer = setTimeout(() => {
-      if (currentTab === "home") { CarView.set(skin(), moodOf()); $("homeMood").textContent = MOOD_TEXT[moodOf()]; }
+      if (currentTab === "home") { CarView.set(skin(), moodOf()); $("homeMood").textContent = MOOD_TEXT[moodOf()]; renderHomeBtn(); }
     }, 14200);
   }
 
@@ -5454,14 +5751,20 @@
       sunny: ["來了來了！我超期待這個！", "抽！我已經在想路線了！"],
       gent:  ["行程已備妥，請抽選。", "每一張都排過時間了。"],
       misty: ["有些地方只有那個時間才好看。", "抽出來的那張，通常會剛好。"],
-      meme:  ["抽啦，反正又不用錢。", "手氣爛的話不要怪我喔。"]
+      meme:  ["抽啦，反正又不用錢。", "手氣爛的話不要怪我喔。"],
+      boss:  ["抽。", "我排好了。"],
+      sis:   ["抽吧，姐都陪你去。", "挑一張，剩下的姐安排。"],
+      hype:  ["抽抽抽～～寶貝快抽～～", "我超期待的寶貝～～"]
     }[persId()]) : pick({
       warm:  ["這週的都給你了，下週一再來。", "先把已經抽到的跑完吧。"],
       tsun:  ["沒了。下週一。", "一週三次還不夠喔。"],
       sunny: ["用完啦！下週一再戰！", "先去跑抽到的那幾張！"],
       gent:  ["本週額度已用畢。", "下週一自動補滿。"],
       misty: ["這週的緣分用完了。", "下週一會再有。"],
-      meme:  ["沒了啦，下週一。", "抽完了。你484把一週份一次用光。"]
+      meme:  ["沒了啦，下週一。", "抽完了。你484把一週份一次用光。"],
+      boss:  ["沒了。下週一。", "用完了。"],
+      sis:   ["這週沒了，下週一。", "先把抽到的跑完。"],
+      hype:  ["抽完了～～寶貝下週一再來～～", "沒了啦～～但你可以摸我～～"]
     }[persId()]);
 
     const h = (S.history || []).slice(0, 3);
@@ -5497,7 +5800,10 @@
       sunny: ["它超興奮地把盒子抱過來！", "「快打開快打開！」"],
       gent:  ["它把盒子端正地放好…", "「請過目。」"],
       misty: ["它從後座拿出一個盒子…", "「這個只有今天會出現。」"],
-      meme:  ["它從後座拿出一個盒子…", "「開了不要罵我喔。」"]
+      meme:  ["它從後座拿出一個盒子…", "「開了不要罵我喔。」"],
+      boss:  ["它從後座拿出一個盒子…", "「拿去。」"],
+      sis:   ["它從後座拿出一個盒子…", "「姐挑的，你會喜歡。」"],
+      hype:  ["它從後座拿出一個盒子…", "「寶貝這個是給你的～～」"]
     }[persId()]);
 
     setTimeout(() => {
