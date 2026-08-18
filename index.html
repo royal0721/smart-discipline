@@ -694,6 +694,52 @@
   .rvCard[hidden] { display: none; }
   @keyframes rvUp { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
   .rvIn { background: #FFFFFF; border-radius: 23px; padding: 18px 17px 16px; display: flex; flex-direction: column; gap: 13px; }
+
+  /* ── 盲盒開出來的是一張明信片 ──────────────────────── */
+  .pcIn { background: #FDFBF6; border-radius: 23px; padding: 11px 11px 13px; display: flex; flex-direction: column; gap: 12px; }
+  .pcArtWrap { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 2 / 1; background: #2A3038; }
+  .pcArt { display: block; width: 100%; height: 100%; }
+  .pcScrim { position: absolute; inset: auto 0 0 0; height: 52%; z-index: 1;
+    background: linear-gradient(to top, rgba(10,14,20,.72), rgba(10,14,20,0)); }
+  .pcWhere {
+    position: absolute; left: 13px; bottom: 11px; z-index: 2;
+    font-family: var(--sans); font-size: 15px; font-weight: 800; color: #FFFFFF;
+    letter-spacing: -.01em;
+  }
+  .pcStamp {
+    position: absolute; right: 10px; top: 10px; z-index: 2; width: 56px; height: 64px;
+    background: #FFFDF6; border-radius: 4px; padding: 4px;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,.28));
+    -webkit-mask-image: radial-gradient(circle 3px at 0 8px, transparent 98%, #000 100%);
+  }
+  .pcStamp::before {
+    content: ""; position: absolute; inset: 3px; border: 1.5px dashed rgba(0,0,0,.18); border-radius: 2px;
+  }
+  .pcStamp .sIn { width: 42px; height: 40px; display: grid; place-items: center; overflow: hidden; }
+  .pcStamp .sIn img, .pcStamp .sIn svg { max-width: 42px; max-height: 40px; }
+  .pcStamp b { font-family: var(--mono); font-size: 10px; font-weight: 700; color: #22303C; letter-spacing: .06em;
+    background: var(--sr); padding: 1px 7px; border-radius: 6px; }
+  .pcMark {
+    position: absolute; right: 76px; top: 16px; z-index: 2; width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.6); display: grid; place-items: center; transform: rotate(-11deg);
+    color: rgba(255,255,255,.72); font-family: var(--mono); line-height: 1.15; text-align: center;
+  }
+  .pcMark i { font-style: normal; font-size: 12px; font-weight: 700; }
+  .pcMark span { display: block; font-size: 7.5px; letter-spacing: .18em; }
+
+  .pcBody { display: flex; flex-direction: column; gap: 8px; padding: 0 5px; }
+  .pcBody h3 { font-size: 19px; font-weight: 900; letter-spacing: -.02em; }
+  .pcRoute { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--fog); }
+  .pcRoute .ar { color: var(--grass); font-weight: 700; }
+  .pcNote {
+    font-size: 13.5px; line-height: 1.65; color: #4A4033;
+    padding: 10px 0 11px; border-top: 1px dashed #DCD3C2; border-bottom: 1px dashed #DCD3C2;
+  }
+  .pcMeta { display: flex; align-items: baseline; justify-content: space-between; }
+  .pcMeta .s { font-size: 11.5px; color: var(--fog); }
+  .pcMeta .f { font-family: var(--mono); font-size: 16px; font-weight: 700; }
+  .pcMeta .f small { font-family: var(--sans); font-size: 9.5px; color: var(--fog-dim); margin-left: 4px; }
   .rvTop { display: flex; align-items: center; gap: 9px; }
   .rvRar {
     font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: .18em;
@@ -894,6 +940,38 @@
   .lpStick .st:nth-child(2n) { --r: 2.5deg; }
   .lpStick .st:nth-child(3n) { --r: -2.5deg; }
   .lpStick .st i { font-style: normal; font-size: 9.5px; color: var(--fog); text-align: center; line-height: 1.3; }
+
+  /* 收起來的約會：小張明信片 */
+  .miniCard { display: grid; grid-template-columns: 108px 1fr; grid-template-rows: auto auto; gap: 0 12px;
+    background: #FDFBF6; border-radius: 16px; padding: 10px; box-shadow: var(--lift); }
+  .mcArt { position: relative; grid-row: 1 / span 2; border-radius: 11px; overflow: hidden; aspect-ratio: 4 / 3; background: #2A3038; }
+  .mcArt .pcArt { width: 100%; height: 100%; }
+  .mcRar { position: absolute; right: 5px; top: 5px; z-index: 2; font-family: var(--mono); font-size: 9px;
+    font-weight: 700; color: #FFFFFF; padding: 2px 5px; border-radius: 6px; }
+  .mcWhere { position: absolute; left: 7px; bottom: 5px; z-index: 2; font-size: 9.5px; font-weight: 700; color: #FFFFFF; }
+  .mcTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 2px; }
+  .mcTx b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mcTx span { font-size: 11px; color: var(--fog); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mcTx .f { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--chalk); margin-top: 2px; }
+  .mcTx .f small { font-family: var(--sans); font-size: 9px; color: var(--fog-dim); margin-left: 3px; }
+  .mcAct { display: flex; gap: 7px; align-items: end; padding-bottom: 2px; }
+  .mcAct button { border: none; cursor: pointer; padding: 7px 13px; border-radius: 18px;
+    font-family: var(--sans); font-size: 12px; font-weight: 700; }
+  .mcAct .ride { background: var(--grass); color: #FFFFFF; }
+  .mcAct .del { background: var(--slab-2); color: var(--fog); }
+
+  /* 去過的地方：像集章 */
+  .placeGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .placeCell { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 6px 11px; background: #FFFFFF; border-radius: 15px; box-shadow: var(--lift); }
+  .placeCell .stamp {
+    position: relative; width: 46px; height: 46px; display: grid; place-items: center;
+    color: var(--sc); font-family: var(--mono);
+  }
+  .placeCell .stamp .ring { position: absolute; inset: 0; border-radius: 50%; border: 2.5px dashed var(--sc); opacity: .55; }
+  .placeCell .stamp b { font-size: 17px; font-weight: 700; line-height: 1; }
+  .placeCell .stamp i { position: absolute; bottom: 7px; font-style: normal; font-size: 8px; opacity: .75; }
+  .placeCell .nm { font-size: 11.5px; font-weight: 600; color: var(--chalk); text-align: center; line-height: 1.3; }
+  .placeCell .km { font-family: var(--mono); font-size: 9.5px; color: var(--fog); }
 
   /* 裝備位 */
   .slotRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
@@ -1338,6 +1416,9 @@
           <section class="screen" id="sc-log" hidden>
             <div class="scTitle"><h2>日誌</h2><span id="logCount">還沒出門</span></div>
             <div id="logBody" style="display:flex;flex-direction:column;gap:14px"></div>
+
+            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">去過的地方</h2><span id="placeCount"></span></div>
+            <div class="placeGrid" id="placeGrid"></div>
 
             <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
             <div style="display:flex;flex-direction:column;gap:9px" id="tripLog"></div>
@@ -1845,6 +1926,134 @@
       say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。", meme: "生日快樂啦。我沒有記，是它自己跳出來的。" } }
   ];
 
+
+  /* ════ 明信片 ══════════════════════════════════════════
+     盲盒開出來的不是一張表格，是一張明信片：風景、郵票、郵戳、
+     車車寫在上面的一句話。截圖出去要看得出是哪裡。
+     ──────────────────────────────────────────────────── */
+
+  const SCENE = {
+    /* 河堤與水岸：夕陽沉進水裡 */
+    river: `
+      <rect width="300" height="150" fill="#F6C98A"/>
+      <rect y="0" width="300" height="86" fill="url(#skR)"/>
+      <circle cx="196" cy="84" r="30" fill="#F58A4B"/>
+      <rect y="86" width="300" height="64" fill="#5E8FA8"/>
+      <g fill="#FFFFFF" opacity=".45"><rect x="150" y="96" width="92" height="3" rx="1.5"/>
+        <rect x="168" y="108" width="60" height="3" rx="1.5"/><rect x="140" y="120" width="80" height="3" rx="1.5"/></g>
+      <path d="M0 86 h300 v3 H0 Z" fill="#3E6B80" opacity=".5"/>
+      <path d="M0 150 V128 c34 -10 60 -2 84 4 c30 8 56 2 88 -6 c36 -9 92 -4 128 6 V150 Z" fill="#3B5A46"/>
+      <g stroke="#2E4838" stroke-width="3" stroke-linecap="round">
+        <path d="M40 130 v-22"/><path d="M52 132 v-16"/><path d="M28 132 v-14"/></g>`,
+    /* 市場與小吃：一排紅燈籠、雨棚、亮著的攤位 */
+    market: `
+      <rect width="300" height="150" fill="#2A2635"/>
+      <g fill="#F2C230" opacity=".13"><circle cx="70" cy="40" r="42"/><circle cx="212" cy="34" r="48"/></g>
+      <g>
+        <g transform="translate(34 0)"><path d="M0 0 V12" stroke="#7A2C26" stroke-width="2"/>
+          <rect x="-3" y="10" width="6" height="4" fill="#F2C230"/><ellipse cx="0" cy="26" rx="11" ry="13" fill="#E0463C"/>
+          <path d="M0 39 v6" stroke="#F2C230" stroke-width="2"/></g>
+        <g transform="translate(97 0)"><path d="M0 0 V8" stroke="#7A2C26" stroke-width="2"/>
+          <rect x="-3" y="6" width="6" height="4" fill="#F2C230"/><ellipse cx="0" cy="22" rx="12" ry="14" fill="#E85248"/>
+          <path d="M0 36 v6" stroke="#F2C230" stroke-width="2"/></g>
+        <g transform="translate(160 0)"><path d="M0 0 V14" stroke="#7A2C26" stroke-width="2"/>
+          <rect x="-3" y="12" width="6" height="4" fill="#F2C230"/><ellipse cx="0" cy="28" rx="10" ry="12" fill="#E0463C"/>
+          <path d="M0 40 v5" stroke="#F2C230" stroke-width="2"/></g>
+        <g transform="translate(222 0)"><path d="M0 0 V6" stroke="#7A2C26" stroke-width="2"/>
+          <rect x="-3" y="4" width="6" height="4" fill="#F2C230"/><ellipse cx="0" cy="20" rx="12" ry="14" fill="#E85248"/>
+          <path d="M0 34 v7" stroke="#F2C230" stroke-width="2"/></g>
+        <g transform="translate(276 0)"><path d="M0 0 V12" stroke="#7A2C26" stroke-width="2"/>
+          <rect x="-3" y="10" width="6" height="4" fill="#F2C230"/><ellipse cx="0" cy="25" rx="10" ry="12" fill="#E0463C"/></g>
+      </g>
+      <path d="M0 56 h300 v7 H0 Z" fill="#B8332C"/>
+      <path d="M0 63 l19 13 l19 -13 l19 13 l19 -13 l19 13 l19 -13 l19 13 l19 -13 l19 13 l19 -13
+               l19 13 l19 -13 l19 13 l19 -13 l19 13 l19 -13 V63 Z" fill="#E4573F"/>
+      <rect y="98" width="300" height="52" fill="#39334C"/>
+      <rect y="98" width="300" height="4" fill="#4A4265"/>
+      <g fill="#F8DFA0">
+        <rect x="16" y="110" width="46" height="26" rx="3"/><rect x="76" y="116" width="38" height="20" rx="3"/>
+        <rect x="128" y="106" width="56" height="30" rx="3"/><rect x="198" y="116" width="40" height="20" rx="3"/>
+        <rect x="252" y="110" width="36" height="26" rx="3"/></g>
+      <g fill="#C98B4A" opacity=".7">
+        <rect x="16" y="132" width="46" height="4"/><rect x="128" y="132" width="56" height="4"/>
+        <rect x="252" y="132" width="36" height="4"/></g>`,
+    /* 超商與宵夜：亮著的招牌 */
+    store: `
+      <rect width="300" height="150" fill="#141A26"/>
+      <rect x="30" y="34" width="240" height="86" rx="6" fill="#1E2836"/>
+      <rect x="30" y="34" width="240" height="20" fill="#3FA46A"/>
+      <g fill="#FFF7D6" opacity=".92">
+        <rect x="46" y="66" width="56" height="40" rx="3"/><rect x="112" y="66" width="76" height="40" rx="3"/>
+        <rect x="198" y="66" width="56" height="40" rx="3"/></g>
+      <g fill="#C6D2C0" opacity=".8"><rect x="52" y="74" width="44" height="4"/><rect x="52" y="84" width="44" height="4"/>
+        <rect x="204" y="74" width="44" height="4"/><rect x="204" y="88" width="30" height="4"/></g>
+      <path d="M112 66 h76 v40 h-76 Z" fill="#FFF7D6"/>
+      <path d="M150 74 v24 M138 86 h24" stroke="#3FA46A" stroke-width="5" stroke-linecap="round"/>
+      <rect y="120" width="300" height="30" fill="#0E131C"/>
+      <g fill="#FFE9A8" opacity=".22"><ellipse cx="150" cy="122" rx="120" ry="22"/></g>`,
+    /* 咖啡廳與工作室：窗邊的一杯 */
+    cafe: `
+      <rect width="300" height="150" fill="#EADFCF"/>
+      <rect x="18" y="12" width="264" height="102" rx="8" fill="#B8C6C2"/>
+      <rect x="18" y="12" width="264" height="102" rx="8" fill="url(#skC)"/>
+      <path d="M150 12 v102" stroke="#EADFCF" stroke-width="7"/>
+      <path d="M18 62 h264" stroke="#EADFCF" stroke-width="7"/>
+      <rect y="114" width="300" height="36" fill="#7A5230"/>
+      <rect y="114" width="300" height="6" fill="#A0714A"/>
+      <g><path d="M196 92 h34 l-4 26 h-26 Z" fill="#FFFFFF"/>
+        <path d="M230 98 c10 0 10 12 0 12" stroke="#FFFFFF" stroke-width="4" fill="none"/>
+        <ellipse cx="213" cy="92" rx="17" ry="4" fill="#C8A882"/></g>
+      <g stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity=".65">
+        <path d="M206 84 c4 -5 -4 -9 0 -14"/><path d="M218 84 c4 -5 -4 -9 0 -14"/></g>`,
+    /* 客戶端與辦公室：夜裡還亮著的那幾格 */
+    office: `
+      <rect width="300" height="150" fill="#1B2334"/>
+      <g fill="#28334A">
+        <rect x="14" y="42" width="62" height="108" rx="3"/><rect x="86" y="18" width="74" height="132" rx="3"/>
+        <rect x="170" y="56" width="52" height="94" rx="3"/><rect x="232" y="30" width="56" height="120" rx="3"/></g>
+      <g fill="#F7D97A">
+        <rect x="22" y="52" width="12" height="9"/><rect x="42" y="52" width="12" height="9"/><rect x="22" y="70" width="12" height="9"/>
+        <rect x="96" y="30" width="14" height="10"/><rect x="120" y="30" width="14" height="10"/><rect x="120" y="50" width="14" height="10"/>
+        <rect x="96" y="70" width="14" height="10"/><rect x="120" y="90" width="14" height="10"/>
+        <rect x="180" y="66" width="12" height="9"/><rect x="200" y="84" width="12" height="9"/>
+        <rect x="242" y="42" width="13" height="10"/><rect x="264" y="62" width="13" height="10"/><rect x="242" y="82" width="13" height="10"/></g>
+      <g fill="#3E4A66" opacity=".85">
+        <rect x="42" y="70" width="12" height="9"/><rect x="96" y="50" width="14" height="10"/><rect x="180" y="86" width="12" height="9"/>
+        <rect x="264" y="42" width="13" height="10"/><rect x="242" y="62" width="13" height="10"/></g>
+      <circle cx="252" cy="26" r="10" fill="#F3EFD8" opacity=".9"/>`,
+    /* 家：巷口那盞燈 */
+    home: `
+      <rect width="300" height="150" fill="#232B3E"/>
+      <circle cx="222" cy="34" r="12" fill="#F5EFD2" opacity=".9"/>
+      <g fill="#2E3852"><rect x="0" y="60" width="120" height="90"/><rect x="132" y="46" width="80" height="104"/>
+        <rect x="224" y="72" width="76" height="78"/></g>
+      <g fill="#FFD98A"><rect x="20" y="76" width="18" height="14" rx="2"/><rect x="54" y="76" width="18" height="14" rx="2"/>
+        <rect x="150" y="62" width="18" height="14" rx="2"/><rect x="150" y="96" width="18" height="14" rx="2"/>
+        <rect x="244" y="88" width="18" height="14" rx="2"/></g>
+      <g stroke="#59657F" stroke-width="3"><path d="M118 150 V54"/></g>
+      <path d="M108 54 h20 l-4 10 h-12 Z" fill="#FFE9A8"/>
+      <ellipse cx="118" cy="132" rx="46" ry="16" fill="#FFE9A8" opacity=".14"/>
+      <rect y="140" width="300" height="10" fill="#171D2B"/>`
+  };
+
+  function postcard(p, R) {
+    const scene = SCENE[p.pt] || SCENE.river;
+    const u = ++svgUid;
+    return `
+      <svg class="pcArt" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="skR${u}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4B4A7A"/><stop offset="55%" stop-color="#E2794F" stop-opacity=".7"/>
+            <stop offset="100%" stop-color="#F6C98A" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="skC${u}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".55"/><stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        ${scene.replace(/#skR/g, "#skR" + u).replace(/#skC/g, "#skC" + u)}
+      </svg>`;
+  }
+
   const RARITY = {
     N:   { c1: "#93A0BA", c2: "#5A6684", w: 52 },
     R:   { c1: "#7DD3FC", c2: "#3C7EA8", w: 30 },
@@ -1885,7 +2094,7 @@
     boxLeft: 3, history: [],
     // 皮克敏式：親密度只由真實搭車餵養
     km: 0, rides: 0, rideLog: [],
-    placeVisits: {}, souv: {}, equip: { hang: null, dash: null, wheel: "std" },
+    placeVisits: {}, places: {}, souv: {}, equip: { hang: null, dash: null, wheel: "std" },
     today: { rides: [], souv: [], events: [] },
     geo: { on: false, mode: null, place: null },   // 定位：on 之前不能指定位置
     saved: [],                                     // 收起來的盲盒約會，還沒約車
@@ -1909,6 +2118,7 @@
         equip: p.equip,                 /* 形狀在 boot() 的 migrateEquip 才轉，這裡碰不到 SOUV */
         saved: Array.isArray(p.saved) ? p.saved : [],
         camp: p.camp && typeof p.camp === "object" ? p.camp : {},
+        places: p.places && typeof p.places === "object" ? p.places : {},
         coupons: Array.isArray(p.coupons) ? p.coupons : [],
         visits: Array.isArray(p.visits) && p.visits.length === 24 ? p.visits : base.visits };
     } catch { return defaults(); }
@@ -3532,6 +3742,11 @@
     S.mood = clamp(S.mood + 3);
     S.energy = clamp(S.energy - 4);
     S.placeVisits[place.t] = (S.placeVisits[place.t] || 0) + 1;
+    /* 地點本身也收起來——去過哪裡是一種收藏 */
+    S.places = S.places || {};
+    const pk = S.places[place.n] || { t: place.t, n: 0, km: 0, first: `${pad(h)}:00` };
+    pk.t = place.t; pk.n += 1; pk.km = +(pk.km + km).toFixed(1);
+    S.places[place.n] = pk;
     S.rideLog.unshift({ name: `→ ${place.n}`, km, r: (S.rides * 2) % 6 });
     S.rideLog = S.rideLog.slice(0, 4);
     S.today.rides.push({ n: place.n, t: place.t, km, at: `${pad(h)}:${pad(((h * 17) % 6) * 10)}` });
@@ -3640,7 +3855,8 @@
       <span>建議 <b>${leaveStr}</b> 出發</span>`;
     const say = NS_SAY[persId()];
     $("nsSay").textContent = rush || left <= 0 ? say.rush(a) : say.calm(a, leaveStr);
-    $("nsBtn").textContent = rush || left <= 0 ? "馬上叫車 · 它已經在路上" : `預約 ${leaveStr} 的車`;
+    $("nsBtn").textContent = S.hail ? "查看進行中的行程" : (rush || left <= 0 ? "馬上叫車 · 它已經在路上" : `預約 ${leaveStr} 的車`);
+    if ($("nsBtn2")) $("nsBtn2").textContent = S.hail ? "查看進行中的行程" : (rush || left <= 0 ? "馬上叫車" : "現在叫車");
   }
 
   function renderPlaces() {
@@ -3837,6 +4053,7 @@
   }
 
   function openHail(dest) {
+    if (S.hail) dest = undefined;      /* 有行程在跑就只看那一趟 */
     $("hailSheet").hidden = false;
     if (dest !== undefined && !S.hail) $("hsTo").value = dest || "";
     renderHail();
@@ -4103,6 +4320,9 @@
   }
 
   function renderLive() {
+    /* 行程一有變化，首頁那張預約卡的 CTA 也要跟著換，不然會停在
+       「預約 09:34 的車」，看起來像還能再叫一台 */
+    if (currentTab === "home") renderBook();
     const bar = $("liveBar");
     if (!bar) return;
     const h = S.hail;
@@ -4269,16 +4489,50 @@
     $("rvOk").addEventListener("click", closeReveal);
   }
 
+  /* 去過的地方：一張一張像蓋章，去越多次章越滿 */
+  function renderPlaces2() {
+    const ps = Object.entries(S.places || {});
+    $("placeCount").textContent = ps.length ? `${ps.length} 個` : "還沒去過";
+    if (!ps.length) {
+      $("placeGrid").innerHTML = `<div class="cap" style="padding:2px 4px;grid-column:1/-1">跑過的地方會一個一個蓋在這裡</div>`;
+      return;
+    }
+    ps.sort((a, b) => b[1].n - a[1].n);
+    $("placeGrid").innerHTML = ps.map(([n, v]) => {
+      const c = TYPE_C[v.t] || "#9AA79F";
+      return `<div class="placeCell">
+        <span class="stamp" style="--sc:${c}">
+          <span class="ring"></span><b>${v.n}</b><i>次</i>
+        </span>
+        <span class="nm">${n}</span>
+        <span class="km">${v.km} km</span>
+      </div>`;
+    }).join("");
+  }
+
   function renderSaved() {
     const list = S.saved || [];
-    $("savedHold").innerHTML = list.length ? list.map((s, i) => `
-      <div class="saveRow">
-        <span class="tag" style="background:${RARITY[s.r].c1}">${s.r}</span>
-        <span class="tx"><b>${s.title}</b><span>${s.to} · NT$ ${s.fare}</span></span>
-        <button class="ride" data-sr="${i}">約這趟</button>
-        <button class="del" data-sd="${i}">刪掉</button>
+    /* 收起來的也是明信片，只是小一張——收藏才會想翻 */
+    $("savedHold").innerHTML = list.length ? list.map((x, i) => `
+      <div class="miniCard">
+        <div class="mcArt">
+          ${postcard(x, RARITY[x.r])}
+          <span class="pcScrim"></span>
+          <span class="mcRar" style="background:${RARITY[x.r].c1}">${x.r}</span>
+          <span class="mcWhere">${PLACE_TYPE[x.pt] ? PLACE_TYPE[x.pt].name : "特別行程"}</span>
+        </div>
+        <div class="mcTx">
+          <b>${x.title}</b>
+          <span>${x.from} → ${x.to}</span>
+          <span class="f">NT$ ${x.fare}<small>預估</small></span>
+        </div>
+        <div class="mcAct">
+          <button class="ride" data-sr="${i}">約這趟</button>
+          <button class="del" data-sd="${i}">刪掉</button>
+        </div>
       </div>`).join("") : `<div class="cap" style="padding:2px 4px">還沒收起任何約會</div>`;
     $("savedHold").querySelectorAll("[data-sr]").forEach(b => b.addEventListener("click", () => {
+      if (S.hail) { toast("已經有一趟在跑了"); openHail(); return; }
       openHail(list[+b.dataset.sr].to);
     }));
     $("savedHold").querySelectorAll("[data-sd]").forEach(b => b.addEventListener("click", () => {
@@ -4307,7 +4561,7 @@
   }
 
   function renderLog() {
-    renderBox(); renderSaved();
+    renderBox(); renderSaved(); renderPlaces2();
     const _t = S.today;
     $("logCount").textContent = _t.rides.length
       ? `${_t.rides.length} 趟 · ${_t.rides.reduce((x, r) => x + r.km, 0).toFixed(1)} km` : "還沒出門";
@@ -4509,7 +4763,7 @@
       : left <= 0 ? "現在就該出門" : `${left} 分鐘後出發`;
     $("bkCount").className = "bkCount" + (rush ? " tight" : "");
     $("bkMeta").innerHTML = `<span>${pinned || a.loc}</span><span>車程 <b>${a.ride}</b> 分</span><span>建議 <b>${leaveStr}</b> 出發</span>`;
-    $("nsBtn").textContent = rush || left <= 0 ? "馬上叫車" : `預約 ${leaveStr} 的車`;
+    $("nsBtn").textContent = S.hail ? "查看進行中的行程" : (rush || left <= 0 ? "馬上叫車" : `預約 ${leaveStr} 的車`);
   }
 
   /* 性格參數是內部狀態，跟作息推論一樣收在後台，不對使用者顯示 */
@@ -4834,28 +5088,32 @@
     card.style.setProperty("--rr1", R.c1);
     card.style.setProperty("--rr2", R.c2);
     card.innerHTML = `
-      <div class="rvIn">
-        <div class="rvTop">
-          <span class="rvRar">${p.r}</span>
-          <span class="chip">${PLACE_TYPE[p.pt] ? PLACE_TYPE[p.pt].name : "特別行程"}</span>
-          <span class="rvDate">${pad(hour)}:40</span>
+      <div class="pcIn">
+        <div class="pcArtWrap">
+          ${postcard(p, R)}
+          <span class="pcScrim"></span>
+          <span class="pcWhere">${PLACE_TYPE[p.pt] ? PLACE_TYPE[p.pt].name : "特別行程"}</span>
+          <span class="pcStamp" style="--sr:${R.c1}">
+            <span class="sIn">${thumb(skin(), skin().id)}</span>
+            <b>${p.r}</b>
+          </span>
+          <span class="pcMark"><i>${pad(hour)}.${pad(40)}</i><span>YOXI</span></span>
         </div>
-        <div class="rvHead">
-          <span class="ic">${thumb(skin(), skin().id)}</span>
-          <span><h3>${p.title}</h3><span class="sl">${p.slot}</span></span>
+        <div class="pcBody">
+          <h3>${p.title}</h3>
+          <div class="pcRoute">
+            <span>${p.from}</span><span class="ar">→</span><span>${p.to}</span>
+          </div>
+          <div class="pcNote">${p.say[persId()] || p.say.warm}</div>
+          <div class="pcMeta">
+            <span class="s">${p.slot}</span>
+            <span class="f">NT$ ${p.fare}<small>預估</small></span>
+          </div>
         </div>
-        <div class="route">
-          <div class="stop"><span class="dot"></span><span class="ln">${p.from}</span><span class="tm">出發</span></div>
-          <div class="rail"></div>
-          <div class="stop"><span class="dot end"></span><span class="ln">${p.to}</span><span class="tm">抵達</span></div>
-        </div>
-        <div class="rvSay">${p.say[persId()] || p.say.warm}</div>
-        <div class="rvFoot"><span class="rvFare">NT$ ${p.fare} <small>預估</small></span></div>
         <div class="rvActs">
           <button class="rvSkip" id="rvSkip">這次不要</button>
           <button class="rvGo" id="rvGo">先收起來</button>
         </div>
-        <div class="rvNote">${p.r === "SSR" ? "壓箱寶" : p.r === "SR" ? "這張不常出現" : ""}</div>
       </div>`;
     confetti(p.r === "SSR" ? 46 : p.r === "SR" ? 30 : 16, [R.c1, R.c2, "#FFFFFF"]);
     if (p.r === "SSR" || p.r === "SR") toast(`${p.r}！${p.title}`);
@@ -5036,9 +5294,11 @@
       tapCar((e.clientY - r.top) / r.height);
     });
 
-    /* 預約按鈕不再直接扣車——開叫車頁，地點先填好，按不按是使用者的事 */
+    /* 預約按鈕不再直接扣車——開叫車頁，地點先填好，按不按是使用者的事。
+       已經有一趟在跑的話，開的是那一趟，不會再叫第二台 */
     const book = e => {
       e.stopPropagation();
+      if (S.hail) { openHail(); return; }
       const { a } = nextAppt();
       openHail(pinned || (a && a.loc) || "");
     };
