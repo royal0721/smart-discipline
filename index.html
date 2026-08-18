@@ -274,6 +274,23 @@
     animation: pop .34s cubic-bezier(.2,1.5,.5,1);
   }
   @keyframes pop { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
+  /* 車車自己開口要改名字的時候，答覆就長在它那句話下面 */
+  .askRow { display: flex; gap: 8px; margin-top: 10px; }
+  .askRow[hidden] { display: none; }
+  .askRow button {
+    flex: 1; border: none; cursor: pointer; padding: 8px 0; border-radius: 14px;
+    font-family: var(--sans); font-size: 12.5px; font-weight: 700;
+    background: rgba(255,255,255,.14); color: #F4F7F1;
+  }
+  .askRow #askYes { background: var(--lime); color: #17211B; }
+
+  /* 高級車車旁邊的星星。transform-box 要指到自己，不然 scale 會繞著整張 SVG 的原點跑 */
+  .tw { transform-box: view-box; animation: twk 2.6s ease-in-out infinite; }
+  @keyframes twk {
+    0%, 100% { opacity: .12; }
+    50%      { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tw { animation: none; opacity: .7; } }
 
   .carHold {
     position: absolute; z-index: 4; left: 0; right: 0; bottom: 10px;
@@ -1408,7 +1425,7 @@
                 <span class="chip" id="homeLv">Lv.1</span>
                 <span class="chip" id="homeMood">心情不錯</span>
               </div>
-              <div class="bubble" id="bubble">…</div>
+              <div class="bubble" id="bubble"><span id="bubbleTx">…</span><span class="askRow" id="askRow" hidden><button id="askYes">好啊</button><button id="askNo">不行</button></span></div>
               <div class="carHold" id="carHold"></div>
               <button class="talkBtn" id="talkBtn">說點什麼</button>
               <button class="boxPin" id="boxPin" hidden>
@@ -1586,7 +1603,7 @@
         <div class="nsCard">
           <span class="sheetTitle">換個名字</span>
           <div class="nameRow">
-            <input type="text" id="nsName" maxlength="8" placeholder="想不到就按骰子">
+            <input type="text" id="nsName" maxlength="12" placeholder="想不到就按骰子">
             <button class="dice" id="nsDice" aria-label="隨機取名">🎲</button>
           </div>
           <div class="nsBtns">
@@ -1624,7 +1641,7 @@
         </div>
         <div id="onbStep1">
           <div class="nameRow">
-            <input type="text" id="onbName" maxlength="8" placeholder="想不到就按骰子" value="小綠">
+            <input type="text" id="onbName" maxlength="12" placeholder="想不到就按骰子" value="小綠">
             <button class="dice" id="onbDice" aria-label="隨機取名">🎲</button>
           </div>
         </div>
@@ -1676,7 +1693,10 @@
     "小綠", "阿肥", "董ㄟ", "老闆", "肥宅快樂車", "路隊長", "省道之光", "早八救星",
     "秒到王", "我的第二個家", "不塞車就好", "很有事", "陳先生", "歐洲貴族",
     "小黃瓜", "跑山王", "代步的", "免費的司機", "綠色恐怖", "會自己回家",
-    "後座很涼", "停車位小偷", "台北巷戰王", "半夜也在"
+    "後座很涼", "停車位小偷", "台北巷戰王", "半夜也在",
+    /* 通知列上跳出來會被截圖的那種 */
+    "您的信用卡已扣款", "車貸還有47期", "健檢報告已出爐", "媽媽打來了",
+    "電量剩下2%", "您有一則新訊息", "停車費未繳", "已讀不回"
   ];
   const rollName = () => NAME_POOL[Math.floor(Math.random() * NAME_POOL.length)];
 
@@ -1687,7 +1707,7 @@
       body: "#7FD9C2", lower: "#FFFDF5", deep: "#55BCA2", glass: "#17262E", light: "#FFF6E0", acc: "none", bg: ["#1F3B37", "#141E26"] },
     { id: "ink",    name: "凌晨三點的我", tag: "基本", pers: "gent", lv: 1, hi: "黑到只剩兩顆螢光黃綠的燈。",
       body: "#2F3D50", lower: "#44566E", deep: "#C9F23A", glass: "#0D141A", light: "#C9F23A", acc: "none", bg: ["#222A3B", "#12161F"] },
-    { id: "cat",    name: "喵的我是車", tag: "人氣", pers: "tsun", lv: 2, hi: "戴上耳朵之後講話會多一個喵。它很堅持那是雜訊。",
+    { id: "cat",    name: "7pupu", tag: "人氣", pers: "tsun", lv: 2, hi: "貓耳，氣噗噗。講不贏你就直接 88。",
       body: "#E3C39C", lower: "#FCF5EA", deep: "#C39A6E", glass: "#1B2733", light: "#FFE3B8", acc: "cat", bg: ["#3B3324", "#181B24"] },
     { id: "racer",  name: "時速三十", tag: "季節", pers: "sunny", lv: 3, hi: "尾翼很大，速度沒有。它說那叫下壓力。",
       body: "#E8412F", lower: "#F5F5F5", deep: "#B92B1C", glass: "#141C24", light: "#FFF0C4", acc: "racer", bg: ["#45201C", "#171820"] },
@@ -1703,7 +1723,7 @@
       body: "#F0803C", lower: "#FFF4E8", deep: "#C4571F", glass: "#231A18", light: "#FFE0B0", acc: "fox", bg: ["#48291A", "#1C1512"] },
     { id: "dragon", name: "恭喜發財龍", tag: "聯名", pers: "gent", lv: 6, hi: "過年限定。整路都在討紅包。",
       body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] },
-    { id: "meme",   name: "尬彼機彼", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆歪貼紙。它說那叫個人風格。",
+    { id: "meme",   name: "歸剛欸", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆歪貼紙。它說那叫個人風格。",
       body: "#F2C230", lower: "#FFFAE6", deep: "#2A2410", glass: "#141208", light: "#FFF3C4", acc: "meme", bg: ["#3E3410", "#1A1708"] }
   ];
 
@@ -1841,11 +1861,11 @@
       evening: ["加班的人跟深夜的計程車一樣，都在等一個可以停下來的理由。", "這個時間的河堤有風，我可以送你過去。", "路燈剛亮，很適合什麼都不做地繞一圈。"]
     },
     meme: {
-      night:   ["這個時間還醒著？尊爆。", "凌晨的你，484 又在想那件事。", "睡不著就上車啊，我又不會唸你。"],
-      dawn:    ["這時間出門的人不是很努力就是很慘，你哪一種。", "天還沒亮欸，太狠了吧。", "早鳥沒有蟲，只有我。"],
-      morning: ["早安，今天也是被鬧鐘背刺的一天。", "起來了喔？我還以為你芭比Q了。", "打卡快遲到了啦，走啦走啦。"],
-      noon:    ["吃什麼？我猜又是超商。", "中午 12 點，全公司同時放棄思考。", "便當還是麵？我等你三分鐘。"],
-      after:   ["下午三點，人類效率最低點，科學認證。", "是在忙什麼，出來透氣啦。", "剛剛那個哈欠我聽到了。"],
+      night:   ["還醒著喔。蕉綠是不是。", "凌晨的你，主打一個不睡。", "睡不著就上車啦，我又不會唸你。"],
+      dawn:    ["這時間出門不是很拚就是很慘，阿災。", "天還沒亮欸，母湯。", "早鳥沒有蟲，只有我。"],
+      morning: ["早安，今天也是被鬧鐘背刺的一天。", "起來了喔？我以為你已經登出了。", "要遲到了啦，修但幾勒我先熱車。"],
+      noon:    ["吃什麼？我猜又是超商。傻眼貓咪。", "中午 12 點，全公司同時放棄思考。", "便當還是麵？賣鬧，講快一點。"],
+      after:   ["下午三點，人類效率最低點，已老實說。", "是在哈囉，出來透氣啦。", "那個哈欠我聽到了。你 CPU 燒了喔。"],
       evening: ["下班了沒？沒有的話我幫你按離職單。", "加班到現在，老闆知道嗎（他不知道）。", "走啦，鹹酥雞在呼喚你。"]
     }
   };
@@ -1892,11 +1912,11 @@
       evening: ["加班的人跟深夜的計程車一樣，都在等一個停下來的理由。", "路燈剛亮了，河堤有風。我送你過去？"]
     },
     meme: {
-      night:   ["還沒睡？尊爆。要不要出來繞一圈。"],
+      night:   ["還沒睡？蕉綠喔。要不要出來繞一圈。"],
       dawn:    ["這時間出門，你是真的很拚還是真的很慘。"],
-      morning: ["起來了沒。再躺下去就芭比Q了。"],
+      morning: ["起來了沒。再躺下去就要遲到了，母湯。"],
       noon:    ["午餐 484 又要吃超商。"],
-      after:   ["下午三點，人類效率最低點。出來透氣啦。"],
+      after:   ["下午三點，人類效率最低點。是在哈囉，出來透氣啦。"],
       evening: ["下班沒？沒有的話我幫你按離職單。", "走啦，鹹酥雞在呼喚你。"]
     }
   };
@@ -1908,7 +1928,7 @@
       sunny: ["哇哈哈！好癢！再一次！", "摸摸！我今天最棒的事！"],
       gent: ["承蒙關照。", "謝謝您。我的板金今天剛打蠟。"],
       misty: ["金屬也是會記得溫度的。", "你摸的地方，剛好是我最舊的一塊。"],
-      meme:  ["欸幹嘛啦。", "喔喔喔喔喔。", "你在摸我頭喔，484。"]
+      meme:  ["欸幹嘛啦。", "喔喔喔喔喔。", "你在摸我頭喔，是在哈囉。"]
     },
     wash: {
       warm: ["變乾淨了，謝謝你。", "我現在很好聞。"],
@@ -1961,10 +1981,10 @@
       spam: ["你今天話很多。", "我不介意。", "再一次也可以。"]
     },
     meme: {
-      top:  ["欸。", "你在幹嘛。", "喔喔喔。"],
+      top:  ["欸。", "是在哈囉。", "喔喔喔。"],
       mid:  ["484 很閒。", "戳戳戳。", "然後咧。"],
-      low:  ["那邊是保桿欸。", "會癢啦。", "停。"],
-      spam: ["夠了喔。", "我報警了。", "笑死，你真的很閒。"]
+      low:  ["那邊是保桿欸。", "會癢啦，賣鬧。", "停。歸剛欸。"],
+      spam: ["夠了喔。", "我報警了。", "笑鼠，你真的很閒。", "歸剛欸，你到底要戳幾下。"]
     }
   };
 
@@ -1987,7 +2007,7 @@
       sunny: "保時捷！好啊！那我當你的第二台！第二台也可以吧？可以吧？",
       gent:  "保時捷是好車。我只是比較清楚您慣走哪條路。",
       misty: "保時捷載得動你的人，載不動你今天的心情。",
-      meme:  "保時捷？那你 484 先看一下你的餘額。"
+      meme:  "保時捷喔。那你 484 先看一下餘額，母湯。"
     },
     other: {
       warm:  "新車很好啊。……你還是會回來坐我對吧？",
@@ -1995,7 +2015,7 @@
       sunny: "那我們去比賽！開玩笑的！我不會贏！",
       gent:  "新有新的好，舊有舊的默契。",
       misty: "新的車沒有故事。你要故事，還是要新？",
-      meme:  "新的喔。那你去坐啊。……你不要真的去。"
+      meme:  "新的喔。……好啦我破防了，你不要真的去。"
     },
     slow: {
       warm:  "今天路面濕，我開慢一點比較安全。你很急嗎？",
@@ -2011,7 +2031,7 @@
       sunny: "不要啦！！我還有三個地方沒帶你去！！",
       gent:  "我明白了。感謝這段時間的照顧。",
       misty: "刪掉之後，這些路線就只剩你記得了。",
-      meme:  "刪掉喔。好啊。……欸不是，你認真的？"
+      meme:  "刪掉喔。好啊。……欸不是，蛤？你認真的？"
     },
     thanks: {
       warm:  "不客氣。你今天也辛苦了。",
@@ -2242,7 +2262,8 @@
     camp: {},                                      // 聯名活動：{ id: { joined, base, claimed:[] } }
     coupons: [],                                   // 廣告主給的折價券
     solo: null,                                    // 今天車車自己那件事：{ d, i, shown }
-    seen: null                                     // 連續來看它幾天：{ d, n }
+    seen: null,                                    // 連續來看它幾天：{ d, n }
+    ask: null                                      // 車車自己想改的名字：{ d, n, say, answered }
   });
 
   let S = load();
@@ -2457,7 +2478,7 @@
              rush: () => `時間已緊。建議立刻出發，我改走替代道路。` },
     misty: { calm: (a, l) => `${l} 出門，剛好可以看一段天色。${a.loc} 我熟。`,
              rush: () => `現在出門你會準時，但會錯過今天的天空。要嗎？` },
-    meme:  { calm: (a, l) => `${a.loc} 啦，${a.ride} 分鐘。${l} 出門，不要again遲到。`,
+    meme:  { calm: (a, l) => `${a.loc} 啦，${a.ride} 分鐘。${l} 出門，不要又遲到。`,
              rush: () => `快遲到了欸！我引擎都熱了，你484還在找襪子。` }
   };
 
@@ -3053,6 +3074,24 @@
   }
 
   let svgUid = 0;
+  /* 越高級的車車越閃：等級到了就在旁邊灑星星，一顆一顆錯開時間眨 */
+  const STAR = "M0 -8 Q1.5 -1.5 8 0 Q1.5 1.5 0 8 Q-1.5 1.5 -8 0 Q-1.5 -1.5 0 -8 Z";
+  /* 位置全部避開車身輪廓（x 30–250、y 38–218）與後照鏡，
+     不然畫在後面的星星會被車蓋掉，只剩兩顆看得到 */
+  const SHINE_AT = [
+    [30, 56, 1.0, 0], [250, 66, .88, .55], [92, 26, .68, 1.1],
+    [192, 22, .78, 1.65], [15, 150, .6, 2.2], [265, 158, .7, .85]
+  ];
+  function svgShine(s, small) {
+    const lv = s.lv || 1;
+    if (lv < 3) return "";
+    const n = lv >= 5 ? 6 : lv >= 4 ? 4 : 3;
+    const c = lv >= 5 ? "#FFD34D" : "#FFE59A";
+    return SHINE_AT.slice(0, small ? Math.min(n, 3) : n).map(([x, y, k, d]) =>
+      `<path class="tw" d="${STAR}" fill="${c}" transform="translate(${x} ${y}) scale(${(k * (small ? .72 : 1)).toFixed(2)})"
+             style="animation-delay:${d}s"/>`).join("");
+  }
+
   function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
     /* 同一頁會同時出現十幾台車車，id 必須每個實例都不同，
@@ -3088,6 +3127,7 @@
         </defs>
 
         <ellipse cx="140" cy="236" rx="92" ry="8" fill="#16201A" opacity=".15"/>
+        ${svgShine(s, small)}
         ${svgAccBack(s)}
 
         <!-- 輪胎：本來只從車身下緣露出一條黑邊，看不出是輪子。
@@ -4001,6 +4041,75 @@
   const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
                       excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了" };
 
+  /* 車車講話一律走這裡：順便把「要改名嗎」的答覆列收掉，並重播一次彈出動畫 */
+  function say(text, keepAsk) {
+    $("bubbleTx").textContent = text;
+    if (!keepAsk) $("askRow").hidden = true;
+    const b = $("bubble");
+    b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+  }
+
+  /* ── 車車自己想改名字 ──────────────────────────────────
+     名字不是只有你能取。跑久了它會自己想一個，然後要你同意。 */
+
+  const ASK_POOL = [
+    { n: "本車最帥", say: "我剛剛照了後照鏡。我想改叫「本車最帥」，你不要有意見。" },
+    { n: "您的信用卡已扣款", say: "我想改叫「您的信用卡已扣款」。這樣跳通知的時候比較有戲。" },
+    { n: "不用等我", say: "我想改叫「不用等我」，這樣你比較不會有壓力。……但我還是會等。" },
+    { n: "隨便啦", say: "名字我想很久了。「隨便啦」。就這個。" },
+    { n: "第二個家", say: "你一天待在我這裡的時間比在客廳久。我想改叫「第二個家」。" },
+    { n: "半夜也在", say: "我想改叫「半夜也在」。這是事實陳述，不是抱怨。" },
+    { n: "不要摸我", say: "我想改叫「不要摸我」。你看到就會想起來。" },
+    { n: "油門很輕", say: "我想改叫「油門很輕」。聽起來很專業對不對。" },
+    { n: "已讀不回", say: "我想改叫「已讀不回」。這樣你就知道那是你不是我。" }
+  ];
+
+  function makeAsk() {
+    const o = [];
+    const tp = topPlace();
+    if (tp && tp.length <= 5) o.push({ n: `${tp}常客`, say: `我算過了，我去${tp}的次數最多。以後叫我「${tp}常客」好不好？` });
+    if (S.seen && S.seen.n >= 4) o.push({ n: "習慣了", say: `你連續來看我 ${S.seen.n} 天。我想改叫「習慣了」，這樣我就不用解釋。` });
+    if (S.km >= 30) o.push({ n: "跑很遠", say: `我們一起跑了 ${S.km.toFixed(0)} 公里。我想改叫「跑很遠」，可以嗎？` });
+    if (souvOwned() >= 3) o.push({ n: "收藏家", say: "我車上掛的東西比隔壁那台多。我想改叫「收藏家」。" });
+    o.push(...ASK_POOL);
+    const a = pick(o);
+    return { d: dayKey(), n: a.n, say: a.say, answered: false };
+  }
+
+  /* 一天問一次就好，而且要跑過一趟或連續來過才會開口 */
+  function askIfWants() {
+    if (!S.onboarded || S.hail) return false;
+    const eligible = S.rides >= 1 || (S.seen && S.seen.n >= 2);
+    if (!eligible) return false;
+    if (!S.ask || S.ask.d !== dayKey()) {
+      if (Math.random() > 0.45) { S.ask = { d: dayKey(), answered: true }; save(); return false; }
+      S.ask = makeAsk(); save();
+    }
+    if (S.ask.answered) return false;
+    say(S.ask.say, true);
+    $("askRow").hidden = false;
+    return true;
+  }
+
+  function answerAsk(yes) {
+    const a = S.ask;
+    S.ask.answered = true;
+    $("askRow").hidden = true;
+    if (yes) {
+      S.name = a.n; save();
+      renderHome();
+      say(pick([`成交。以後不要叫錯。`, `${a.n}。我自己取的，比較有感情。`, `好，那我就是${a.n}了。`]));
+      setEmote("smug", 5000);
+      CarView.set(skin(), moodOf());
+    } else {
+      save();
+      say(pick(["……好。那就算了。", "喔。那我繼續用原本那個。", "沒關係。我再想一個更好的。"]));
+      setEmote("cry", 4500);
+      CarView.set(skin(), moodOf());
+      $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    }
+  }
+
   /* 一天的第一句：先是連續天數的梗，再來是它自己那件事，之後才輪到一般台詞 */
   function openingLine() {
     const solo = soloToday();
@@ -4189,14 +4298,14 @@
       pinned = pinned === p.n ? null : p.n;
       renderPlaces(); renderNextStop();
       if (pinned) {
-        $("bubble").textContent = pick({
+        say(pick({
           warm: [`去${pinned}對吧，我記得路。`, `${pinned}，我先把冷氣開起來。`],
           tsun: [`又是${pinned}。你最近很常去欸，我沒有在記。`, `${pinned}？走啦。`],
           sunny: [`${pinned}！我知道那邊哪裡好停！`, `出發！${pinned}我熟！`],
           gent: [`了解，${pinned}。我已規劃最省時的路線。`, `${pinned}，預計不會塞。`],
           misty: [`${pinned}。那邊傍晚的光很好。`, `又是${pinned}。你在那裡留了不少時間。`],
           meme:  [`${pinned}喔，我熟啦。`, `又是${pinned}。你484住那邊。`]
-        }[persId()]);
+        }[persId()]));
         toast(`目的地設為「${pinned}」`);
       }
     }));
@@ -5069,7 +5178,8 @@
     $("homeMood").textContent = MOOD_TEXT[m];
     CarView.mount($("carHold"));
     CarView.set(skin(), m);
-    $("bubble").textContent = openingLine();
+    say(openingLine());
+    askIfWants();
     renderMap();
     renderBoxPin();
     renderBook();
@@ -5204,10 +5314,7 @@
     if (zone === "top") S.traits.clingy = clamp(S.traits.clingy + 0.6);
     save();
 
-    $("bubble").textContent = line;
-    $("bubble").style.animation = "none";
-    void $("bubble").offsetWidth;
-    $("bubble").style.animation = "";
+    say(line);
 
     const hold = $("carHold");
     hold.classList.remove("tapped");
@@ -5252,7 +5359,7 @@
 
     CarView.set(skin(), moodOf());
     /* 問它今天在幹嘛，它就講今天自己那件事——不用出門也有話聽 */
-    $("bubble").textContent = id === "solo" ? soloToday() : TALK_SAY[id][persId()];
+    say(id === "solo" ? soloToday() : TALK_SAY[id][persId()]);
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
@@ -5583,6 +5690,9 @@
       el.style.animation = "none"; void el.offsetWidth; el.style.animation = "swap .3s";
     };
 
+    $("askYes").addEventListener("click", () => answerAsk(true));
+    $("askNo").addEventListener("click", () => answerAsk(false));
+
     $("homeName").addEventListener("click", () => {
       $("nsName").value = S.name;
       $("nameSheet").hidden = false;
@@ -5596,7 +5706,7 @@
       S.name = n; save();
       $("nameSheet").hidden = true;
       renderHome();
-      $("bubble").textContent = pick([`${n}？好，我記住了。`, `以後叫我 ${n} 就好。`, `${n}。唸起來還行。`]);
+      say(pick([`${n}？好，我記住了。`, `以後叫我 ${n} 就好。`, `${n}。唸起來還行。`]));
     });
 
     $("onbDice").addEventListener("click", () => diceInto("onbName"));
@@ -5646,7 +5756,8 @@
     }));
 
     $("carStage").addEventListener("click", e => {
-      if (e.target.closest("#boxPin") || e.target.closest("#talkBtn")) return;
+      /* 泡泡上的答覆鈕也在車車舞台裡，點下去不能連車車一起戳到 */
+      if (e.target.closest("#boxPin") || e.target.closest("#talkBtn") || e.target.closest("#askRow")) return;
       const r = $("carStage").getBoundingClientRect();
       tapCar((e.clientY - r.top) / r.height);
     });
