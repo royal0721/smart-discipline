@@ -220,6 +220,9 @@
   .screen[hidden] { display: none; }
   @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
+  .secCount { display: flex; justify-content: flex-end; padding: 0 4px 2px; }
+  .secCount span { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--fog-dim); text-transform: uppercase; }
+
   .scTitle { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 0 4px; }
   .scTitle h2 { margin: 0; font-size: 23px; font-weight: 900; letter-spacing: -.035em; }
   .scTitle span { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--fog-dim); text-transform: uppercase; }
@@ -1248,8 +1251,8 @@
       <h1>養一台<em>會等你</em>的車。</h1>
     </div>
     <p class="lede">
-      車車住在 app 中間，站在你們一起跑過的路線圖上。它知道你今天還要去哪、幾點該出門，
-      也會在你難得有空的晚上，丟一個盲盒約會計畫給你。
+      車車住在 app 中間，站在你們跑過的路線上。它知道你今天還要去哪、幾點該出門，
+      也會在你難得有空的晚上，丟一個盲盒約會給你。
     </p>
 
     <div class="card">
@@ -1413,19 +1416,19 @@
               <span class="cbGo">→</span>
             </button>
             <div class="places" id="places"></div>
-            <div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">今天的安排</h2><span id="todayLeft"></span></div>
+            <div class="scTitle" style="margin-top:6px"><h2 style="font-size:15px">今天</h2><span id="todayLeft"></span></div>
             <div style="display:flex;flex-direction:column;gap:8px" id="todayList"></div>
           </section>
 
           <!-- 日誌 -->
           <section class="screen" id="sc-log" hidden>
-            <div class="scTitle"><h2>日誌</h2><span id="logCount">還沒出門</span></div>
+            <div class="scTitle"><h2>日誌</h2><span id="logCount"></span></div>
             <div id="logBody" style="display:flex;flex-direction:column;gap:14px"></div>
 
-            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">去過的地方</h2><span id="placeCount"></span></div>
+            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">去過</h2><span id="placeCount"></span></div>
             <div class="placeGrid" id="placeGrid"></div>
 
-            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">收起來的約會</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
+            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">收藏</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
             <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
           </section>
 
@@ -1439,19 +1442,19 @@
             </div>
 
             <div id="tsSkin">
-              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">造型</h2><span id="skinCount">0/0</span></div>
+              <div class="secCount"><span id="skinCount">0/0</span></div>
               <div class="skinGrid" id="skinGrid"></div>
               <div class="privacy" id="skinNote"></div>
             </div>
 
             <div id="tsSouv" hidden>
-              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">配件</h2><span id="souvCount">0 / 0</span></div>
+              <div class="secCount"><span id="souvCount">0 / 0</span></div>
               <div class="slotRow" id="slotRow"></div>
               <div id="souvHold" style="display:flex;flex-direction:column;gap:22px;margin-top:14px"></div>
             </div>
 
             <div id="tsCamp" hidden>
-              <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">進行中的活動</h2><span id="campCount"></span></div>
+              <div class="secCount"><span id="campCount"></span></div>
               <div id="campHold" style="display:flex;flex-direction:column;gap:12px"></div>
             </div>
 
@@ -4736,8 +4739,7 @@
   function renderLog() {
     renderBox(); renderSaved(); renderPlaces2();
     const _t = S.today;
-    $("logCount").textContent = _t.rides.length
-      ? `${_t.rides.length} 趟 · ${_t.rides.reduce((x, r) => x + r.km, 0).toFixed(1)} km` : "還沒出門";
+    $("logCount").textContent = _t.rides.length ? "" : "還沒出門";
     openLog();
   }
 
@@ -4954,7 +4956,7 @@
 
   const skinOpen = sk => sk.lv <= level() || (S.skinUnlock || []).includes(sk.id);
   function renderSkins() {
-    $("skinCount").textContent = `Styles ${SKINS.filter(skinOpen).length}/${SKINS.length}`;
+    $("skinCount").textContent = `${SKINS.filter(skinOpen).length} / ${SKINS.length}`;
     $("skinGrid").innerHTML = SKINS.map(s => {
       const lock = !skinOpen(s);
       return `
