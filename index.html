@@ -954,6 +954,13 @@
   .boxPin.spent { animation: none; opacity: .55; filter: saturate(.35); }
   .boxPin.spent .bpGlow { display: none; }
 
+  /* 司機接近的小地圖 */
+  .comeMap { border-radius: var(--rLg); overflow: hidden; box-shadow: var(--lift); background: #EDF3E7; }
+  /* 只管最外層那張圖——裡面那台車自己有 width/height，被 100% 蓋到會爆大 */
+  .comeMap > svg { display: block; width: 100%; height: auto; }
+  .comeMap .cmCar { transition: x .85s linear, y .85s linear; }
+  .comeMap .cmPin { animation: pulse 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+
   /* 行程中的進度條 */
   .rideBar { display: flex; flex-direction: column; gap: 7px; padding: 2px 2px 0; }
   .rbTrack { position: relative; height: 8px; border-radius: 4px; background: var(--slab-3); }
@@ -1418,6 +1425,9 @@
             <div><b id="hsState">幫你找車</b><span class="s" id="hsSub"></span></div>
           </div>
           <div class="hsDrv" id="hsDrv" hidden></div>
+
+          <!-- 司機在路上：真的看得到那台車一格一格靠近 -->
+          <div class="comeMap" id="comeMap" hidden></div>
 
           <!-- 行程中：走到哪了 -->
           <div class="rideBar" id="rideBar" hidden>
@@ -3746,6 +3756,64 @@
   const DRIVERS = ["陳大哥", "林小姐", "黃師傅", "吳大哥", "蔡小姐", "鄭師傅"];
   let hailCar = "std";
 
+  /* ════ 司機在路上：真的畫一台車一格一格靠近 ══════════════
+     不是進度條——是那台車（你自己那台的造型）在街廓上往你這裡開。
+     ──────────────────────────────────────────────────── */
+
+  const COME_ROUTE = [[36, 122], [96, 122], [96, 46], [190, 46], [190, 98], [262, 98]];
+  /* 車停在終點前一點，不然會整台蓋住「你在這」那根 pin */
+  const COME_STOP = 0.86;
+
+  function comeAt(t) {
+    const R = COME_ROUTE;
+    const seg = [];
+    let total = 0;
+    for (let i = 1; i < R.length; i++) {
+      const d = Math.hypot(R[i][0] - R[i - 1][0], R[i][1] - R[i - 1][1]);
+      seg.push(d); total += d;
+    }
+    let want = total * Math.max(0, Math.min(1, t)), x = R[0][0], y = R[0][1];
+    for (let i = 0; i < seg.length; i++) {
+      if (want <= seg[i]) {
+        const k = seg[i] ? want / seg[i] : 0;
+        x = R[i][0] + (R[i + 1][0] - R[i][0]) * k;
+        y = R[i][1] + (R[i + 1][1] - R[i][1]) * k;
+        return { x, y, total };
+      }
+      want -= seg[i]; x = R[i + 1][0]; y = R[i + 1][1];
+    }
+    return { x, y, total };
+  }
+
+  function comeSVG(t) {
+    const R = COME_ROUTE, at = comeAt(t * COME_STOP);
+    const d = "M" + R.map(p => p.join(" ")).join(" L ");
+    const end = R[R.length - 1];
+    const cw = 52, ch = cw * 246 / 280;
+    const car = carSVG(skin(), "normal", true, true)
+      .replace("<svg viewBox", `<svg class="cmCar" x="${(at.x - cw / 2).toFixed(1)}" y="${(at.y - ch + 6).toFixed(1)}" width="${cw}" height="${ch.toFixed(1)}" viewBox`);
+    const blocks = [];
+    for (let gx = 0; gx < 5; gx++) for (let gy = 0; gy < 3; gy++)
+      blocks.push(`<rect x="${8 + gx * 60}" y="${10 + gy * 46}" width="48" height="34" rx="6" fill="#FFFFFF" opacity=".62"/>`);
+    return `
+      <svg viewBox="0 0 300 150" role="img" aria-label="司機位置">
+        <rect width="300" height="150" fill="#E7EFE0"/>
+        ${blocks.join("")}
+        <path d="${d}" stroke="#C9D8C0" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${d}" stroke="#5CB947" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="${at.total.toFixed(1)}" stroke-dashoffset="${(at.total * (1 - Math.max(0, Math.min(1, t)) * COME_STOP)).toFixed(1)}"
+              style="transition:stroke-dashoffset .85s linear"/>
+        <g class="cmPin">
+          <path d="M${end[0]} ${end[1] + 4} C${end[0] - 13} ${end[1] - 12} ${end[0] - 11} ${end[1] - 30} ${end[0]} ${end[1] - 30}
+                   C${end[0] + 11} ${end[1] - 30} ${end[0] + 13} ${end[1] - 12} ${end[0]} ${end[1] + 4} Z" fill="#E4577B"/>
+          <circle cx="${end[0]}" cy="${end[1] - 20}" r="5" fill="#FFFFFF"/>
+        </g>
+        <text x="${end[0]}" y="${end[1] + 20}" text-anchor="middle" font-family="var(--sans)"
+              font-size="10" font-weight="700" fill="#5A6470">你在這</text>
+        ${car}
+      </svg>`;
+  }
+
   const placeOf = name => {
     const P = PERSONAS[persona];
     return P.places.find(x => x.n === name)
@@ -3825,13 +3893,22 @@
     const riding = st === "riding";
     $("hsSpin").className = "hsSpin" + (matching ? "" : " done");
     $("hsSpin").textContent = matching ? "" : "✓";
-    $("hsState").textContent = matching ? "幫你找車" : riding ? "行程中" : "司機在路上了";
+    $("hsState").textContent = matching ? "幫你找車" : riding ? "行程中"
+      : live.eta <= 0 ? "車到了，在門口" : "司機在路上了";
     const extra = addOnOf(live.addOn);
     $("hsSub").textContent = `${live.from} → ${live.to} · NT$ ${live.fare + (extra ? extra.price : 0)}${extra ? "（含加購）" : " 預估"}`;
     $("hsDrv").hidden = matching;
     if (!matching) {
       $("hsDrv").innerHTML = `<span class="who"><span class="pl">${live.plate}</span><span class="dv">${live.driver} · ${live.carName}</span></span>
-        <span class="et">${riding ? `剩 ${live.left} 分` : `${live.eta} 分`}</span>`;
+        <span class="et">${riding ? `剩 ${live.left} 分` : live.eta > 0 ? `${live.eta} 分` : "已抵達"}</span>`;
+    }
+
+    /* 司機在路上：把那台車畫在地圖上，一格一格靠近 */
+    const coming = st === "onway";
+    $("comeMap").hidden = !coming;
+    if (coming) {
+      const t = live.eta0 ? 1 - live.eta / live.eta0 : 0;
+      $("comeMap").innerHTML = comeSVG(t);
     }
 
     $("rideBar").hidden = !riding;
@@ -3900,7 +3977,8 @@
       S.hail.state = "onway";
       S.hail.plate = `${pick(["ABC", "AXK", "RBT", "MJY", "KLD"])}-${1000 + Math.floor(Math.random() * 8999)}`;
       S.hail.driver = pick(DRIVERS);
-      S.hail.eta = 2 + Math.floor(Math.random() * 6);
+      S.hail.eta = 3 + Math.floor(Math.random() * 5);
+      S.hail.eta0 = S.hail.eta;
       S.hail.say = pick({
         warm:  [`${S.hail.eta} 分鐘後到，慢慢來不用跑。`, `車來了，你先把東西收一收。`],
         tsun:  [`到了。你最好已經在門口了。`, `${S.hail.eta} 分鐘。我不會等太久喔。`],
@@ -3911,13 +3989,38 @@
       }[persId()]);
       save(); renderHail(); renderLive();
       toast(`${S.hail.plate} 接單了`);
+      startComing();
     }, 1700);
+  }
+
+  /* 司機接近：每 1.1 秒少一分鐘，地圖上的車跟著往前開 */
+  let comeTimer = null;
+  function startComing() {
+    clearInterval(comeTimer);
+    comeTimer = setInterval(() => {
+      if (!S.hail || S.hail.state !== "onway") { clearInterval(comeTimer); return; }
+      S.hail.eta = Math.max(0, S.hail.eta - 1);
+      if (S.hail.eta === 0) {
+        clearInterval(comeTimer);
+        S.hail.say = pick({
+          warm:  ["我到了，就在你正前面。", "到了。不急，慢慢上來。"],
+          tsun:  ["到了。你人呢。", "我在門口。三分鐘喔。"],
+          sunny: ["到啦！我在門口揮手！", "看到我沒！這台就是我！"],
+          gent:  ["已抵達上車地點，恭候。", "車輛就位，請上車。"],
+          misty: ["我停在你看得到的地方了。", "到了。這個時間的路口很安靜。"],
+          meme:  ["到了啦，你484在化妝。", "門口。我等你三分鐘，超過我唱歌。"]
+        }[persId()]);
+        toast(`${S.hail.plate} 到了`);
+      }
+      save(); renderHail(); renderLive();
+    }, 1100);
   }
 
   /* 上車：進到行程中，每 900ms 走一格 */
   let rideTimer = null;
   function boardHail() {
     if (!S.hail || S.hail.state !== "onway") return;
+    clearInterval(comeTimer);
     const h = S.hail;
     h.state = "riding";
     h.left = h.min + (addOnOf(h.addOn) ? addOnOf(h.addOn).km * 2 : 0);
@@ -3944,7 +4047,7 @@
   }
 
   function cancelHail() {
-    clearInterval(rideTimer);
+    clearInterval(rideTimer); clearInterval(comeTimer);
     const wasRiding = S.hail && S.hail.state === "riding";
     S.hail = null; save(); renderHail(); renderLive();
     toast(wasRiding ? "中途下車，這趟不算" : "行程已取消");
@@ -3953,7 +4056,7 @@
   function finishHail() {
     const h = S.hail;
     if (!h) return;
-    clearInterval(rideTimer);
+    clearInterval(rideTimer); clearInterval(comeTimer);
     S.hail = null; save();
     closeHail();
     const place = placeOf(h.to);
@@ -3998,8 +4101,9 @@
     const h = S.hail;
     bar.hidden = !h;
     if (!h) return;
-    $("lvTitle").textContent = h.state === "match" ? "幫你找車中" : `${h.plate} 在路上`;
-    $("lvSub").textContent = `${h.from} → ${h.to}${h.state === "onway" ? ` · ${h.eta} 分` : ""} · 可以取消`;
+    $("lvTitle").textContent = h.state === "match" ? "幫你找車中"
+      : h.state === "onway" && h.eta <= 0 ? `${h.plate} 到門口了` : `${h.plate} 在路上`;
+    $("lvSub").textContent = `${h.from} → ${h.to}${h.state === "onway" ? (h.eta > 0 ? ` · ${h.eta} 分` : " · 已抵達") : ""} · 可以取消`;
   }
 
   /* ════ 聯名／廣告活動 ══════════════════════════════════
@@ -4883,6 +4987,8 @@
 
   function boot() {
     migrateEquip();
+    /* 重新整理時行程還在路上，倒數要接回去 */
+    if (S.hail && S.hail.state === "onway" && S.hail.eta > 0) startComing();
     renderClock(); renderTabs(); go("home"); renderConsole(); renderGeo(); renderHail();
 
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
@@ -4996,7 +5102,7 @@
     $("btnReset").addEventListener("click", () => {
       S = defaults(); save();
       onbStep = 1; shakeCount = 0;
-      clearInterval(rideTimer);
+      clearInterval(rideTimer); clearInterval(comeTimer);
       closeHail(); closeBoxSheet();
       $("onbName").value = "小綠";
       $("onb").hidden = false;
