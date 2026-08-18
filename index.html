@@ -712,22 +712,24 @@
     background: #F7F4EC; border-left: 3px solid var(--rr1); border-radius: 0 13px 13px 0;
     padding: 12px 13px; font-size: 13.5px; line-height: 1.6; color: var(--chalk);
   }
-  .rvFoot { display: flex; align-items: center; gap: 10px; }
-  .rvFare { font-family: var(--mono); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .rvFoot { display: flex; align-items: baseline; gap: 8px; }
+  .rvFare { font-family: var(--mono); font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .rvFare small { font-size: 10px; color: var(--fog-dim); letter-spacing: .1em; }
+  /* 車資與按鈕拆成兩行——擠在同一行時，窄機上「先收起來」會斷成兩段 */
+  .rvActs { display: flex; gap: 9px; }
+  .rvActs button { flex: 1; white-space: nowrap; }
   .rvGo {
-    margin-left: auto; padding: 10px 16px; border: none; border-radius: 13px; cursor: pointer;
+    padding: 12px 14px; border: none; border-radius: 13px; cursor: pointer;
     background: linear-gradient(180deg, #59BC44, #3F9430); color: #FFFFFF;
-    font-family: var(--sans); font-size: 13.5px; font-weight: 800;
+    font-family: var(--sans); font-size: 14px; font-weight: 800;
   }
   .rvGo:hover { filter: brightness(1.08); }
   .rvSkip {
-    margin-left: auto; padding: 10px 14px; border: none; border-radius: 13px; cursor: pointer;
-    background: rgba(255,255,255,.14); color: rgba(255,255,255,.82);
-    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    padding: 12px 14px; border: none; border-radius: 13px; cursor: pointer;
+    background: var(--slab-2); color: var(--fog);
+    font-family: var(--sans); font-size: 13.5px; font-weight: 700;
   }
-  .rvSkip:hover { background: rgba(255,255,255,.22); }
-  .rvGo { margin-left: 0; }
+  .rvSkip:hover { background: var(--slab-3); }
   .rvNote { font-size: 11px; color: var(--fog-dim); text-align: center; margin-top: 2px; }
   .conf { position: absolute; width: 9px; height: 14px; border-radius: 2px; pointer-events: none; z-index: 3; }
 
@@ -904,10 +906,9 @@
   .slotCell[aria-pressed="true"] { box-shadow: var(--lift), 0 0 0 2px var(--grass) inset; }
   .slotCell .ic { width: 40px; height: 40px; display: grid; place-items: center; background: var(--slab-2); border-radius: 13px; }
   .slotCell .ic .mt { color: var(--fog-dim); font-size: 17px; }
-  .slotCell .nm { font-size: 12.5px; font-weight: 700; color: var(--chalk); }
+  .slotCell .nm { font-size: 12.5px; font-weight: 700; color: var(--chalk); display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .slotCell .nm i { font-style: normal; font-size: 9.5px; font-weight: 500; color: var(--fog-dim); }
   .slotCell .cur { font-size: 10.5px; color: var(--fog); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .slotHint { font-size: 11.5px; line-height: 1.6; color: var(--fog); padding: 0 4px 2px; }
-
   .wheelGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .wheelCell {
     position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -919,19 +920,6 @@
   .wheelCell .nm { font-size: 11.5px; color: var(--chalk); }
   .wheelCell.lock { opacity: .5; cursor: default; box-shadow: none; background: var(--slab-2); }
   .wheelCell .lv { font-family: var(--mono); font-size: 9.5px; color: var(--fog); }
-
-  /* 配件的第二層切換：一次只看一種地點，七組疊在一起會擠爆 */
-  .typeRow { display: flex; gap: 7px; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: none; }
-  .typeRow::-webkit-scrollbar { display: none; }
-  .typeRow button {
-    flex: none; display: flex; align-items: baseline; gap: 5px; cursor: pointer;
-    padding: 7px 12px; border: none; border-radius: 20px; background: var(--slab-2);
-    color: var(--fog); font-family: var(--sans); font-size: 12.5px; transition: .16s;
-  }
-  .typeRow button b { font-weight: 600; }
-  .typeRow button i { font-style: normal; font-family: var(--mono); font-size: 10px; opacity: .8; }
-  .typeRow button[aria-pressed="true"] { background: var(--chalk); color: #FFFFFF; }
-  .typeRow button:hover { transform: translateY(-1px); }
 
   /* 盲盒入口 */
   .boxSheet { max-height: 82%; }
@@ -1376,9 +1364,7 @@
             <div id="tsSouv" hidden>
               <div class="scTitle" style="padding:0 4px"><h2 style="font-size:15px">配件</h2><span id="souvCount">0 / 0</span></div>
               <div class="slotRow" id="slotRow"></div>
-              <div class="slotHint" id="slotHint"></div>
-              <div class="typeRow" id="typeRow"></div>
-              <div id="souvHold" style="display:flex;flex-direction:column;gap:18px"></div>
+              <div id="souvHold" style="display:flex;flex-direction:column;gap:22px;margin-top:14px"></div>
             </div>
 
             <div id="tsCamp" hidden>
@@ -2567,11 +2553,24 @@
     return out;
   }
 
+  /* 嘴形：畫成兩頭收尖的月牙填色，不是等粗的一條線。
+     等粗的弧線兩端會突然斷掉，看起來像貼上去的貼紙 */
+  function mouthPath(cx, y, w, d, t) {
+    const x1 = (cx - w / 2).toFixed(1), x2 = (cx + w / 2).toFixed(1), k = w * 0.32;
+    const c1 = (cx - w / 2 + k).toFixed(1), c2 = (cx + w / 2 - k).toFixed(1);
+    return `M${x1} ${y} C${c1} ${y + d} ${c2} ${y + d} ${x2} ${y} C${c2} ${y + d - t} ${c1} ${y + d - t} ${x1} ${y} Z`;
+  }
+
   function svgMouth(mood) {
-    if (mood === "grumpy") return `<path d="M114 192 q26 -13 52 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-    if (mood === "sleepy") return `<ellipse cx="140" cy="188" rx="8" ry="6.5" fill="#1B2430"/>`;
-    if (mood === "happy")  return `<path d="M108 184 q32 22 64 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-    return `<path d="M114 185 q26 15 52 0" stroke="#1B2430" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    const ink = "#1B2430";
+    if (mood === "grumpy")
+      return `<path d="${mouthPath(140, 197, 54, -19, -7)}" fill="${ink}"/>`;
+    if (mood === "sleepy")
+      return `<ellipse cx="140" cy="188" rx="9" ry="6" fill="${ink}"/>
+        <ellipse cx="140" cy="185.5" rx="5" ry="2" fill="#3A4552"/>`;
+    if (mood === "happy")
+      return `<path d="${mouthPath(140, 180, 68, 30, 10)}" fill="${ink}"/>`;
+    return `<path d="${mouthPath(140, 183, 58, 23, 8)}" fill="${ink}"/>`;
   }
 
   let svgUid = 0;
@@ -3895,7 +3894,7 @@
     $("hsSpin").textContent = matching ? "" : "✓";
     $("hsState").textContent = matching ? "幫你找車" : riding ? "行程中"
       : live.eta <= 0 ? "車到了，在門口" : "司機在路上了";
-    const extra = addOnOf(live.addOn);
+    const extra = riding ? addOnOf(live.addOn) : null;
     $("hsSub").textContent = `${live.from} → ${live.to} · NT$ ${live.fare + (extra ? extra.price : 0)}${extra ? "（含加購）" : " 預估"}`;
     $("hsDrv").hidden = matching;
     if (!matching) {
@@ -3922,8 +3921,9 @@
     }
 
     $("hsSay").textContent = live.say;
-    $("addOn").hidden = matching;
-    if (!matching) renderAddOn();
+    /* 加購要等上車之後才問。車還沒到就先問要不要加錢，順序是反的 */
+    $("addOn").hidden = !riding;
+    if (riding) renderAddOn();
     $("hsBoard").hidden = st !== "onway";
     $("hsDone").hidden = !riding;
     $("hsCancel").textContent = riding ? "中途下車" : "取消行程";
@@ -3939,7 +3939,7 @@
 
   function renderAddOn() {
     const cur = S.hail && S.hail.addOn;
-    $("aoNote").textContent = cur ? "已加購，抵達時給你" : "加購都送虛寶";
+    $("aoNote").textContent = cur ? "已加購，抵達時給你" : "抵達時送虛寶";
     $("aoList").innerHTML = ADDONS.map(a => `
       <button class="aoItem" data-ao="${a.id}" aria-pressed="${cur === a.id}">
         <span class="ic">${souvGlyph(SOUV.find(x => x.id === (a.id === "tip" ? "campcup" : "sunset")))}</span>
@@ -3947,9 +3947,17 @@
         <span class="pr">+${a.price}</span>
       </button>`).join("");
     $("aoList").querySelectorAll("[data-ao]").forEach(b => b.addEventListener("click", () => {
-      if (!S.hail) return;
-      const on = S.hail.addOn === b.dataset.ao;
-      S.hail.addOn = on ? null : b.dataset.ao;
+      const h = S.hail;
+      if (!h) return;
+      const on = h.addOn === b.dataset.ao;
+      /* 行程中改加購，剩下的時間要跟著加減，不然繞路不用錢 */
+      const before = addOnOf(h.addOn), after = on ? null : addOnOf(b.dataset.ao);
+      if (h.state === "riding") {
+        const d = ((after ? after.km : 0) - (before ? before.km : 0)) * 2;
+        h.left = Math.max(1, h.left + d);
+        h.min = Math.max(h.left, h.min + d);
+      }
+      h.addOn = on ? null : b.dataset.ao;
       save(); renderHail(); renderLive();
       toast(on ? "取消加購" : `加購「${addOnOf(b.dataset.ao).n}」`);
     }));
@@ -4023,8 +4031,7 @@
     clearInterval(comeTimer);
     const h = S.hail;
     h.state = "riding";
-    h.left = h.min + (addOnOf(h.addOn) ? addOnOf(h.addOn).km * 2 : 0);
-    h.min = h.left;
+    h.left = h.min;
     h.say = pick({
       warm:  [`坐好了嗎？我開慢一點。`, `路上有點顛，你抓著。`],
       tsun:  [`安全帶。我不會講第二次。`, `坐好。我開車的時候不聊天。`],
@@ -4256,7 +4263,7 @@
         <div class="rvHead"><span class="ic${uniq.length > 1 ? " two" : ""}">${art}</span>
           <span><h3 style="font-size:${names.length > 16 ? 15 : names.length > 10 ? 17 : 20}px">${names || title}</h3>
             <span class="sl">${sub}</span></span></div>
-        <div class="rvFoot"><button class="rvGo" id="rvOk" style="flex:1;text-align:center">收下</button></div>
+        <div class="rvActs"><button class="rvGo" id="rvOk">收下</button></div>
       </div>`;
     confetti(22, [R.c1, R.c2, "#FFFFFF"]);
     $("rvOk").addEventListener("click", closeReveal);
@@ -4355,7 +4362,7 @@
     }[persId()]);
   }
 
-  let souvSlot = "hang", souvType = null;
+  let souvSlot = "hang";
 
   function renderSouv() {
     const eq = S.equip || {};
@@ -4368,19 +4375,15 @@
       const art = sl.id === "wheel" ? wheelGlyph(cur) : cur ? souvGlyph(cur) : `<span class="mt">＋</span>`;
       return `<button class="slotCell" data-sl="${sl.id}" aria-pressed="${on}">
           <span class="ic">${art}</span>
-          <span class="nm">${sl.n}</span>
+          <span class="nm">${sl.n}<i>${sl.where}</i></span>
           <span class="cur">${cur ? cur.n : "空的"}</span>
         </button>`;
     }).join("");
     $("slotRow").querySelectorAll("[data-sl]").forEach(b => b.addEventListener("click", () => {
-      souvSlot = b.dataset.sl; souvType = null; renderSouv();
+      souvSlot = b.dataset.sl; renderSouv(); $("screens").scrollTop = 0;
     }));
 
-    const def = slotDef(souvSlot);
-    $("slotHint").textContent = `${def.where}・${def.hint}`;
-
     if (souvSlot === "wheel") {
-      $("typeRow").hidden = true;
       const lv = level();
       $("souvHold").innerHTML = `<div class="souvGroup">
         <div class="souvHead"><span class="n">整組更換</span><span class="c">${WHEELS.filter(w => w.lv <= lv).length} / ${WHEELS.length}</span></div>
@@ -4401,28 +4404,16 @@
       return;
     }
 
-    /* 只列得進這一格的東西，裝不上的不要出現在這裡；
-       地點再切一層，一次只看一組——七組疊起來會擠爆 */
+    /* 只列得進這一格的東西，裝不上的不要出現在這裡。
+       同一格底下照地點分組往下排——這裡就是一路捲下去，不再橫向切 */
     const fits = SOUV.filter(x => fitSlot(x) === souvSlot);
-    const groups = Object.entries(PLACE_TYPE)
-      .map(([k, v]) => ({ k, v, pool: fits.filter(x => x.t === k) }))
-      .filter(g => g.pool.length);
-    if (!groups.some(g => g.k === souvType))
-      souvType = (groups.find(g => g.pool.some(x => S.souv[x.id])) || groups[0]).k;
-
-    $("typeRow").hidden = false;
-    $("typeRow").innerHTML = groups.map(g => {
-      const own = g.pool.filter(x => S.souv[x.id]).length;
-      return `<button data-ty="${g.k}" aria-pressed="${g.k === souvType}">
-        <b>${g.v.name}</b><i>${own}/${g.pool.length}</i></button>`;
-    }).join("");
-    $("typeRow").querySelectorAll("[data-ty]").forEach(b => b.addEventListener("click", () => {
-      souvType = b.dataset.ty; renderSouv();
-    }));
-
-    const g = groups.find(x => x.k === souvType) || groups[0];
-    $("souvHold").innerHTML = !g ? "" : `<div class="souvGroup">
-        <div class="souvGrid">${g.pool.map(x => {
+    $("souvHold").innerHTML = Object.entries(PLACE_TYPE).map(([k, v]) => {
+      const pool = fits.filter(x => x.t === k);
+      if (!pool.length) return "";
+      const own = pool.filter(x => S.souv[x.id]).length;
+      return `<div class="souvGroup">
+        <div class="souvHead"><span class="n">${v.name}</span><span class="c">${own} / ${pool.length}</span></div>
+        <div class="souvGrid">${pool.map(x => {
           const n = S.souv[x.id] || 0;
           if (!n) return `<div class="souvCell lock"><span class="dot2"></span></div>`;
           return `<button class="souvCell" data-sv="${x.id}" aria-pressed="${eq[souvSlot] === x.id}" title="${x.n}">
@@ -4430,8 +4421,9 @@
                     ${n > 1 ? `<span class="qty">×${n}</span>` : ""}
                   </button>`;
         }).join("")}</div>
-        <div class="souvName">${g.pool.filter(x => S.souv[x.id]).map(x => x.n).join("・") || "這一組還沒有東西"}</div>
+        <div class="souvName">${pool.filter(x => S.souv[x.id]).map(x => x.n).join("・") || "—"}</div>
       </div>`;
+    }).join("");
     $("souvHold").querySelectorAll("[data-sv]").forEach(b => b.addEventListener("click", () => {
       const id = b.dataset.sv;
       const off = S.equip[souvSlot] === id;
@@ -4858,8 +4850,8 @@
           <div class="stop"><span class="dot end"></span><span class="ln">${p.to}</span><span class="tm">抵達</span></div>
         </div>
         <div class="rvSay">${p.say[persId()] || p.say.warm}</div>
-        <div class="rvFoot">
-          <span class="rvFare">NT$ ${p.fare} <small>預估</small></span>
+        <div class="rvFoot"><span class="rvFare">NT$ ${p.fare} <small>預估</small></span></div>
+        <div class="rvActs">
           <button class="rvSkip" id="rvSkip">這次不要</button>
           <button class="rvGo" id="rvGo">先收起來</button>
         </div>
