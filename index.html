@@ -246,7 +246,9 @@
     display: flex; align-items: center; gap: 8px; padding: 14px 15px;
     background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,0));
   }
-  .stageTop .nm { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+  .stageTop .nm { border: none; background: none; padding: 0; cursor: pointer; color: var(--chalk);
+    font-family: var(--sans); font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+  .stageTop .nm:hover { color: var(--grass); }
 
   .routeChip {
     position: absolute; z-index: 5; left: 14px; bottom: 14px;
@@ -593,6 +595,11 @@
     background: #17211B; color: #F4F7F1; padding: 13px 15px; border-radius: 16px 16px 16px 6px;
     font-size: 13.5px; line-height: 1.55;
   }
+  /* 它自己那一件事：不是對你講的，所以不做成對話框，做成日記邊上的一筆 */
+  .lpSolo { display: flex; gap: 9px; align-items: flex-start; padding: 0 2px; }
+  .lpSolo i { flex: none; width: 5px; height: 5px; margin-top: 7px; border-radius: 50%; background: var(--lime-d); opacity: .7; }
+  .lpSolo q { quotes: none; font-size: 12.5px; line-height: 1.6; color: var(--fog); }
+
   .logItem { display: flex; gap: 11px; align-items: flex-start; font-size: 12.5px; color: var(--fog); line-height: 1.5; }
   .logItem .tm { flex: none; width: 42px; font-family: var(--mono); font-size: 11.5px; color: var(--lime-d); }
   .logSec { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--fog-dim); }
@@ -806,6 +813,27 @@
   }
   .talkBtn:hover { transform: translateY(-2px); }
   .talkBtn:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+
+  .nameSheet {
+    position: absolute; inset: 0; z-index: 78; display: grid; place-items: center; padding: 0 26px;
+    background: rgba(24, 32, 27, .34); backdrop-filter: blur(4px);
+  }
+  .nameSheet[hidden] { display: none; }
+  .nsCard {
+    width: 100%; display: flex; flex-direction: column; gap: 13px;
+    background: var(--paper); border-radius: 24px; padding: 20px 18px 16px; box-shadow: 0 26px 50px -18px rgba(20,28,22,.5);
+  }
+  .nsCard input[type="text"] {
+    width: 100%; padding: 13px 15px; border-radius: 16px; background: #FFFFFF;
+    border: 2px solid var(--hair); color: var(--chalk); font-family: var(--sans); font-size: 16px;
+  }
+  .nsCard input[type="text"]:focus { outline: none; border-color: var(--grass); }
+  .nsBtns { display: flex; gap: 9px; }
+  .nsBtns button {
+    flex: 1; border: none; cursor: pointer; padding: 12px 0; border-radius: 20px;
+    background: var(--slab-2); color: var(--fog); font-family: var(--sans); font-size: 13.5px; font-weight: 700;
+  }
+  .nsBtns .ok { background: var(--grass); color: #FFFFFF; }
 
   .talkSheet {
     position: absolute; inset: auto 0 0 0; z-index: 79; max-height: 68%;
@@ -1212,6 +1240,14 @@
     border: 2px solid var(--hair); color: var(--chalk); font-family: var(--sans); font-size: 16px;
   }
   .onb input[type="text"]:focus { outline: none; border-color: var(--grass); }
+  .nameRow { display: flex; gap: 9px; }
+  .nameRow input[type="text"] { flex: 1; min-width: 0; }
+  .dice {
+    flex: none; width: 56px; border-radius: 18px; border: 2px solid var(--hair); background: #FFFFFF;
+    cursor: pointer; font-size: 22px; line-height: 1; transition: .16s;
+  }
+  .dice:hover { border-color: var(--grass); transform: rotate(-12deg); }
+  .dice:active { transform: rotate(14deg) scale(.94); }
   .onbList { display: flex; flex-direction: column; gap: 10px; max-height: 430px; overflow-y: auto; scrollbar-width: none; }
   .onbList > * { flex: none; }
   .onbList::-webkit-scrollbar { display: none; }
@@ -1368,7 +1404,7 @@
               <div class="scene" id="scene"></div>
               <div class="veil"></div>
               <div class="stageTop">
-                <span class="nm" id="homeName">小綠</span>
+                <button class="nm" id="homeName">小綠</button>
                 <span class="chip" id="homeLv">Lv.1</span>
                 <span class="chip" id="homeMood">心情不錯</span>
               </div>
@@ -1546,6 +1582,20 @@
       </div>
 
       <!-- 跟車車說話 -->
+      <div class="nameSheet" id="nameSheet" hidden>
+        <div class="nsCard">
+          <span class="sheetTitle">換個名字</span>
+          <div class="nameRow">
+            <input type="text" id="nsName" maxlength="8" placeholder="想不到就按骰子">
+            <button class="dice" id="nsDice" aria-label="隨機取名">🎲</button>
+          </div>
+          <div class="nsBtns">
+            <button id="nsCancel">算了</button>
+            <button class="ok" id="nsOk">就這個</button>
+          </div>
+        </div>
+      </div>
+
       <div class="talkSheet" id="talkSheet" hidden>
         <div class="tkBar">
           <span class="sheetTitle">說點什麼</span>
@@ -1573,7 +1623,10 @@
           <p id="onbSub" style="margin-top:10px">它會這樣被叫。</p>
         </div>
         <div id="onbStep1">
-          <input type="text" id="onbName" maxlength="8" placeholder="例如：小黃、阿肥、老婆車" value="小綠">
+          <div class="nameRow">
+            <input type="text" id="onbName" maxlength="8" placeholder="想不到就按骰子" value="小綠">
+            <button class="dice" id="onbDice" aria-label="隨機取名">🎲</button>
+          </div>
         </div>
         <div class="onbList" id="onbStep2" hidden></div>
         <button class="btn primary" id="onbNext" style="justify-content:center">下一步</button>
@@ -1618,30 +1671,39 @@
   ];
 
   /* 造型：body = 上半車身，lower = 下半車身，deep = 頂燈與車牌 */
+  /* 取名池：認真的名字誰都想得到，這裡只放會被截圖的那種 */
+  const NAME_POOL = [
+    "小綠", "阿肥", "董ㄟ", "老闆", "肥宅快樂車", "路隊長", "省道之光", "早八救星",
+    "秒到王", "我的第二個家", "不塞車就好", "很有事", "陳先生", "歐洲貴族",
+    "小黃瓜", "跑山王", "代步的", "免費的司機", "綠色恐怖", "會自己回家",
+    "後座很涼", "停車位小偷", "台北巷戰王", "半夜也在"
+  ];
+  const rollName = () => NAME_POOL[Math.floor(Math.random() * NAME_POOL.length)];
+
   const SKINS = [
-    { id: "yoxi",   name: "yoxi 原色", tag: "基本", pers: "warm", lv: 1, hi: "最正統的一台。",
+    { id: "yoxi",   name: "綠得很故意", tag: "基本", pers: "warm", lv: 1, hi: "原廠色。它說這叫做不用修圖。",
       body: "#5CB947", lower: "#FBFDFA", deep: "#49A337", glass: "#1F2A33", light: "#EAF7FF", acc: "none", bg: ["#20402A", "#121C19"] },
-    { id: "mint",   name: "薄荷牛奶", tag: "基本", pers: "misty", lv: 1, hi: "夏天限定。",
+    { id: "mint",   name: "冷氣開太強", tag: "基本", pers: "misty", lv: 1, hi: "整台涼到會起雞皮疙瘩。它不承認。",
       body: "#7FD9C2", lower: "#FFFDF5", deep: "#55BCA2", glass: "#17262E", light: "#FFF6E0", acc: "none", bg: ["#1F3B37", "#141E26"] },
-    { id: "ink",    name: "深夜墨", tag: "基本", pers: "gent", lv: 1, hi: "夜行版，頭燈是螢光黃綠。",
+    { id: "ink",    name: "凌晨三點的我", tag: "基本", pers: "gent", lv: 1, hi: "黑到只剩兩顆螢光黃綠的燈。",
       body: "#2F3D50", lower: "#44566E", deep: "#C9F23A", glass: "#0D141A", light: "#C9F23A", acc: "none", bg: ["#222A3B", "#12161F"] },
-    { id: "cat",    name: "貓咪車車", tag: "人氣", pers: "tsun", lv: 2, hi: "戴上耳朵之後它會多一個喵。",
+    { id: "cat",    name: "喵的我是車", tag: "人氣", pers: "tsun", lv: 2, hi: "戴上耳朵之後講話會多一個喵。它很堅持那是雜訊。",
       body: "#E3C39C", lower: "#FCF5EA", deep: "#C39A6E", glass: "#1B2733", light: "#FFE3B8", acc: "cat", bg: ["#3B3324", "#181B24"] },
-    { id: "racer",  name: "熱血賽道", tag: "季節", pers: "sunny", lv: 3, hi: "掛上尾翼，它會報你的平均時速。",
+    { id: "racer",  name: "時速三十", tag: "季節", pers: "sunny", lv: 3, hi: "尾翼很大，速度沒有。它說那叫下壓力。",
       body: "#E8412F", lower: "#F5F5F5", deep: "#B92B1C", glass: "#141C24", light: "#FFF0C4", acc: "racer", bg: ["#45201C", "#171820"] },
-    { id: "neon",   name: "霓虹夜跑", tag: "季節", pers: "misty", lv: 4, hi: "車底會亮。",
+    { id: "neon",   name: "整台在發光", tag: "季節", pers: "misty", lv: 4, hi: "車底會亮。停在暗巷像自帶佈景。",
       body: "#232B47", lower: "#333D5F", deep: "#7DD3FC", glass: "#0A0E18", light: "#7DD3FC", acc: "neon", bg: ["#1B2B4A", "#0E1320"] },
-    { id: "sakura", name: "櫻花限定", tag: "聯名", pers: "warm", lv: 5, hi: "花瓣會一直掉。它說那是頭皮屑。",
+    { id: "sakura", name: "櫻花掉不停", tag: "聯名", pers: "warm", lv: 5, hi: "花瓣一直掉。它堅持那不是頭皮屑。",
       body: "#F7A8C0", lower: "#FFF3F7", deep: "#E07A9C", glass: "#25202A", light: "#FFF0F5", acc: "sakura", bg: ["#42283A", "#1A1620"] },
-    { id: "deer",   name: "聖誕小鹿", tag: "聯名", pers: "sunny", lv: 6, hi: "十二月限定。鼻子會亮。",
+    { id: "deer",   name: "鹿角是租的", tag: "聯名", pers: "sunny", lv: 6, hi: "十二月限定。鼻子會亮，一月就要還。",
       body: "#C0503F", lower: "#F8F0E5", deep: "#9C3A2E", glass: "#1A222B", light: "#FFE6A8", acc: "deer", bg: ["#3E2320", "#161A1E"] },
-    { id: "boba",   name: "珍珠奶茶", tag: "人氣", pers: "sunny", lv: 2, hi: "車頂那根吸管是真的。",
+    { id: "boba",   name: "半糖去冰", tag: "人氣", pers: "sunny", lv: 2, hi: "車頂那根吸管是真的。不要問它插到哪。",
       body: "#C89A6B", lower: "#F7EBDB", deep: "#8A5F3C", glass: "#241A14", light: "#FFE9C6", acc: "boba", bg: ["#3A2A1E", "#1A1512"] },
-    { id: "fox",    name: "九尾狐", tag: "聯名", pers: "tsun", lv: 5, hi: "尾巴它自己數過。說九條是上限。",
+    { id: "fox",    name: "自稱九尾狐", tag: "聯名", pers: "tsun", lv: 5, hi: "尾巴它自己數過。數到九就不數了。",
       body: "#F0803C", lower: "#FFF4E8", deep: "#C4571F", glass: "#231A18", light: "#FFE0B0", acc: "fox", bg: ["#48291A", "#1C1512"] },
-    { id: "dragon", name: "祥龍出巡", tag: "聯名", pers: "gent", lv: 6, hi: "過年限定。整路都在說吉祥話。",
+    { id: "dragon", name: "恭喜發財龍", tag: "聯名", pers: "gent", lv: 6, hi: "過年限定。整路都在討紅包。",
       body: "#D8332F", lower: "#FFF6E2", deep: "#A31F1C", glass: "#20181A", light: "#FFD766", acc: "dragon", bg: ["#42191A", "#181113"] },
-    { id: "meme",   name: "迷因黃", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆貼紙。它說那叫個人風格。",
+    { id: "meme",   name: "尬彼機彼", tag: "人氣", pers: "meme", lv: 2, hi: "貼了一堆歪貼紙。它說那叫個人風格。",
       body: "#F2C230", lower: "#FFFAE6", deep: "#2A2410", glass: "#141208", light: "#FFF3C4", acc: "meme", bg: ["#3E3410", "#1A1708"] }
   ];
 
@@ -1664,6 +1726,75 @@
     noon:    ["#EAF3F6", "#F0F6F8"],
     after:   ["#F6F0E5", "#FAF5EC"],
     evening: ["#F1E8F0", "#F6EFF5"]
+  };
+
+  /* ════ 車車自己的一天 ══════════════════════════════════
+     這台車不用你叫它才活著。你沒出門的日子它也在外面發生事情，
+     一天一件，隔天才換——沒有要載你，就是想講給你聽。 */
+
+  const SOLO = [
+    "早上有隻鴿子停在我後照鏡上，我們對看了四十分鐘。牠先走的。",
+    "隔壁那台特斯拉充電充超久。我停旁邊看，牠好像有點尷尬。",
+    "今天被鳥大便到。我當作是天上掉下來的禮物，勉強。",
+    "有人在我車身的灰上用手指寫「洗我」。我知道那是在講我。",
+    "一個小朋友對我揮手。我沒有手，只好閃兩下大燈。他被我嚇到了。",
+    "我研究了一下，發現我的雨刷可以打三拍子。",
+    "地下室完全沒訊號，我今天什麼都沒滑，整個人變得非常平靜。",
+    "隔壁機車的警報器響了兩小時。我全程都在旁邊，沒有人相信我是無辜的。",
+    "今天下雨，我洗了一次免費的澡。省下三百五。",
+    "有隻貓睡在我引擎蓋上。我沒有發動。整個下午都沒有。",
+    "你後座掉了一根吸管。我知道它在哪。我不說。",
+    "今天有人來問路，問的是我旁邊那台。我沒有生氣。我只是記著。",
+    "輪胎有點癢。我懷疑是心理作用。",
+    "在停車場遇到同款不同色的車，我們互相假裝沒看到。",
+    "我試著自己倒車入庫，一次就進去了。沒有人看到。所以我又出來重停一次。",
+    "有人在我車窗上塞名片，是通水管的。我沒有水管。",
+    "今天太陽把我曬到有點燙，摸起來像剛出爐的。",
+    "我在想，如果我有手，我第一件事會是把你的安全帶拉好。",
+    "停在你家樓下第三個小時，我開始數樓上有幾盞燈亮著。你那盞最晚關。",
+    "今天冷氣自己吹了一下。我怕熱，這件事你不要跟別人講。",
+    "有隻狗對我叫了很久。我選擇相信那是打招呼。",
+    "我今天很認真地待機。待機也是一種工作。",
+    "導航跟我說「前方路況良好」。我說我知道，我又不是第一天上路。它就沒回我了。",
+    "我把音響開一點點，放了你上禮拜聽三遍那首。車上沒有人，只有我。",
+    "有人開門撞到我。我把車牌記起來了。我不會怎樣，我只是記著。",
+    "一片落葉停在我雨刷上，我整天不敢動，怕牠掉下去。",
+    "我發現後照鏡可以看到自己。我看了一下下。還行。",
+    "隔壁計程車問我是不是跑車行的。我說我有正職，我在等一個人。",
+    "今天什麼都沒發生。這句話我想了三個小時才決定要跟你講。",
+    "我學會一個新技能：在原地待著。已經滿等了。",
+    "路過的阿伯拍了拍我的引擎蓋說「這台不錯」。我一整天都在回味。",
+    "今天有人把購物車停在我旁邊就走了。我看著它，它看著我，我們都沒有動。"
+  ];
+
+  const dayKey = d => { const x = d || new Date(); return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`; };
+
+  /* 一天只換一件事，重新整理也不會換掉——那才像它真的過了一天 */
+  function soloToday() {
+    const k = dayKey();
+    if (!S.solo || S.solo.d !== k) {
+      let i = Math.floor(Math.random() * SOLO.length);
+      if (S.solo && i === S.solo.i) i = (i + 1) % SOLO.length;
+      S.solo = { d: k, i, shown: false };
+      save();
+    }
+    return SOLO[S.solo.i];
+  }
+
+  /* 連續來看它幾天。不用搭車，開起來就算 */
+  function bumpStreak() {
+    const k = dayKey();
+    if (S.seen && S.seen.d === k) return;
+    const yk = dayKey(new Date(Date.now() - 864e5));
+    S.seen = { d: k, n: S.seen && S.seen.d === yk ? S.seen.n + 1 : 1 };
+    save();
+  }
+
+  const STREAK_LINE = {
+    3:  n => `連續 ${n} 天了。我沒有在數，是儀表板自己跳的。`,
+    7:  n => `第 ${n} 天。你再這樣下去，我會習慣。`,
+    14: n => `${n} 天。我已經習慣了，這是你的錯。`,
+    30: n => `${n} 天。我決定把今天記在里程表旁邊那格。`
   };
 
   /* ════ 台詞 ════════════════════════════════════════════ */
@@ -1839,6 +1970,7 @@
 
   /* 跟車車說話：有些話它會生氣。這是「有個性」最直接的證明 */
   const TALK = [
+    { id: "solo",    q: "你今天在幹嘛", d: 4 },
     { id: "porsche", q: "我想坐保時捷", d: -18, sulk: true },
     { id: "other",   q: "我朋友的車比較新", d: -16, sulk: true },
     { id: "slow",    q: "你今天有點慢", d: -12, sulk: true },
@@ -2108,7 +2240,9 @@
     saved: [],                                     // 收起來的盲盒約會，還沒約車
     hail: null,                                    // 進行中的行程，隨時可以取消
     camp: {},                                      // 聯名活動：{ id: { joined, base, claimed:[] } }
-    coupons: []                                    // 廣告主給的折價券
+    coupons: [],                                   // 廣告主給的折價券
+    solo: null,                                    // 今天車車自己那件事：{ d, i, shown }
+    seen: null                                     // 連續來看它幾天：{ d, n }
   });
 
   let S = load();
@@ -2175,14 +2309,14 @@
       tiers: [
         { need: 2, type: "souv", id: "campleaf", label: "小獸吊牌" },
         { need: 5, type: "souv", id: "campball", label: "十週年紀念球" },
-        { need: 9, type: "skin", id: "fox",       label: "九尾狐造型" }
+        { need: 9, type: "skin", id: "fox",       label: "自稱九尾狐造型" }
       ] },
     { id: "arcade", kind: "聯名", partner: "霓虹街機", title: "夜跑季",
       from: "8/10", to: "8/31", c1: "#7A5CF0", c2: "#3E2C90",
       blurb: "晚上十點後的每一趟都算兩次。",
       tiers: [
         { need: 3, type: "souv", id: "camptoken", label: "代幣吊飾" },
-        { need: 7, type: "skin", id: "neon",      label: "霓虹夜跑造型" }
+        { need: 7, type: "skin", id: "neon",      label: "整台在發光造型" }
       ] },
     { id: "coffee", kind: "廣告", partner: "日安咖啡", title: "上車就有折價券",
       from: "8/05", to: "8/25", c1: "#C08552", c2: "#7A5230",
@@ -3867,8 +4001,20 @@
   const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
                       excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了" };
 
+  /* 一天的第一句：先是連續天數的梗，再來是它自己那件事，之後才輪到一般台詞 */
+  function openingLine() {
+    const solo = soloToday();
+    if (!S.solo.shown) {
+      S.solo.shown = true; save();
+      const n = S.seen ? S.seen.n : 1;
+      return STREAK_LINE[n] ? STREAK_LINE[n](n) : solo;
+    }
+    return line();
+  }
+
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
+    if (Math.random() < 0.16) return soloToday();
     if (top && Math.random() < 0.3) return pick(HABIT_LINES[top.h.id]);
     if (S.intimacy >= 400 && Math.random() < 0.22)
       return pick(["……欸。沒事，就是想確認你還在。", "我今天沒載別人。真的。", "你不用回我，我看到你打開就好。"]);
@@ -4741,7 +4887,8 @@
   function renderLog() {
     renderBox(); renderSaved(); renderPlaces2();
     const _t = S.today;
-    $("logCount").textContent = _t.rides.length ? "" : "還沒出門";
+    const st = S.seen ? S.seen.n : 1;
+    $("logCount").textContent = st >= 2 ? `連續 ${st} 天` : (_t.rides.length ? "" : "還沒出門");
     openLog();
   }
 
@@ -4765,6 +4912,7 @@
           <b>${newSouv.length}</b> 件新收藏
         </div>
         <div class="logSay">${t.events.length ? t.events[t.events.length - 1] : dayIdleLine()}</div>
+        <div class="lpSolo"><i></i><q>${soloToday()}</q></div>
         ${t.rides.length ? `<div class="logTl">${t.rides.map((r, i) => `
           <div class="tlRow">
             <span class="t">${r.at}</span>
@@ -4921,7 +5069,7 @@
     $("homeMood").textContent = MOOD_TEXT[m];
     CarView.mount($("carHold"));
     CarView.set(skin(), m);
-    $("bubble").textContent = line();
+    $("bubble").textContent = openingLine();
     renderMap();
     renderBoxPin();
     renderBook();
@@ -5103,7 +5251,8 @@
     setTimeout(() => hold.classList.remove("mad", "tapped"), 560);
 
     CarView.set(skin(), moodOf());
-    $("bubble").textContent = TALK_SAY[id][persId()];
+    /* 問它今天在幹嘛，它就講今天自己那件事——不用出門也有話聽 */
+    $("bubble").textContent = id === "solo" ? soloToday() : TALK_SAY[id][persId()];
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
@@ -5418,6 +5567,7 @@
 
   function boot() {
     migrateEquip();
+    bumpStreak();
     /* 重新整理時行程還在路上，倒數要接回去 */
     if (S.hail && S.hail.state === "onway" && S.hail.eta > 0) startComing();
     renderClock(); renderTabs(); go("home"); renderConsole(); renderGeo(); renderHail();
@@ -5425,9 +5575,35 @@
     if (!S.onboarded) { $("onb").hidden = false; renderOnb(); }
     else { $("onb").hidden = true; recordVisit(hour); renderConsole(); }
 
+    const diceInto = id => {
+      const el = $(id);
+      let n = rollName();
+      while (n === el.value) n = rollName();
+      el.value = n;
+      el.style.animation = "none"; void el.offsetWidth; el.style.animation = "swap .3s";
+    };
+
+    $("homeName").addEventListener("click", () => {
+      $("nsName").value = S.name;
+      $("nameSheet").hidden = false;
+      $("nsName").focus();
+    });
+    $("nsDice").addEventListener("click", () => diceInto("nsName"));
+    $("nsCancel").addEventListener("click", () => { $("nameSheet").hidden = true; });
+    $("nsOk").addEventListener("click", () => {
+      const n = $("nsName").value.trim();
+      if (!n) return;
+      S.name = n; save();
+      $("nameSheet").hidden = true;
+      renderHome();
+      $("bubble").textContent = pick([`${n}？好，我記住了。`, `以後叫我 ${n} 就好。`, `${n}。唸起來還行。`]);
+    });
+
+    $("onbDice").addEventListener("click", () => diceInto("onbName"));
+
     $("onbNext").addEventListener("click", () => {
       if (onbStep === 1) {
-        S.name = ($("onbName").value.trim() || "小綠");
+        S.name = ($("onbName").value.trim() || rollName());
         onbStep = 2; renderOnb();
       } else {
         S.onboarded = true; save();
@@ -5537,7 +5713,7 @@
       onbStep = 1; shakeCount = 0;
       clearInterval(rideTimer); clearInterval(comeTimer);
       closeHail(); closeBoxSheet();
-      $("onbName").value = "小綠";
+      $("onbName").value = rollName();
       $("onb").hidden = false;
       $("reveal").hidden = true;
       $("talkSheet").hidden = true;
