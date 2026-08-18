@@ -2771,6 +2771,119 @@
     return `M${x1} ${y} C${c1} ${y + d} ${c2} ${y + d} ${x2} ${y} C${c2} ${y + d - t} ${c1} ${y + d - t} ${x1} ${y} Z`;
   }
 
+  /* ════ 表情 ════════════════════════════════════════════
+     車車沒有畫上去的五官——燈碗就是燈碗。情緒靠三件事表達：
+     燈碗裡的光形、保桿上的嘴、車身周圍的漫符（汗滴、青筋、音符）。
+     這是可愛吉祥物通用的表情語彙，不是把眼睛畫在擋風玻璃上。
+     ──────────────────────────────────────────────────── */
+
+  /* 燈碗裡的光。cx 是燈心，flip 鏡射右邊那顆，deep 是這台車自己的深色。
+     闔眼那幾種一定要用深色——白色畫在白燈面上等於沒畫 */
+  function lampFx(mood, cx, flip, deep) {
+    const f = flip ? -1 : 1;
+    const X = d => cx + d * f;
+    const glint = `<path d="M${X(-10.5)} 160 A12 12 0 0 1 ${X(2)} 154.5" stroke="#FFFFFF" stroke-opacity=".9"
+              stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    switch (mood) {
+      /* 星星光——期待、剛開到好東西 */
+      case "excited": return `
+        <path d="M${cx} 153 L${X(4.4)} 161.6 L${X(13.5)} 166 L${X(4.4)} 170.4 L${cx} 179
+                 L${X(-4.4)} 170.4 L${X(-13.5)} 166 L${X(-4.4)} 161.6 Z" fill="#FFFFFF"/>
+        <path d="M${cx} 158 L${X(2.2)} 163.8 L${X(8)} 166 L${X(2.2)} 168.2 L${cx} 174
+                 L${X(-2.2)} 168.2 L${X(-8)} 166 L${X(-2.2)} 163.8 Z" fill="#EAF7FF"/>`;
+      /* ^ ^ 眯眼——得意 */
+      case "smug": return `
+        <path d="M${cx - 12.5} 172 L${cx} 158 L${cx + 12.5} 172"
+              stroke="${deep}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      /* 眼皮垂下來——想睡 */
+      case "sleepy": return `
+        <path d="M${cx - 15.5} 166 A15.5 15.5 0 0 1 ${cx + 15.5} 166 Z" fill="${deep}" opacity=".9"/>
+        <path d="M${cx - 14} 167 C${cx - 8} 172 ${cx + 8} 172 ${cx + 14} 167"
+              stroke="${deep}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+      /* 含著水光——哭 */
+      case "cry": return `
+        <ellipse cx="${cx}" cy="169" rx="12" ry="9" fill="#8FD3F5" opacity=".9"/>
+        <circle cx="${X(-4)}" cy="161" r="4.8" fill="#FFFFFF"/>
+        <circle cx="${X(5.5)}" cy="166" r="2.8" fill="#FFFFFF" opacity=".9"/>`;
+      /* 愛心光 */
+      case "love": return `
+        <path d="M${cx} 174 C${cx - 11} 167 ${cx - 9} 157 ${cx - 3.5} 158.4
+                 C${cx - 1} 159 ${cx} 161 ${cx} 162 C${cx} 161 ${cx + 1} 159 ${cx + 3.5} 158.4
+                 C${cx + 9} 157 ${cx + 11} 167 ${cx} 174 Z" fill="#FF7E9D"/>`;
+      /* 縮成一點——嚇到 */
+      case "shock": return `
+        <circle cx="${cx}" cy="167" r="4.6" fill="${deep}"/>
+        <circle cx="${X(-5)}" cy="159" r="4" fill="#FFFFFF"/>`;
+      /* 眉壓下來——鬧脾氣 */
+      case "grumpy": return `
+        <path d="M${X(-14)} 152 L${X(14)} 152 L${X(14)} 171 L${X(-14)} 159 Z" fill="${deep}"/>
+        <circle cx="${X(-6)}" cy="176" r="3.2" fill="#FFFFFF" opacity=".55"/>`;
+      default: return glint;
+    }
+  }
+
+  /* 臉頰的紅暈：畫在白色下半身，不是畫在車窗上 */
+  function svgBlush(mood) {
+    if (!["happy", "excited", "love", "cry", "smug"].includes(mood)) return "";
+    const o = mood === "smug" ? ".4" : ".62";
+    return `<g fill="#FF9BB0" opacity="${o}">
+        <ellipse cx="46" cy="182" rx="12" ry="6.5"/><ellipse cx="234" cy="182" rx="12" ry="6.5"/>
+      </g>`;
+  }
+
+  /* 車身周圍的漫符——這是最能表達情緒又不用畫臉的一層 */
+  function svgEmote(mood) {
+    switch (mood) {
+      case "excited": return `
+        <g fill="#FFD54A">
+          <path d="M252 60 L256 72 L268 76 L256 80 L252 92 L248 80 L236 76 L248 72 Z"/>
+          <path d="M30 96 L32.6 103.6 L40 106 L32.6 108.4 L30 116 L27.4 108.4 L20 106 L27.4 103.6 Z" opacity=".85"/>
+          <path d="M262 116 L263.8 121 L269 123 L263.8 125 L262 130 L260.2 125 L255 123 L260.2 121 Z" opacity=".7"/>
+        </g>`;
+      case "happy": return `
+        <g fill="#FFD54A" opacity=".9">
+          <path d="M254 74 L256.4 80.6 L263 83 L256.4 85.4 L254 92 L251.6 85.4 L245 83 L251.6 80.6 Z"/>
+          <path d="M26 104 L27.8 109 L33 111 L27.8 113 L26 118 L24.2 113 L19 111 L24.2 109 Z" opacity=".8"/>
+        </g>`;
+      case "love": return `
+        <g fill="#FF7E9D">
+          <path d="M250 88 C242 82 243 72 248 73.2 C250 73.6 250 75 250 76 C250 75 250 73.6 252 73.2
+                   C257 72 258 82 250 88 Z"/>
+          <path d="M32 112 C26 107.5 26.8 100 30.5 100.9 C32 101.2 32 102.2 32 103 C32 102.2 32 101.2 33.5 100.9
+                   C37.2 100 38 107.5 32 112 Z" opacity=".8"/>
+        </g>`;
+      case "grumpy": return `
+        <g stroke="#E4573F" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M238 50 l10 8 l-10 8"/><path d="M264 50 l-10 8 l10 8"/>
+        </g>`;
+      case "cry": return `
+        <g fill="#7FC8F0">
+          <path d="M70 186 C66 194 64 202 68 206 C72 210 78 206 78 200 C78 195 74 190 70 186 Z" opacity=".9"/>
+          <path d="M210 188 C206 195 204 202 208 206 C212 210 218 206 218 200 C218 195 214 192 210 188 Z" opacity=".9"/>
+          <circle cx="60" cy="216" r="3.4" opacity=".7"/><circle cx="222" cy="218" r="3" opacity=".6"/>
+        </g>`;
+      case "sleepy": return `
+        <g fill="#8E9AA6" font-family="ui-monospace, monospace" font-weight="700" opacity=".8">
+          <text x="240" y="72" font-size="15">z</text>
+          <text x="256" y="56" font-size="11">z</text>
+          <text x="266" y="44" font-size="8">z</text>
+        </g>`;
+      case "smug": return `
+        <g fill="#5CB947" opacity=".85">
+          <path d="M250 74 v-18 l12 -3 v18" />
+          <ellipse cx="248" cy="74" rx="4" ry="3"/><ellipse cx="260" cy="71" rx="4" ry="3"/>
+        </g>`;
+      case "shock": return `
+        <g fill="#F2A63B">
+          <rect x="248" y="52" width="6" height="18" rx="3"/><circle cx="251" cy="76" r="3.4"/>
+        </g>
+        <g stroke="#9AA7B4" stroke-width="3" stroke-linecap="round" opacity=".6">
+          <path d="M28 92 l-8 -8 M34 82 l-4 -10 M22 104 l-11 -3"/>
+        </g>`;
+      default: return "";
+    }
+  }
+
   function svgMouth(mood) {
     const ink = "#1B2430";
     if (mood === "grumpy")
@@ -2780,6 +2893,19 @@
         <ellipse cx="140" cy="185.5" rx="5" ry="2" fill="#3A4552"/>`;
     if (mood === "happy")
       return `<path d="${mouthPath(140, 180, 68, 30, 10)}" fill="${ink}"/>`;
+    if (mood === "excited")
+      return `<path d="M112 180 C120 204 160 204 168 180 C158 188 122 188 112 180 Z" fill="${ink}"/>
+        <path d="M126 192 C132 199 148 199 154 192 C148 200 132 200 126 192 Z" fill="#E8657E"/>`;
+    if (mood === "love")
+      return `<path d="${mouthPath(140, 181, 52, 20, 7)}" fill="${ink}"/>`;
+    if (mood === "smug")
+      return `<path d="M114 186 C124 197 146 194 166 182 C152 197 124 200 114 186 Z" fill="${ink}"/>`;
+    if (mood === "shock")
+      return `<ellipse cx="140" cy="188" rx="11" ry="13" fill="${ink}"/>
+        <ellipse cx="140" cy="183" rx="5.5" ry="3" fill="#3A4552"/>`;
+    if (mood === "cry")
+      return `<path d="M116 192 q9 -10 18 0 q9 10 18 0" stroke="${ink}" stroke-width="4.6"
+              fill="none" stroke-linecap="round"/>`;
     return `<path d="${mouthPath(140, 183, 58, 23, 8)}" fill="${ink}"/>`;
   }
 
@@ -2865,10 +2991,11 @@
         <circle cx="204" cy="166" r="21" fill="${s.deep}"/>
         <circle cx="76" cy="166" r="15.5" fill="${s.light}"/>
         <circle cx="204" cy="166" r="15.5" fill="${s.light}"/>
-        <path d="M65.5 160 A12 12 0 0 1 78 154.5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M193.5 160 A12 12 0 0 1 206 154.5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="4" fill="none" stroke-linecap="round"/>
+        ${small ? `<path d="M65.5 160 A12 12 0 0 1 78 154.5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M193.5 160 A12 12 0 0 1 206 154.5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="4" fill="none" stroke-linecap="round"/>`
+          : lampFx(mood, 76, false, s.deep) + lampFx(mood, 204, true, s.deep)}
 
-        ${small ? "" : svgMouth(mood)}
+        ${small ? "" : svgBlush(mood) + svgMouth(mood) + svgEmote(mood)}
 
         <rect x="110" y="196" width="60" height="22" rx="7" fill="${s.deep}"/>
         <text x="140" y="212" text-anchor="middle" font-family="ui-monospace, monospace"
@@ -3681,7 +3808,21 @@
 
   let sulkUntil = 0, sulkTimer = 0;
 
+  /* 事件表情：開到東西會閃亮、被中途丟包會哭，維持幾秒才退回原本的心情 */
+  let emoteUntil = 0, emoteKind = "";
+  function setEmote(kind, ms) {
+    emoteKind = kind; emoteUntil = Date.now() + (ms || 6000);
+    CarView.set(skin(), moodOf());
+    if (currentTab === "home") { $("homeMood").textContent = MOOD_TEXT[moodOf()] || MOOD_TEXT.normal; }
+    clearTimeout(setEmote._t);
+    setEmote._t = setTimeout(() => {
+      CarView.set(skin(), moodOf());
+      if (currentTab === "home") $("homeMood").textContent = MOOD_TEXT[moodOf()] || MOOD_TEXT.normal;
+    }, (ms || 6000) + 60);
+  }
+
   function moodOf() {
+    if (Date.now() < emoteUntil) return emoteKind;
     if (Date.now() < sulkUntil) return "grumpy";
     if (S.energy < 30) return "sleepy";
     if (S.mood < 35) return "grumpy";
@@ -3691,7 +3832,8 @@
     if (sl === "dawn" || sl === "night") return "sleepy";
     return "normal";
   }
-  const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你" };
+  const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
+                      excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了" };
 
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
@@ -4236,6 +4378,7 @@
           meme:  ["到了啦，你484在化妝。", "門口。我等你三分鐘，超過我唱歌。"]
         }[persId()]);
         toast(`${S.hail.plate} 到了`);
+        setEmote("smug", 5000);
       }
       save(); renderHail(); renderLive();
     }, 1100);
@@ -4274,6 +4417,7 @@
     clearInterval(rideTimer); clearInterval(comeTimer);
     const wasRiding = S.hail && S.hail.state === "riding";
     S.hail = null; save(); renderHail(); renderLive();
+    setEmote(wasRiding ? "cry" : "shock", 6000);
     toast(wasRiding ? "中途下車，這趟不算" : "行程已取消");
   }
 
@@ -4287,6 +4431,7 @@
     const ad = addOnOf(h.addOn);
     if (ad && ad.km) place.km = +(place.km + ad.km).toFixed(1);
     doRide(place);
+    setEmote("happy", 5000);
     /* 加購的虛寶：一定給，不看機率 */
     if (ad) {
       const got = [];
@@ -4486,6 +4631,7 @@
         <div class="rvActs"><button class="rvGo" id="rvOk">收下</button></div>
       </div>`;
     confetti(22, [R.c1, R.c2, "#FFFFFF"]);
+    setEmote("excited", 6000);
     $("rvOk").addEventListener("click", closeReveal);
   }
 
@@ -4915,6 +5061,10 @@
     if (t.d < 0) { S.traits.sassy = clamp(S.traits.sassy + 2); sulkUntil = Date.now() + 14000; }
     else S.traits.romantic = clamp(S.traits.romantic + 1);
     save();
+    /* 誇它就得意、太過分就哭給你看 */
+    if (t.d >= 8) setEmote("love", 6000);
+    else if (t.d > 0) setEmote("smug", 5000);
+    else if (t.d <= -20) setEmote("cry", 7000);
 
     const hold = $("carHold");
     hold.classList.remove("mad", "tapped");
@@ -5116,6 +5266,7 @@
         </div>
       </div>`;
     confetti(p.r === "SSR" ? 46 : p.r === "SR" ? 30 : 16, [R.c1, R.c2, "#FFFFFF"]);
+    setEmote("excited", p.r === "SSR" || p.r === "SR" ? 9000 : 6000);
     if (p.r === "SSR" || p.r === "SR") toast(`${p.r}！${p.title}`);
     /* 開出來的約會不會自己變成預約——只是收進日誌，要不要去是之後的事 */
     $("rvGo").addEventListener("click", () => {
@@ -5366,6 +5517,9 @@
     });
 
   }
+
+  /* 視覺測試用的小掛勾：截圖腳本要能把九種表情一次叫出來看 */
+  window.__yoxi = { mood: m => CarView.set(skin(), m), skin: id => { S.skin = id; save(); CarView.set(skin(), moodOf()); } };
 
   boot();
 })();
