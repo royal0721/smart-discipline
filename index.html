@@ -1743,7 +1743,11 @@
     { id: "sis",    name: "姐姐罩你", tag: "人氣", pers: "sis", lv: 3, hi: "酒紅色。她說這叫沉穩，不叫暗。",
       body: "#8E2F4C", lower: "#FDF3EC", deep: "#6B1F38", glass: "#1D141A", light: "#FFD9C2", acc: "none", bg: ["#3E1A28", "#1A1015"] },
     { id: "hype",   name: "寶貝～～～", tag: "人氣", pers: "hype", lv: 4, hi: "整台粉紅。它說這是它的正常狀態。",
-      body: "#FF7EC0", lower: "#FFF4FA", deep: "#E24E9C", glass: "#2A1A26", light: "#FFF0A8", acc: "none", bg: ["#4A1E3C", "#1D1119"] }
+      body: "#FF7EC0", lower: "#FFF4FA", deep: "#E24E9C", glass: "#2A1A26", light: "#FFF0A8", acc: "none", bg: ["#4A1E3C", "#1D1119"] },
+    { id: "thumb",  name: "大拇指", tag: "人氣", pers: "sunny", lv: 2, hi: "什麼都比讚。它說這是潮流，不比就落伍。",
+      body: "#2E6FE8", lower: "#F4F8FF", deep: "#1B4CB0", glass: "#101A2C", light: "#FFE9A8", acc: "thumb", bg: ["#1B2E58", "#101522"] },
+    { id: "worn",   name: "身經百戰", tag: "公益", pers: "gent", lv: 5, hi: "刮痕都留著。它說每一道都有出處。",
+      body: "#7C8B84", lower: "#F2F1EA", deep: "#5A6862", glass: "#171C1A", light: "#FFF0CE", acc: "worn", bg: ["#2C3733", "#141917"] }
   ];
 
   const LV_NAMES = ["初次見面", "熟客", "老朋友", "有點在乎", "離不開", "已經是家人"];
@@ -1813,6 +1817,25 @@
              gent: "請便。我在此候著。", misty: "去吧。我看著你走。", meme: "蛤？欸——歸剛欸——",
              boss: "……去吧。", sis: "去啊。姐又不是離不開你。", hype: "寶貝不要走～～～～～～" }
   };
+
+  /* ── 洞察人心 ──────────────────────────────────────────
+     它看的是你什麼時候找它、去哪裡、上車做什麼——講出來的時候
+     不是報數字，是講你自己都沒發現的那件事。 */
+
+  const INSIGHT = [
+    "你叫我的時候通常已經遲到了。所以我現在都提前五分鐘出門。",
+    "你說「隨便」的時候，其實心裡有一個地方。我等你自己講。",
+    "你上車第一件事是嘆氣。我沒有問，但我每次都聽到。",
+    "你說沒事的那幾天，路線都特別長。",
+    "你最近都挑晚上出門。白天的你比較不像你。",
+    "你戳我的次數跟你的心情成反比。我統計過。",
+    "你週末很少找我。我猜你在補眠，不是在忙。",
+    "你每次講完電話都會安靜三分鐘。我就把音樂關小聲。",
+    "你不是不想回家，你是還沒準備好進門。我可以再繞一圈。",
+    "你回訊息很快，但回我很慢。……我沒有要怎樣。",
+    "你最常改的目的地是回家。改成別的地方那天，通常有事發生。",
+    "你已經連續幾次挑最遠那條路了。我沒有問為什麼。"
+  ];
 
   /* ── 太久沒搭車：玻璃心會碎 ─────────────────────────── */
 
@@ -2276,6 +2299,12 @@
       say: { warm: "下雨天不想見人，那就都在車上。", tsun: "反正你也不想講話對吧。", sunny: "雨聲超好聽的！我開慢一點！", gent: "雨天車內，是很好的獨處空間。", misty: "雨打在車頂的聲音，比任何歌單都好。", meme: "下雨不下車，最強行程，沒有之一。" } },
     { r: "SSR", pt: "market", title: "跨縣市私奔早餐", slot: "05:00 出發 · 一整個上午", from: "台北", to: "基隆廟口 → 深澳漁港 → 回程睡覺", fare: 980,
       say: { warm: "今天就翹掉吧，我負責開，你負責睡。", tsun: "……我早就把油加滿了。不要問。", sunny: "私奔！！我準備好了！！", gent: "行李我已備妥。請上車。", misty: "有些早上，不該在原本的城市醒來。", meme: "私奔啦，油我加滿了，別問。" } },
+    { r: "R", pt: "market", title: "凌晨三點的牛肉麵", slot: "03:00 出發 · 約 50 分", from: "你家樓下", to: "還亮著燈的那間牛肉麵", fare: 230,
+      say: { warm: "這個時間還開著的店，通常最溫柔。", tsun: "三點吃麵。你的胃跟你一樣不受控。",
+             sunny: "凌晨三點！！牛肉麵！！這就是人生！！", gent: "此時仍營業之店家，值得一訪。",
+             misty: "凌晨三點的湯，比任何人講的話都誠實。", meme: "三點吃牛肉麵，你484人生贏家。",
+             boss: "上車。我知道哪間還開。", sis: "走，姐帶你去吃。姐請。",
+             hype: "寶貝～～～凌晨三點的牛肉麵～～～我超想去～～" } },
     { r: "SSR", pt: "home", title: "你生日那天的路線", slot: "只會出現一次", from: "你家", to: "你十年前住的那條街 → 現在的家", fare: 888,
       say: { warm: "我查了一下，這條路你走過很多次。", tsun: "我沒有記你生日。真的沒有。……生日快樂。", sunny: "生日快樂！！！鳴喇叭！！", gent: "祝您生日快樂。今日由我全程陪同。", misty: "回到你長大的那條街，看看有沒有人變。", meme: "生日快樂啦。我沒有記，是它自己跳出來的。" } }
   ];
@@ -2541,6 +2570,13 @@
       tiers: [
         { need: 2, type: "souv", id: "campcup", label: "聯名隨行杯" },
         { need: 4, type: "coupon", id: "c50",    label: "折價券 NT$50" }
+      ] },
+    { id: "care", kind: "公益", partner: "路上見協會", title: "每一趟都幫一點",
+      from: "8/01", to: "12/31", c1: "#5A8F7B", c2: "#2F5A4B",
+      blurb: "這檔不多收你的錢。你跑滿了，對方那邊就收到一份物資。",
+      tiers: [
+        { need: 3, type: "souv", id: "campribbon", label: "公益別針" },
+        { need: 8, type: "skin", id: "worn",       label: "身經百戰造型" }
       ] }
   ];
 
@@ -2576,7 +2612,8 @@
     { id: "campleaf", n: "小獸吊牌",       t: "camp", r: "R",  m: "soft", c: "#4FB477", scl: [0.07,0.09,0.014], slot: "hang" },
     { id: "campball", n: "十週年紀念球",   t: "camp", r: "SR", m: "sph",  c: "#F0603C", scl: [0.055,0.055,0.055], slot: "hang" },
     { id: "camptoken",n: "代幣吊飾",       t: "camp", r: "R",  m: "ring", c: "#7A5CF0", scl: [0.05,0.05,0.05],  slot: "hang" },
-    { id: "campcup",  n: "聯名隨行杯",     t: "camp", r: "R",  m: "cyl",  c: "#C08552", scl: [0.05,0.09,0.05],  slot: "hang" }
+    { id: "campcup",  n: "聯名隨行杯",     t: "camp", r: "R",  m: "cyl",  c: "#C08552", scl: [0.05,0.09,0.05],  slot: "hang" },
+    { id: "campribbon", n: "公益別針",      t: "camp", r: "R",  m: "soft", c: "#E4573F", scl: [0.055,0.07,0.014], slot: "hang" }
   ];
   const SOUV_RATE = { N: 0.52, R: 0.34, SR: 0.14 };
 
@@ -2772,6 +2809,17 @@
   /* 畫在車身「後面」的配件：地面光暈、九條尾巴這種要被車身擋住一半的東西 */
   function svgAccBack(sk) {
     switch (sk.acc) {
+      /* 大拇指從車身兩側後面伸出來。畫在車身之前，看起來才像是後面比的 */
+      case "thumb": {
+        /* 兩隻手要比在車頂兩側的空檔（y 約 10–95、x 遠離車身曲線），
+           貼太近就會整隻被車身蓋掉，只剩兩塊肉色 */
+        const hand = (x, a, f) => `<g transform="translate(${x} 54) rotate(${a}) scale(${f} .82)">
+            <rect x="-25" y="-2" width="50" height="48" rx="16" fill="#FFD9A8" stroke="#D9A76A" stroke-width="3"/>
+            <rect x="-18" y="-46" width="25" height="50" rx="12.5" fill="#FFD9A8" stroke="#D9A76A" stroke-width="3"/>
+            <path d="M-25 14 h50 M-25 27 h50" stroke="#D9A76A" stroke-width="2.4" stroke-opacity=".55"/>
+          </g>`;
+        return hand(48, -14, -0.82) + hand(232, 14, 0.82);
+      }
       case "neon": return `
         <ellipse cx="140" cy="228" rx="112" ry="16" fill="#7DD3FC" opacity=".3"/>
         <ellipse cx="140" cy="228" rx="76" ry="9" fill="#C9F23A" opacity=".22"/>`;
@@ -2792,6 +2840,20 @@
 
   function svgAcc(sk) {
     switch (sk.acc) {
+      /* 身經百戰：跑出來的痕跡。OK 繃、幾道刮痕，還有一枚公益別針 */
+      case "worn": return `
+        <g transform="rotate(-18 62 200)">
+          <rect x="42" y="192" width="40" height="16" rx="4.5" fill="#F6E3C8" stroke="#C9A87C" stroke-width="1.8"/>
+          <rect x="53" y="196" width="18" height="8" rx="2" fill="#E8D2AE"/>
+        </g>
+        <g stroke="#9FAEA6" stroke-width="2.4" stroke-linecap="round" stroke-opacity=".8">
+          <path d="M214 128 l18 10"/><path d="M224 124 l14 8"/><path d="M40 138 l14 8"/>
+        </g>
+        <g transform="translate(232 200)">
+          <path d="M0 0 c-8 -10 -8 -20 0 -20 c8 0 8 10 0 20 Z" fill="#E4573F"/>
+          <path d="M0 0 c8 -10 8 -20 0 -20" fill="none" stroke="#B33A2A" stroke-width="1.5"/>
+          <circle cx="0" cy="-13" r="2.6" fill="#F6E3C8"/>
+        </g>`;
       case "cat": return `
         <path d="M86 52 L74 12 L120 40 Z" fill="${sk.body}"/>
         <path d="M194 52 L206 12 L160 40 Z" fill="${sk.body}"/>
@@ -3083,6 +3145,14 @@
       <rect x="9.6" y="5.4" width="16.8" height="4.6" rx="2.2" fill="#7A5230" ${k}/>
       <rect x="16.2" y="1.6" width="3.6" height="4.4" rx="1.6" fill="#7A5230"/>
       <circle cx="18" cy="20.5" r="2.6" fill="#F2EEE7" opacity=".85"/>`,
+
+    /* 公益別針：對折的緞帶 + 別針頭 */
+    campribbon: k => `
+      <rect x="15.6" y="1.6" width="4.8" height="4" rx="2" fill="none" stroke="#8E9AA6" stroke-width="1.6"/>
+      <path d="M18 8 C10 16 8 24 12 31 C15 26 16.6 21 18 16 Z" fill="#E4573F" ${k}/>
+      <path d="M18 8 C26 16 28 24 24 31 C21 26 19.4 21 18 16 Z" fill="#C43F2C" ${k}/>
+      <circle cx="18" cy="9.4" r="3" fill="#F6E3C8"/>
+      <circle cx="18" cy="9.4" r="1.2" fill="#B33A2A"/>`,
 
     /* 樓下那隻貓：一顆貓頭 */
     downcat: k => `
@@ -4360,6 +4430,7 @@
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
     if (heartBroken() && Math.random() < 0.7) return pick(BROKEN[persId()]);
+    if (S.rides >= 4 && Math.random() < 0.1) return pick(INSIGHT);
     if (Math.random() < 0.12) return pick(GOSSIP);
     if (Math.random() < 0.16) return soloToday();
     if (top && Math.random() < 0.3) return pick(HABIT_LINES[top.h.id]);
