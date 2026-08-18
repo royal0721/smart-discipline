@@ -577,7 +577,7 @@
   .sheetBody::-webkit-scrollbar { display: none; }
   .sheetBody > * { flex: none; }
 
-  .logHero { border-radius: var(--rLg); overflow: hidden; height: 168px; background: #E9EFE2; box-shadow: var(--lift); }
+  .logHero { border-radius: var(--rLg); overflow: hidden; height: 146px; background: #E9EFE2; box-shadow: var(--lift); }
   .logHero svg { width: 100%; height: 100%; display: block; }
   .logStat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
   .logStat div {
@@ -915,6 +915,11 @@
   }
   .lpDate b { font-family: var(--mono); font-size: 25px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
   .lpDate span { font-family: var(--mono); font-size: 9.5px; line-height: 1.4; color: var(--fog); letter-spacing: .08em; }
+
+  /* 三個數字擠成一行，本來是三張大卡片，光那排就吃掉 110px */
+  .logLine { display: flex; align-items: baseline; gap: 6px; padding: 0 4px; font-size: 13px; color: var(--fog); }
+  .logLine b { font-family: var(--mono); font-size: 19px; font-weight: 700; color: var(--chalk); letter-spacing: -.02em; }
+  .logLine .d { color: var(--fog-dim); margin: 0 2px; }
 
   .logTl { position: relative; display: flex; flex-direction: column; padding: 2px 0; }
   .logTl::before {
@@ -1419,9 +1424,6 @@
 
             <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">去過的地方</h2><span id="placeCount"></span></div>
             <div class="placeGrid" id="placeGrid"></div>
-
-            <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">一起跑過的路線</h2><span id="tripCount"></span></div>
-            <div style="display:flex;flex-direction:column;gap:9px" id="tripLog"></div>
 
             <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">收起來的約會</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
             <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
@@ -2766,9 +2768,11 @@
   /* 嘴形：畫成兩頭收尖的月牙填色，不是等粗的一條線。
      等粗的弧線兩端會突然斷掉，看起來像貼上去的貼紙 */
   function mouthPath(cx, y, w, d, t) {
-    const x1 = (cx - w / 2).toFixed(1), x2 = (cx + w / 2).toFixed(1), k = w * 0.32;
-    const c1 = (cx - w / 2 + k).toFixed(1), c2 = (cx + w / 2 - k).toFixed(1);
-    return `M${x1} ${y} C${c1} ${y + d} ${c2} ${y + d} ${x2} ${y} C${c2} ${y + d - t} ${c1} ${y + d - t} ${x1} ${y} Z`;
+    /* 兩條二次曲線共用同一個中央控制點：中間最厚、兩端收成尖。
+       控制點若往兩側外推，會變成中間細兩端粗——那是鬍子不是嘴 */
+    const x1 = (cx - w / 2).toFixed(1), x2 = (cx + w / 2).toFixed(1);
+    return `M${x1} ${y} Q${cx} ${(y + d * 2).toFixed(1)} ${x2} ${y}`
+         + ` Q${cx} ${(y + (d - t) * 2).toFixed(1)} ${x1} ${y} Z`;
   }
 
   /* ════ 表情 ════════════════════════════════════════════
@@ -2887,26 +2891,25 @@
   function svgMouth(mood) {
     const ink = "#1B2430";
     if (mood === "grumpy")
-      return `<path d="${mouthPath(140, 197, 54, -19, -7)}" fill="${ink}"/>`;
+      return `<path d="${mouthPath(140, 193, 50, -12, -6)}" fill="${ink}"/>`;
     if (mood === "sleepy")
       return `<ellipse cx="140" cy="188" rx="9" ry="6" fill="${ink}"/>
         <ellipse cx="140" cy="185.5" rx="5" ry="2" fill="#3A4552"/>`;
     if (mood === "happy")
-      return `<path d="${mouthPath(140, 180, 68, 30, 10)}" fill="${ink}"/>`;
+      return `<path d="${mouthPath(140, 178, 64, 19, 9)}" fill="${ink}"/>`;
     if (mood === "excited")
-      return `<path d="M112 180 C120 204 160 204 168 180 C158 188 122 188 112 180 Z" fill="${ink}"/>
-        <path d="M126 192 C132 199 148 199 154 192 C148 200 132 200 126 192 Z" fill="#E8657E"/>`;
+      return `<path d="M114 172 Q140 175 166 172 Q140 196 114 172 Z" fill="${ink}"/>
+        <path d="M126 183 Q140 182 152 183 Q140 193 126 183 Z" fill="#E8657E"/>`;
     if (mood === "love")
-      return `<path d="${mouthPath(140, 181, 52, 20, 7)}" fill="${ink}"/>`;
+      return `<path d="${mouthPath(140, 180, 46, 11, 5.5)}" fill="${ink}"/>`;
     if (mood === "smug")
-      return `<path d="M114 186 C124 197 146 194 166 182 C152 197 124 200 114 186 Z" fill="${ink}"/>`;
+      return `<path d="M116 188 Q140 202 166 178 Q142 196 116 188 Z" fill="${ink}"/>`;
     if (mood === "shock")
       return `<ellipse cx="140" cy="188" rx="11" ry="13" fill="${ink}"/>
         <ellipse cx="140" cy="183" rx="5.5" ry="3" fill="#3A4552"/>`;
     if (mood === "cry")
-      return `<path d="M116 192 q9 -10 18 0 q9 10 18 0" stroke="${ink}" stroke-width="4.6"
-              fill="none" stroke-linecap="round"/>`;
-    return `<path d="${mouthPath(140, 183, 58, 23, 8)}" fill="${ink}"/>`;
+      return `<path d="${mouthPath(140, 193, 44, -11, -6)}" fill="${ink}"/>`;
+    return `<path d="${mouthPath(140, 181, 54, 13, 6)}" fill="${ink}"/>`;
   }
 
   let svgUid = 0;
@@ -3012,22 +3015,45 @@
       <svg viewBox="0 0 200 184" role="img" aria-label="盲盒">
         <defs>
           <linearGradient id="bx${u}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#39445F"/><stop offset="100%" stop-color="#1E2637"/>
+            <stop offset="0%" stop-color="#FFF8ED"/><stop offset="62%" stop-color="#F6E7CE"/>
+            <stop offset="100%" stop-color="#E7D2AF"/>
           </linearGradient>
           <linearGradient id="bxl${u}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#475473"/><stop offset="100%" stop-color="#2B3448"/>
+            <stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F6E8D2"/>
+          </linearGradient>
+          <!-- 用 userSpaceOnUse：盒蓋與盒身各自取樣會在交界出現色差 -->
+          <linearGradient id="bxr${u}" gradientUnits="userSpaceOnUse" x1="0" y1="56" x2="0" y2="160">
+            <stop offset="0%" stop-color="#FF7E9D"/><stop offset="100%" stop-color="#E24C72"/>
           </linearGradient>
         </defs>
-        <ellipse cx="100" cy="166" rx="60" ry="9" fill="#000" opacity=".5"/>
-        <rect x="34" y="68" width="132" height="88" rx="16" fill="url(#bx${u})"/>
-        <rect x="88" y="68" width="24" height="88" fill="#FF86AE" opacity=".95"/>
-        <rect x="26" y="46" width="148" height="30" rx="12" fill="url(#bxl${u})"/>
-        <rect x="88" y="46" width="24" height="30" fill="#FF86AE" opacity=".95"/>
-        <path d="M100 46 q-32 -6 -28 -23 q17 -11 28 23 Z" fill="#FF86AE"/>
-        <path d="M100 46 q32 -6 28 -23 q-17 -11 -28 23 Z" fill="#FFA3C2"/>
-        <circle cx="100" cy="22" r="8" fill="#C9F23A"/>
-        <text x="100" y="132" text-anchor="middle" font-family="ui-monospace, monospace"
-              font-size="22" font-weight="700" fill="#C9F23A" opacity=".8">?</text>
+
+        <ellipse cx="100" cy="164" rx="50" ry="7" fill="#8A7A5E" opacity=".16"/>
+
+        <!-- 盒身 -->
+        <rect x="36" y="82" width="128" height="78" rx="13" fill="url(#bx${u})"/>
+        <rect x="86" y="82" width="28" height="78" fill="url(#bxr${u})"/>
+        <rect x="86" y="82" width="8" height="78" fill="#FFFFFF" opacity=".2"/>
+
+        <!-- 盒蓋 -->
+        <rect x="26" y="56" width="148" height="32" rx="11" fill="url(#bxl${u})"/>
+        <path d="M26 80 h148 v-3 a11 11 0 0 1 -11 11 H37 a11 11 0 0 1 -11 -11 Z" fill="#E8D6BA" opacity=".5"/>
+        <rect x="86" y="56" width="28" height="32" fill="url(#bxr${u})"/>
+        <rect x="86" y="56" width="8" height="32" fill="#FFFFFF" opacity=".2"/>
+
+        <!-- 蝴蝶結：耳朵要寬要扁，拉高拉窄會變兔子 -->
+        <path d="M100 56 C86 62 60 58 56 44 C53 32 74 30 86 40 C93 46 98 52 100 56 Z" fill="url(#bxr${u})"/>
+        <path d="M100 56 C114 62 140 58 144 44 C147 32 126 30 114 40 C107 46 102 52 100 56 Z" fill="#FF93AE"/>
+        <path d="M68 38 C78 36 88 42 94 48" stroke="#FFFFFF" stroke-opacity=".4" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+        <path d="M100 58 C94 66 86 72 78 74" stroke="#E24C72" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+        <path d="M100 58 C106 66 114 72 122 74" stroke="#FF93AE" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="100" cy="55" rx="11" ry="8.5" fill="#F2637F"/>
+        <ellipse cx="96.5" cy="52.5" rx="4.2" ry="2.8" fill="#FFFFFF" opacity=".45"/>
+
+        <!-- 一點光 -->
+        <g fill="#FFD54A">
+          <path d="M170 30 L173 39 L182 42 L173 45 L170 54 L167 45 L158 42 L167 39 Z"/>
+          <path d="M30 96 L31.8 101 L37 103 L31.8 105 L30 110 L28.2 105 L23 103 L28.2 101 Z" opacity=".85"/>
+        </g>
       </svg>`;
   }
 
@@ -4644,7 +4670,8 @@
       return;
     }
     ps.sort((a, b) => b[1].n - a[1].n);
-    $("placeGrid").innerHTML = ps.map(([n, v]) => {
+    const more = ps.length - 6;
+    $("placeGrid").innerHTML = ps.slice(0, 6).map(([n, v]) => {
       const c = TYPE_C[v.t] || "#9AA79F";
       return `<div class="placeCell">
         <span class="stamp" style="--sc:${c}">
@@ -4653,7 +4680,7 @@
         <span class="nm">${n}</span>
         <span class="km">${v.km} km</span>
       </div>`;
-    }).join("");
+    }).join("") + (more > 0 ? `<div class="cap" style="grid-column:1/-1;padding:2px 4px">還有 ${more} 個</div>` : "");
   }
 
   function renderSaved() {
@@ -4728,10 +4755,10 @@
       <div class="logPage">
         <div class="lpDate"><b>${logDate().d}</b><span>${logDate().m}<br>${weekend ? "週末" : "平日"}</span></div>
         <div class="logHero">${mapSVG(list, 0)}</div>
-        <div class="logStat">
-          <div><b>${t.rides.length}</b><span>趟</span></div>
-          <div><b>${km.toFixed(1)}</b><span>公里</span></div>
-          <div><b>${newSouv.length}</b><span>新收藏</span></div>
+        <div class="logLine">
+          <b>${t.rides.length}</b> 趟<span class="d">·</span>
+          <b>${km.toFixed(1)}</b> 公里<span class="d">·</span>
+          <b>${newSouv.length}</b> 件新收藏
         </div>
         <div class="logSay">${t.events.length ? t.events[t.events.length - 1] : dayIdleLine()}</div>
         ${t.rides.length ? `<div class="logTl">${t.rides.map((r, i) => `
@@ -4870,8 +4897,7 @@
          <span class="cyc" aria-hidden="true">↻</span>`
       : `<span class="tx"><b>還沒有路線</b><span>叫一次車就會畫上去</span></span>`;
 
-    $("tripCount").textContent = `${list.length} 條`;
-    /* 只列最近四條——地圖上本來就看得到全部，清單長了整頁會擠 */
+    if (!$("tripLog")) return;
     $("tripLog").innerHTML = list.slice(0, 4).map((t, i) => `
       <button class="trip" data-tr="${i}" aria-pressed="${i === mapHl}">
         <span class="idx" style="background:${t.color}">${i + 1}</span>
