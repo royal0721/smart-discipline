@@ -949,24 +949,27 @@
   .lpStick .st:nth-child(3n) { --r: -2.5deg; }
   .lpStick .st i { font-style: normal; font-size: 9.5px; color: var(--fog); text-align: center; line-height: 1.3; }
 
-  /* 收起來的約會：小張明信片 */
-  .miniCard { display: grid; grid-template-columns: 108px 1fr; grid-template-rows: auto auto; gap: 0 12px;
-    background: #FDFBF6; border-radius: 16px; padding: 10px; box-shadow: var(--lift); }
-  .mcArt { position: relative; grid-row: 1 / span 2; border-radius: 11px; overflow: hidden; aspect-ratio: 4 / 3; background: #2A3038; }
+  /* 收起來的約會：小張明信片。右半邊本來塞了標題、路線、車資、兩顆按鈕擠成一團，
+     刪掉改成明信片角落的一個叉，車資跟路線併成同一行，右邊就只剩三層 */
+  .miniCard { display: grid; grid-template-columns: 124px 1fr; grid-template-rows: auto auto; gap: 0 14px;
+    background: #FDFBF6; border-radius: 18px; padding: 12px; box-shadow: var(--lift); align-items: center; }
+  .mcArt { position: relative; grid-row: 1 / span 2; border-radius: 13px; overflow: hidden; aspect-ratio: 4 / 3; background: #2A3038; }
   .mcArt .pcArt { width: 100%; height: 100%; }
   .mcRar { position: absolute; right: 5px; top: 5px; z-index: 2; font-family: var(--mono); font-size: 9px;
     font-weight: 700; color: #FFFFFF; padding: 2px 5px; border-radius: 6px; }
   .mcWhere { position: absolute; left: 7px; bottom: 5px; z-index: 2; font-size: 9.5px; font-weight: 700; color: #FFFFFF; }
-  .mcTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 2px; }
-  .mcTx b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .mcTx span { font-size: 11px; color: var(--fog); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .mcTx .f { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--chalk); margin-top: 2px; }
-  .mcTx .f small { font-family: var(--sans); font-size: 9px; color: var(--fog-dim); margin-left: 3px; }
-  .mcAct { display: flex; gap: 7px; align-items: end; padding-bottom: 2px; }
-  .mcAct button { border: none; cursor: pointer; padding: 7px 13px; border-radius: 18px;
-    font-family: var(--sans); font-size: 12px; font-weight: 700; }
-  .mcAct .ride { background: var(--grass); color: #FFFFFF; }
-  .mcAct .del { background: var(--slab-2); color: var(--fog); }
+  .mcDel { position: absolute; left: 5px; top: 5px; z-index: 3; width: 21px; height: 21px; padding: 0;
+    display: grid; place-items: center; border: none; cursor: pointer; border-radius: 50%;
+    background: rgba(24, 28, 34, .5); color: #FFFFFF; font-family: var(--sans); font-size: 12px; line-height: 1; }
+  .mcDel:hover { background: rgba(24, 28, 34, .78); }
+  .mcTx { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .mcTx b { font-size: 14.5px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mcTx .r { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .mcTx .r span { font-size: 11px; color: var(--fog); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mcTx .r .f { flex: none; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--chalk); }
+  .mcAct { padding-top: 10px; display: flex; }
+  .mcAct .ride { border: none; cursor: pointer; padding: 8px 20px; border-radius: 20px;
+    background: var(--grass); color: #FFFFFF; font-family: var(--sans); font-size: 12.5px; font-weight: 700; }
 
   /* 去過的地方：像集章 */
   .placeGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -1429,7 +1432,7 @@
             <div class="placeGrid" id="placeGrid"></div>
 
             <div class="scTitle" style="margin-top:24px"><h2 style="font-size:15px">收藏</h2><button class="lnk" id="boxLeftTx">本週剩 3 次</button></div>
-            <div id="savedHold" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div id="savedHold" style="display:flex;flex-direction:column;gap:11px"></div>
           </section>
 
           <!-- 加工：邊看車車邊改 -->
@@ -4696,15 +4699,14 @@
           <span class="pcScrim"></span>
           <span class="mcRar" style="background:${RARITY[x.r].c1}">${x.r}</span>
           <span class="mcWhere">${PLACE_TYPE[x.pt] ? PLACE_TYPE[x.pt].name : "特別行程"}</span>
+          <button class="mcDel" data-sd="${i}" aria-label="刪掉這張">✕</button>
         </div>
         <div class="mcTx">
           <b>${x.title}</b>
-          <span>${x.from} → ${x.to}</span>
-          <span class="f">NT$ ${x.fare}<small>預估</small></span>
+          <div class="r"><span>${x.from} → ${x.to}</span><span class="f">NT$ ${x.fare}</span></div>
         </div>
         <div class="mcAct">
           <button class="ride" data-sr="${i}">約這趟</button>
-          <button class="del" data-sd="${i}">刪掉</button>
         </div>
       </div>`).join("") : `<div class="cap" style="padding:2px 4px">還沒收起任何約會</div>`;
     $("savedHold").querySelectorAll("[data-sr]").forEach(b => b.addEventListener("click", () => {
