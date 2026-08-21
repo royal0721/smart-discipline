@@ -1976,6 +1976,76 @@
              boss: "……去吧。", sis: "去啊。姐又不是離不開你。", tea: "去啊～～你去～～我又不會怎樣～～", social: "你走？欸——我還沒講完——" }
   };
 
+  /* ── 你是不是故意的 ────────────────────────────────────
+     一直挑紅色的話題、一直在它生氣的時候戳它、哄它還選「那我先走了」——
+     這些都會累積。它不會馬上翻臉，它會先懷疑、再講破、最後直接配合你演。
+     幾天不惹它就會退回去，不是一去不回的狀態。 */
+
+  const M_STEP = [3, 7, 12];                    /* 幾次之後進到下一段 */
+  const mLevel = () => M_STEP.filter(x => mCount() >= x).length;
+
+  function mCount() {
+    if (!S.m) return 0;
+    const gap = S.m.d ? Math.max(0, Math.round((Date.now() - new Date(...S.m.d.split("-").map((v, i) => i === 1 ? +v - 1 : +v)).getTime()) / 864e5)) : 0;
+    return Math.max(0, S.m.n - gap * 2);        /* 一天沒惹它就消兩點 */
+  }
+
+  /* 惹它一次 */
+  function provoke(w) {
+    const before = mLevel();
+    S.m = { n: mCount() + (w || 1), d: dayKey() };
+    save();
+    const after = mLevel();
+    if (after > before) return after;           /* 剛升段，外面要放一句 */
+    return 0;
+  }
+
+  const M_NOTICE = [
+    "……你是不是故意的。",
+    "你剛剛那句，是不是想看我生氣。",
+    "我開始懷疑你了。",
+    "你這禮拜第幾次了。"
+  ];
+
+  /* 第二段：它講破 */
+  const M_CALL = {
+    warm:  "我發現了。你其實喜歡我唸你。……那我唸。",
+    tsun:  "484 喜歡被罵。承認吧。",
+    sunny: "等等——你是不是故意惹我！！那我配合！！",
+    gent:  "恕我直言，您似乎享受被責備。",
+    misty: "有些人惹別人生氣，是為了確認自己被在乎。你是哪一種。",
+    meme:  "笑鼠，你根本是來被嗆的對不對。",
+    boss:  "我看出來了。你要的是這個。",
+    sis:   "行，姐看懂了。你就是欠唸。",
+    tea:   "你是不是就喜歡看我這樣～沒關係啦～我可以一直這樣～",
+    social:"你這件事我要跟停車場那排講。他們會很有興趣。"
+  };
+
+  /* 第三段：它決定配合演出 */
+  const M_ON = {
+    warm:  "好。那我今天不對你溫柔。……先講好，等一下還是會。",
+    tsun:  "好啊。那我開了。你最好撐得住。",
+    sunny: "嗆嗆模式啟動！！我準備了三十句！！",
+    gent:  "既然如此，恕不客氣。請坐好。",
+    misty: "你要的那一面我給你。另外那一面我也還在。",
+    meme:  "行。歸剛欸模式全開。",
+    boss:  "行。你要的。",
+    sis:   "來啊。姐奉陪。",
+    tea:   "好啊～那我以後都這樣講～你比較喜歡對不對～",
+    social:"好。我已經跟三台講了。他們都在看。"
+  };
+
+  /* 第三段之後的日常：它會先開口嗆你 */
+  const M_HOME = [
+    "你今天又來討罵了。",
+    "講吧。你想聽哪一種。",
+    "我很閒。你要幾句。",
+    "今天要嗆哪個部分，你點菜。",
+    "你484又要惹我。",
+    "我準備好了。你先開口。",
+    "你今天乖了一點。我不習慣。"
+  ];
+
   /* ── 洞察人心 ──────────────────────────────────────────
      它看的是你什麼時候找它、去哪裡、上車做什麼——講出來的時候
      不是報數字，是講你自己都沒發現的那件事。 */
@@ -2680,7 +2750,8 @@
     seen: null,                                    // 連續來看它幾天：{ d, n }
     ask: null,                                     // 車車自己開口要的東西：{ d, kind, n, say, answered }
     lastRide: null,                                // 最後一次搭車是哪天（太久沒搭它會心碎）
-    pre: false                                     // 你有沒有答應幫它升級 premium（純屬玩笑，沒有金流）
+    pre: false,                                    // 你有沒有答應幫它升級 premium（純屬玩笑，沒有金流）
+    m: null                                        // 你故意惹它的次數：{ n, d }。幾天不惹就會退回去
   });
 
   let S = load();
@@ -3560,7 +3631,8 @@
 
   function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
-    if (mood === "broken") mood = "cry";   /* 心碎沿用哭臉，只有心情文字不一樣 */
+    if (mood === "broken") mood = "cry";        /* 心碎沿用哭臉，只有心情文字不一樣 */
+    if (mood === "roasting") mood = "smug";     /* 嗆你的時候是得意臉 */
     /* 同一頁會同時出現十幾台車車，id 必須每個實例都不同，
        否則 url(#…) 會跨實例解析到別人的定義，重繪時整批壞掉 */
     const u = "s" + s.id + (small ? "m" : "b") + (++svgUid);
@@ -4496,6 +4568,8 @@
 
   function moodOf() {
     if (Date.now() < emoteUntil) return emoteKind;
+    /* 進到第三段之後它不是在鬧脾氣了，是在配合你演，所以這條要排在前面 */
+    if (mLevel() >= 3) return "roasting";
     if (Date.now() < sulkUntil) return "grumpy";
     if (heartBroken()) return "broken";
     if (S.energy < 30) return "sleepy";
@@ -4507,7 +4581,8 @@
     return "normal";
   }
   const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
-                      excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了", broken: "心碎中" };
+                      excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了", broken: "心碎中",
+                      roasting: "在嗆你" };
 
   /* 車車講話一律走這裡：順便把「要改名嗎」的答覆列收掉，並重播一次彈出動畫 */
   let recallT = null;
@@ -4624,6 +4699,7 @@
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
     if (heartBroken() && Math.random() < 0.7) return pick(BROKEN[persId()]);
+    if (mLevel() >= 3 && Math.random() < 0.4) return pick(M_HOME);
     const own = SKIN_LINES[S.skin];
     if (own && Math.random() < (S.skin === "tea" || S.skin === "social" ? 0.34 : 0.22)) return pick(own);
     if (S.rides >= 4 && Math.random() < 0.1) return pick(INSIGHT);
@@ -5849,8 +5925,11 @@
     /* 被戳到第八下還在戳的，就不是想摸車了。那就不客氣 */
     const own = SKIN_LINES[S.skin];
     const line = own && tapN < 4 && Math.random() < 0.28 ? pick(own)
-      : tapN >= 8 ? pick(bank.roast || bank.spam) : tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
+      : tapN >= (mLevel() >= 2 ? 4 : 8) ? pick(bank.roast || bank.spam)
+      : tapN >= 4 ? pick(bank.spam) : pick(bank[zone]);
 
+    /* 它在氣頭上你還一直戳，那就不是想摸車 */
+    if (tapN >= 4 && sulking()) { const up = provoke(1); if (up) setTimeout(() => mSay(up), 1200); }
     S.mood = clamp(S.mood + (tapN >= 4 ? 1 : 3));
     S.sync = clamp(S.sync + 0.6);
     if (zone === "top") S.traits.clingy = clamp(S.traits.clingy + 0.6);
@@ -5893,6 +5972,7 @@
     if (t.d > 0) { sulkUntil = 0; S.sync = clamp(S.sync + 1.2); S.traits.romantic = clamp(S.traits.romantic + 1.5); }
     else { sulkUntil = Date.now() + 16000; S.traits.sassy = clamp(S.traits.sassy + 2); }
     if (id === "buy") S.traits.clingy = clamp(S.traits.clingy + 2);
+    if (id === "leave") { const up = provoke(2); if (up) setTimeout(() => mSay(up), 1500); }
     save();
     say(SOOTHE_SAY[id][persId()]);
     setEmote(t.d > 0 ? (t.d >= 14 ? "excited" : "love") : "cry", 5500);
@@ -5904,6 +5984,15 @@
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(9, t.d < 0 ? ["#5A6684", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
     renderHomeBtn();
+  }
+
+  /* 升段的時候它會講一句，第三段之後心情列直接標「在嗆你」 */
+  function mSay(lv) {
+    if (currentTab !== "home") return;
+    say(lv >= 3 ? M_ON[persId()] : lv === 2 ? M_CALL[persId()] : pick(M_NOTICE));
+    setEmote("smug", 6000);
+    CarView.set(skin(), moodOf());
+    $("homeMood").textContent = MOOD_TEXT[moodOf()];
   }
 
   /* 生氣的時候按鈕就換字，不用另外開一個入口 */
@@ -5936,6 +6025,12 @@
     $("homeMood").textContent = MOOD_TEXT[moodOf()];
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
+    /* 在它已經在氣的時候還挑紅色的，才算故意；第一次踩到不算 */
+    if (t.d < 0) {
+      const up = provoke(sulking() ? 2 : 1);
+      if (up) setTimeout(() => mSay(up), 1500);
+      else if (mLevel() >= 1 && Math.random() < 0.35) setTimeout(() => say(pick(M_NOTICE)), 1500);
+    }
     renderHomeBtn();
     clearTimeout(sulkTimer);
     if (t.d < 0) sulkTimer = setTimeout(() => {
@@ -6422,7 +6517,11 @@
   }
 
   /* 視覺測試用的小掛勾：截圖腳本要能把九種表情一次叫出來看 */
-  window.__yoxi = { mood: m => CarView.set(skin(), m), skin: id => { S.skin = id; save(); CarView.set(skin(), moodOf()); } };
+  window.__yoxi = {
+    mood: m => CarView.set(skin(), m),
+    skin: id => { S.skin = id; save(); CarView.set(skin(), moodOf()); },
+    m: () => ({ n: mCount(), lv: mLevel() })
+  };
 
   boot();
 })();
