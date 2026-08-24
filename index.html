@@ -3631,6 +3631,8 @@
 
   function carSVG(sk, mood, small, withEquip) {
     const s = sk || skin();
+    /* 霸總不會哭。再難過也只是把臉繃緊 */
+    if (s.pers === "boss" && (mood === "cry" || mood === "broken")) mood = "grumpy";
     if (mood === "broken") mood = "cry";        /* 心碎沿用哭臉，只有心情文字不一樣 */
     if (mood === "roasting") mood = "smug";     /* 嗆你的時候是得意臉 */
     /* 同一頁會同時出現十幾台車車，id 必須每個實例都不同，
@@ -4558,11 +4560,11 @@
   function setEmote(kind, ms) {
     emoteKind = kind; emoteUntil = Date.now() + (ms || 6000);
     CarView.set(skin(), moodOf());
-    if (currentTab === "home") { $("homeMood").textContent = MOOD_TEXT[moodOf()] || MOOD_TEXT.normal; }
+    if (currentTab === "home") { $("homeMood").textContent = moodText(moodOf()); }
     clearTimeout(setEmote._t);
     setEmote._t = setTimeout(() => {
       CarView.set(skin(), moodOf());
-      if (currentTab === "home") $("homeMood").textContent = MOOD_TEXT[moodOf()] || MOOD_TEXT.normal;
+      if (currentTab === "home") $("homeMood").textContent = moodText(moodOf());
     }, (ms || 6000) + 60);
   }
 
@@ -4579,6 +4581,11 @@
     if (S.mood > 78) return "happy";
     if (sl === "dawn" || sl === "night") return "sleepy";
     return "normal";
+  }
+  /* 心情列的字。霸總的難過從不寫成難過 */
+  function moodText(m) {
+    if (persId() === "boss" && (m === "cry" || m === "broken")) return "……沒事";
+    return MOOD_TEXT[m] || MOOD_TEXT.normal;
   }
   const MOOD_TEXT = { happy: "心情很好", normal: "心情不錯", sleepy: "有點想睡", grumpy: "在鬧脾氣", love: "超級黏你",
                       excited: "興奮到不行", cry: "在難過", smug: "很得意", shock: "嚇到了", broken: "心碎中",
@@ -4667,7 +4674,7 @@
         setEmote("grumpy", 4500);
       }
       CarView.set(skin(), moodOf());
-      $("homeMood").textContent = MOOD_TEXT[moodOf()];
+      $("homeMood").textContent = moodText(moodOf());
       return;
     }
     if (yes) {
@@ -4681,7 +4688,7 @@
       say(pick(["……好。那就算了。", "喔。那我繼續用原本那個。", "沒關係。我再想一個更好的。"]));
       setEmote("cry", 4500);
       CarView.set(skin(), moodOf());
-      $("homeMood").textContent = MOOD_TEXT[moodOf()];
+      $("homeMood").textContent = moodText(moodOf());
     }
   }
 
@@ -5789,7 +5796,7 @@
     const m = moodOf();
     $("homeName").textContent = S.name;
     $("homeLv").textContent = `Lv.${level()} · ${LV_NAMES[level() - 1]}`;
-    $("homeMood").textContent = MOOD_TEXT[m];
+    $("homeMood").textContent = moodText(m);
     CarView.mount($("carHold"));
     CarView.set(skin(), m);
     say(openingLine());
@@ -5948,7 +5955,7 @@
                  : zone === "mid" ? ["#7DD3FC", "#FFFFFF", "#C9F23A"]
                  : ["#FFC46B", "#FFFFFF"];
     sparks(tapN >= 4 ? 12 : 7, colors);
-    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    $("homeMood").textContent = moodText(moodOf());
   }
 
   /* 它在生氣的時候，說點什麼沒有用——要哄 */
@@ -5981,7 +5988,7 @@
     hold.classList.add(t.d < 0 ? "mad" : "tapped");
     setTimeout(() => hold.classList.remove("mad", "tapped"), 560);
     CarView.set(skin(), moodOf());
-    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    $("homeMood").textContent = moodText(moodOf());
     sparks(9, t.d < 0 ? ["#5A6684", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
     renderHomeBtn();
   }
@@ -5992,7 +5999,7 @@
     say(lv >= 3 ? M_ON[persId()] : lv === 2 ? M_CALL[persId()] : pick(M_NOTICE));
     setEmote("smug", 6000);
     CarView.set(skin(), moodOf());
-    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    $("homeMood").textContent = moodText(moodOf());
   }
 
   /* 生氣的時候按鈕就換字，不用另外開一個入口 */
@@ -6022,7 +6029,7 @@
     CarView.set(skin(), moodOf());
     /* 問它今天在幹嘛，它就講今天自己那件事——不用出門也有話聽 */
     say(id === "solo" ? soloToday() : id === "gossip" ? pick(GOSSIP) : TALK_SAY[id][persId()]);
-    $("homeMood").textContent = MOOD_TEXT[moodOf()];
+    $("homeMood").textContent = moodText(moodOf());
     sparks(t.d < 0 ? 10 : 9, t.d < 0 ? ["#C63B2E", "#E08A25", "#93A099"] : ["#FF86AE", "#C9F23A", "#FFC46B"]);
 
     /* 在它已經在氣的時候還挑紅色的，才算故意；第一次踩到不算 */
@@ -6034,7 +6041,7 @@
     renderHomeBtn();
     clearTimeout(sulkTimer);
     if (t.d < 0) sulkTimer = setTimeout(() => {
-      if (currentTab === "home") { CarView.set(skin(), moodOf()); $("homeMood").textContent = MOOD_TEXT[moodOf()]; renderHomeBtn(); }
+      if (currentTab === "home") { CarView.set(skin(), moodOf()); $("homeMood").textContent = moodText(moodOf()); renderHomeBtn(); }
     }, 14200);
   }
 
