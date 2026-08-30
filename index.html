@@ -841,7 +841,8 @@
   .nameSheet[hidden] { display: none; }
   .nsCard {
     width: 100%; display: flex; flex-direction: column; gap: 13px;
-    background: var(--paper); border-radius: 24px; padding: 20px 18px 16px; box-shadow: 0 26px 50px -18px rgba(20,28,22,.5);
+    /* 這個 app 沒有 --paper 這個變數——寫 var(--paper) 會整張卡變透明 */
+    background: #FFFFFF; border-radius: 24px; padding: 20px 18px 16px; box-shadow: 0 26px 50px -18px rgba(20,28,22,.5);
   }
   .nsCard input[type="text"] {
     width: 100%; padding: 13px 15px; border-radius: 16px; background: #FFFFFF;
