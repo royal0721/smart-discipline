@@ -1,0 +1,289 @@
+<title>車車的讀心術</title>
+<style>
+  /* ── 幸運貴氣馬麻 · 提案頁 ─────────────────────────────
+     跟原型同一個世界：暖白、草綠、mono 數字。
+     這頁自己選定亮色調，深色環境下也照原樣呈現。 */
+  :root {
+    --paper: #F6F7F2;
+    --card:  #FFFFFF;
+    --ink:   #1F2B24;
+    --fog:   #66756B;
+    --fog-dim: #98A59B;
+    --hair:  #E2E7DE;
+    --grass: #3E8A33;
+    --grass-soft: #EAF4E6;
+    --coral: #D9482F;
+    --coral-soft: #FBEEEA;
+    --night: #17211B;
+    --night-tx: #F4F7F1;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --serif: "Noto Serif TC", "Songti TC", serif;
+    --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--sans); font-size: 15.5px; line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+    color: var(--grass); text-transform: uppercase;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 900; font-size: 44px; line-height: 1.25;
+    letter-spacing: .01em; margin: 14px 0 18px; text-wrap: balance;
+  }
+  .lede { font-size: 17px; color: var(--fog); max-width: 34em; }
+  .lede b { color: var(--ink); font-weight: 700; }
+
+  h2 {
+    font-family: var(--serif); font-weight: 900; font-size: 26px; line-height: 1.4;
+    margin: 72px 0 10px; text-wrap: balance;
+  }
+  h2 + p.sub { color: var(--fog); margin-bottom: 26px; max-width: 36em; }
+  p + p { margin-top: 12px; }
+
+  /* 資料快照 */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--hair); border: 1px solid var(--hair); border-radius: 18px;
+    overflow: hidden; margin-top: 40px;
+  }
+  .stat { background: var(--card); padding: 18px 16px 15px; }
+  .stat b {
+    display: block; font-family: var(--mono); font-size: 24px; font-weight: 600;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.2;
+  }
+  .stat b small { font-size: 13px; color: var(--fog); font-weight: 500; margin-left: 2px; }
+  .stat span { font-size: 12px; color: var(--fog); }
+  .stat.bad b { color: var(--coral); }
+  .statNote { font-size: 12.5px; color: var(--fog-dim); margin-top: 10px; padding: 0 4px; }
+
+  /* 訊號卡：eyebrow 就是資料欄位名——訊號從哪幾欄來，一眼看得到 */
+  .sig {
+    background: var(--card); border: 1px solid var(--hair); border-radius: 20px;
+    padding: 26px 28px 24px; margin-top: 18px;
+  }
+  .sigCols {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+    color: var(--fog-dim); text-transform: uppercase;
+  }
+  .sig h3 { font-size: 18.5px; font-weight: 800; margin: 6px 0 8px; }
+  .sig p { color: var(--fog); font-size: 14.5px; max-width: 38em; }
+  .sig p b { color: var(--ink); }
+  .fact {
+    font-family: var(--mono); font-size: 13px; color: var(--ink);
+    background: var(--grass-soft); border-radius: 10px; padding: 9px 13px;
+    margin: 14px 0 0; display: inline-block; font-variant-numeric: tabular-nums;
+  }
+  .fact.bad { background: var(--coral-soft); color: var(--coral); }
+
+  /* 車車的話：跟 app 同一顆泡泡 */
+  .bubble {
+    background: var(--night); color: var(--night-tx);
+    border-radius: 18px 18px 18px 6px; padding: 13px 17px;
+    font-size: 14.5px; line-height: 1.7; margin: 16px 0 4px; max-width: 34em;
+  }
+  .bubble + .bubble { border-radius: 6px 18px 18px 18px; margin-top: 8px; }
+  .maps { font-size: 12.5px; color: var(--fog-dim); margin-top: 12px; }
+  .maps b { color: var(--grass); font-weight: 700; }
+
+  /* 靜音表：全頁唯一用暖紅撐開的一段 */
+  .quiet {
+    background: var(--night); color: var(--night-tx); border-radius: 24px;
+    padding: 36px 32px; margin-top: 56px;
+  }
+  .quiet .eyebrow { color: #F0A08E; }
+  .quiet h2 { margin: 12px 0 10px; color: #FFFFFF; }
+  .quiet p { color: #B9C6BC; max-width: 36em; }
+  .quiet p b { color: #FFFFFF; }
+  .quietList { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 6px; padding: 0; list-style: none; }
+  .quietList li {
+    font-size: 12.5px; padding: 6px 13px; border-radius: 15px;
+    background: rgba(255,255,255,.09); color: #E8EEE9;
+  }
+  .quiet .big {
+    font-family: var(--serif); font-weight: 900; font-size: 21px; line-height: 1.6;
+    color: #FFFFFF; margin: 22px 0 8px; max-width: 26em;
+  }
+
+  /* 鐵律 */
+  .rules { display: grid; gap: 12px; margin-top: 24px; padding: 0; list-style: none; counter-reset: r; }
+  .rules li {
+    background: var(--card); border: 1px solid var(--hair); border-radius: 16px;
+    padding: 18px 22px; counter-increment: r; display: flex; gap: 18px; align-items: baseline;
+  }
+  .rules li::before {
+    content: counter(r); font-family: var(--mono); font-size: 13px; font-weight: 600;
+    color: var(--grass); flex: none;
+  }
+  .rules b { display: block; font-size: 15px; }
+  .rules span { font-size: 13.5px; color: var(--fog); }
+
+  /* 優先順序表 */
+  .tblWrap { overflow-x: auto; margin-top: 24px; }
+  table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 14px; }
+  th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--fog-dim); text-align: left; font-weight: 600;
+    padding: 0 14px 10px; border-bottom: 1px solid var(--hair);
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+  td.done { color: var(--grass); font-weight: 700; white-space: nowrap; }
+  .pri { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .pri.p0 { color: var(--coral); font-weight: 700; }
+  .pri.p1 { color: var(--grass); font-weight: 700; }
+  .pri.p2 { color: var(--fog); }
+
+  /* demo 指引 */
+  .try {
+    background: var(--grass-soft); border-radius: 20px; padding: 26px 28px; margin-top: 26px;
+  }
+  .try b { font-size: 15.5px; }
+  .try ol { margin: 10px 0 0; padding-left: 22px; color: var(--fog); font-size: 14.5px; }
+  .try li + li { margin-top: 4px; }
+  .try li b { color: var(--ink); font-size: 14.5px; }
+
+  .foot {
+    margin-top: 88px; padding-top: 22px; border-top: 1px solid var(--hair);
+    font-size: 12.5px; color: var(--fog-dim);
+  }
+
+  @media (max-width: 620px) {
+    h1 { font-size: 34px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .wrap { padding-top: 48px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sig, .quiet, .try { scroll-margin-top: 24px; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@900&family=Noto+Sans+TC:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<div class="wrap">
+
+  <div class="eyebrow">幸運貴氣馬麻 · 車車體驗提案</div>
+  <h1>車車的讀心術</h1>
+  <p class="lede">這批行程資料不是訂單紀錄，是<b>車車認識你的原料</b>。我們從 67 趟真實行程裡讀出七個訊號，每一個都直接接上現有的車車機制——它因此記得你的路、算著你多久沒來、把你跑最遠的一次做成明信片，也知道<b>哪一天該閉嘴</b>。</p>
+
+  <div class="stats">
+    <div class="stat"><b>67<small>趟</small></b><span>2/2 – 4/4</span></div>
+    <div class="stat"><b>390.2<small>km</small></b><span>總里程</span></div>
+    <div class="stat"><b>7.6<small>分</small></b><span>下單到上車（平均）</span></div>
+    <div class="stat"><b>81<small>%</small></b><span>行程在早上十點前</span></div>
+    <div class="stat"><b>48.8<small>km</small></b><span>最遠的一趟 · 06:23 出發</span></div>
+    <div class="stat"><b>24<small>筆</small></b><span>具名落點</span></div>
+    <div class="stat bad"><b>7<small>筆</small></b><span>落點是醫院／殯儀館／派出所</span></div>
+    <div class="stat bad"><b>1<small>筆</small></b><span>GPS 異常（座標飄到高雄）</span></div>
+  </div>
+  <p class="statNote">以上全部由原始資料算出，欄位：OrderStartDateTime、OrderFormCreatedTime、TravelDistance、DropOffLocationType、經緯度。</p>
+
+  <h2>七個訊號，各自接上一個現有機制</h2>
+  <p class="sub">原則只有一條：統計留在後台，<b style="color:var(--ink)">車車只講結論、不講數字</b>。每張卡的小字是訊號用到的資料欄位。</p>
+
+  <div class="sig">
+    <div class="sigCols">RiderId × PickUp/DropOff 座標</div>
+    <h3>同一個人、同一條路 → 通勤認證</h3>
+    <p>乘客 411337 在 2/2 與 2/3 叫了<b>座標一模一樣</b>的兩趟，一趟 14 分鐘、一趟 16 分鐘。重複路線是每天都會再發生的事——是所有回訪鉤子裡最便宜的一條。</p>
+    <div class="fact">25.0392,121.4489 → 25.0635,121.4535　×2　14min / 16min</div>
+    <div class="bubble">這條路你昨天也走過。今天慢了兩分鐘——不是我，是那個紅燈。</div>
+    <div class="maps">接上 → <b>洞察人心</b>台詞池、<b>常跑地點</b></div>
+  </div>
+
+  <div class="sig">
+    <div class="sigCols">OrderFormCreatedTime × OrderStartDateTime</div>
+    <h3>等車時間 → 它可以邀功，也可以記仇</h3>
+    <p>多數人出門前 6 分鐘才下單（中位數），但也有人等了 42 分鐘。車車現在說「我會提前五分鐘到」是空話——接上這兩欄，就是真話。</p>
+    <div class="fact">下單→上車：平均 7.6 分 · 中位數 6 分 · 最久 42 分</div>
+    <div class="bubble">你都出門前幾分鐘才叫我。我沒有意見，我只是每次都在猜。</div>
+    <div class="bubble">上次讓你等了半小時，這件事我記到現在。</div>
+    <div class="maps">接上 → <b>下一站</b>的出發提醒、<b>司機在路上</b>的台詞</div>
+  </div>
+
+  <div class="sig">
+    <div class="sigCols">OrderStartDateTime（趟與趟的間隔）</div>
+    <h3>多久沒搭 → 心碎機制的真實資料源</h3>
+    <p>資料裡有連兩天都出現的人，也有一個月一趟的人。心碎倒數與連續天數<b>不用另外埋點</b>，這一欄直接算得出來。</p>
+    <div class="bubble">幾天了。</div>
+    <div class="maps">接上 → <b>心碎</b>（三天沒搭）、<b>連續來看它</b>的天數</div>
+  </div>
+
+  <div class="sig">
+    <div class="sigCols">TravelDistance × PaymentTotalRange</div>
+    <h3>最遠的一趟 → 自動生成明信片</h3>
+    <p>3/9 清晨 6:23，有人跑了 48.8 公里往桃園方向，車資落在最高級距。這種一年沒幾次的行程（機場、送行、回老家），不該只是一列訂單——<b>月底自動變成一張 SSR 明信片</b>掉進日誌，是使用者自己會截圖的東西。</p>
+    <div class="fact">45440001 · 06:23 出發 · 48.8 km · 62 分</div>
+    <div class="bubble">這個月我們跑最遠的一次。那天你很早起。</div>
+    <div class="maps">接上 → <b>明信片</b>、<b>日誌</b>收藏</div>
+  </div>
+
+  <div class="sig">
+    <div class="sigCols">DropOffLocationType</div>
+    <h3>去過的地方 → 集章，以及盲盒該發什麼</h3>
+    <p>河濱公園、小食堂、全家、火車站——具名落點直接餵<b>去過的章</b>。更好用的是<b>缺口</b>：一個落點全是辦公室和捷運站的人，「河堤」「夜市」永遠是空的，盲盒約會就從他住家座標半徑內挑那兩種發，比隨機抽有效得多。</p>
+    <div class="bubble">你去過的都是會議室。這張是河堤。</div>
+    <div class="maps">接上 → <b>去過的章</b>、<b>盲盒約會</b>選點、<b>紀念品</b>掉落表</div>
+  </div>
+
+  <div class="sig">
+    <div class="sigCols">DropOffLatitude × DropOffLongitude × TravelDistance</div>
+    <h3>髒資料 → 洞察要有保險絲</h3>
+    <p>有一筆訂單里程 2.5 公里，落點座標卻在高雄（直線 288 公里）；還有一筆上車地點寫著「搭乘1」。車車的每句洞察都要先過 sanity check——<b>它講錯一次資料梗，「它認識我」的幻覺就整個破掉</b>，「你上週去高雄喔」這種錯話比不講話傷十倍。</p>
+    <div class="fact bad">45067537 · 直線 288 km vs 記錄 2,507 m → 丟棄，不進台詞</div>
+    <div class="maps">接上 → 所有資料台詞的前置檢查</div>
+  </div>
+
+  <div class="quiet">
+    <div class="eyebrow">DropOffLocationType · 第七個訊號</div>
+    <h2>靜音表：知道什麼時候閉嘴</h2>
+    <p>24 筆具名落點裡，有 <b>7 筆</b>是這些地方——將近三成：</p>
+    <ul class="quietList">
+      <li>新北市立殯儀館</li><li>新光醫院</li><li>耕莘醫院永和分院</li>
+      <li>聯合醫院三重院區</li><li>台大醫院兒童醫療大樓</li><li>心傳動物醫院</li><li>成州派出所</li>
+    </ul>
+    <p>一個會嗆人的車車 IP，最大的翻車風險就是在這些趟的隔天說「你昨天去哪玩」。所以落點進了靜音表的那一天：<b>不講笑話、不發盲盒、不問要不要改名</b>，十種個性各留一句最軟的話——暖暖是「我在。想去哪，或不想去哪，都可以。」霸總只有「我在。」</p>
+    <p class="big">會耍嘴皮的寵物很多，知道什麼時候不耍的，才讓人放心把日常交給它。</p>
+  </div>
+
+  <h2>隱私三鐵律</h2>
+  <p class="sub">這套讀心術要讓人覺得貼心而不是被監控，界線劃在這三條：</p>
+  <ol class="rules">
+    <li><div><b>只講結論，不講數字</b><span>「你叫我的時候通常已經遲到了」可以；「你本月平均提前 6.2 分鐘下單」不行。統計永遠留在後台。</span></div></li>
+    <li><div><b>不承認自己在分析</b><span>車車從不說「根據你的資料」。它就是記得，像朋友記得你一樣。</span></div></li>
+    <li><div><b>給一個總開關</b><span>「讓它記得我的路」可以關。關掉的那句也是它講：「好。從今天起我只認得眼前這條路。」</span></div></li>
+  </ol>
+
+  <h2>做的順序</h2>
+  <div class="tblWrap">
+    <table>
+      <tr><th>項目</th><th>優先</th><th>理由</th><th>狀態</th></tr>
+      <tr><td>靜音表</td><td class="pri p0">P0 必做</td><td>上線前的及格線，翻車一次就沒了</td><td class="done">已進原型 ✓</td></tr>
+      <tr><td>通勤認證</td><td class="pri p1">P1</td><td>每天都會再發生，最便宜的回訪鉤子</td><td class="done">已進原型 ✓</td></tr>
+      <tr><td>心碎接真資料</td><td class="pri p1">P1</td><td>機制已存在，只差資料源</td><td>接 API 時</td></tr>
+      <tr><td>最遠一趟明信片</td><td class="pri p1">P1</td><td>自動生成的傳播素材</td><td class="done">已進原型 ✓</td></tr>
+      <tr><td>盲盒缺口選點</td><td class="pri p2">P2</td><td>提升盲盒命中率</td><td>下一輪</td></tr>
+      <tr><td>等車時間台詞</td><td class="pri p2">P2</td><td>錦上添花</td><td>下一輪</td></tr>
+      <tr><td>車資級距</td><td class="pri p2">不做</td><td>「你這個月花了…」是記帳 app 的話，不是寵物的話</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="try">
+    <b>提案現場怎麼演（已可操作）</b>
+    <ol>
+      <li>打開原型，往下捲到模擬面板，按 <b>載入真實乘客</b> —— 通勤那句台詞立刻出現，日誌多五個去過的章，收藏多一張「跑最遠的一次」SSR 明信片</li>
+      <li>按 <b>模擬去了醫院</b> —— 首頁只剩一句軟話、盲盒入口消失，示範靜音日</li>
+      <li>隔天（或清掉狀態）一切自動恢復</li>
+    </ol>
+  </div>
+
+  <h2>成效怎麼量</h2>
+  <p class="sub">北極星只有一個：<b style="color:var(--ink)">沒有叫車需求的 D7 回訪</b>。測試時只問三題——</p>
+  <p>「你會怎麼跟朋友描述這個 app？」（定位有沒有傳達到）　「哪一句話你會截圖？」（傳播點在哪）　「什麼情況下你明天還會打開？」（回訪鉤子成不成立）。隔天再補一題最準的：<b>「今天有想到它嗎？」</b></p>
+
+  <div class="foot">幸運貴氣馬麻 · yoxi 車車概念提案 · 資料為 2026/2/2 – 4/4 共 67 趟去識別化行程，所有台詞與合作對象皆為示意</div>
+
+</div>
