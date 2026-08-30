@@ -1336,6 +1336,8 @@
       <div style="display:flex;gap:8px">
         <button class="btn primary" id="btnPush" style="justify-content:center">發一則推播</button>
         <button class="btn" id="btnSeed" style="justify-content:center">模擬跑一天</button>
+        <button class="btn" id="btnDemo" style="justify-content:center">載入真實乘客</button>
+        <button class="btn" id="btnQuiet" style="justify-content:center">模擬去了醫院</button>
         <button class="btn ghost" id="btnReset" style="justify-content:center">重來</button>
       </div>
     </div>
@@ -1975,6 +1977,40 @@
              gent: "請便。我在此候著。", misty: "去吧。我看著你走。", meme: "蛤？欸——歸剛欸——",
              boss: "……去吧。", sis: "去啊。姐又不是離不開你。", tea: "去啊～～你去～～我又不會怎樣～～", social: "你走？欸——我還沒講完——" }
   };
+
+  /* ── 靜音表 ────────────────────────────────────────────
+     有些目的地代表那天不適合開玩笑：醫院、殯儀館、派出所。
+     去過的那一天，車車不講笑話、不發盲盒、不問要不要改名，
+     只留一句最軟的話。知道什麼時候閉嘴，是這個 IP 的及格線。 */
+
+  const QUIET_RE = /醫院|殯儀|派出所|急診|診所/;
+  const quietToday = () => S.quiet && S.quiet.d === dayKey();
+
+  const QUIET_LINES = {
+    warm:  "我在。想去哪，或不想去哪，都可以。",
+    tsun:  "今天不唸你。上車就好。",
+    sunny: "今天我開穩一點。",
+    gent:  "我在樓下。不急。",
+    misty: "今天不用說話。路我來想。",
+    meme:  "今天不鬧你。想出門就說。",
+    boss:  "我在。",
+    sis:   "姐在。什麼都不用說。",
+    tea:   "今天不跟你盧。我就在這裡。",
+    social:"今天不講那些。我在。"
+  };
+
+  /* ── 真實乘客 demo ─────────────────────────────────────
+     用一批真實行程資料（67 趟、2/2–4/4）長出來的體驗，
+     載入後可以直接演：通勤認證、去過的章、跑最遠那趟的明信片。
+     台詞講結論不講統計——數字只留在這個註解裡：
+     平均出門前 7.6 分鐘下單、81% 行程在早上十點前、最遠 48.8 km。 */
+
+  const DEMO_LINES = [
+    "這條路你昨天也走過。今天慢了兩分鐘——不是我，是那個紅燈。",
+    "你都出門前幾分鐘才叫我。我沒有意見，我只是每次都在猜。",
+    "你的一天幾乎都在早上十點前發生。我把鬧鐘設在你前面。",
+    "上次讓你等了半小時，這件事我記到現在。"
+  ];
 
   /* ── 你是不是故意的 ────────────────────────────────────
      一直挑紅色的話題、一直在它生氣的時候戳它、哄它還選「那我先走了」——
@@ -2751,7 +2787,9 @@
     ask: null,                                     // 車車自己開口要的東西：{ d, kind, n, say, answered }
     lastRide: null,                                // 最後一次搭車是哪天（太久沒搭它會心碎）
     pre: false,                                    // 你有沒有答應幫它升級 premium（純屬玩笑，沒有金流）
-    m: null                                        // 你故意惹它的次數：{ n, d }。幾天不惹就會退回去
+    m: null,                                       // 你故意惹它的次數：{ n, d }。幾天不惹就會退回去
+    quiet: null,                                   // 靜音日：{ d }。去了醫院那類地方，當天不開玩笑
+    demo: false                                    // 真實乘客 demo 有沒有載入
   });
 
   let S = load();
@@ -4646,7 +4684,7 @@
 
   /* 一天問一次就好，而且要跑過一趟或連續來過才會開口 */
   function askIfWants() {
-    if (!S.onboarded || S.hail) return false;
+    if (!S.onboarded || S.hail || quietToday()) return false;
     const eligible = S.rides >= 1 || (S.seen && S.seen.n >= 2);
     if (!eligible) return false;
     if (!S.ask || S.ask.d !== dayKey()) {
@@ -4694,6 +4732,7 @@
 
   /* 一天的第一句：先是連續天數的梗，再來是它自己那件事，之後才輪到一般台詞 */
   function openingLine() {
+    if (quietToday()) return QUIET_LINES[persId()];
     const solo = soloToday();
     if (!S.solo.shown) {
       S.solo.shown = true; save();
@@ -4705,7 +4744,9 @@
 
   function line() {
     const sl = slotOf(hour).id, top = topHabit();
+    if (quietToday()) return QUIET_LINES[persId()];
     if (heartBroken() && Math.random() < 0.7) return pick(BROKEN[persId()]);
+    if (S.demo && Math.random() < 0.18) return pick(DEMO_LINES);
     if (mLevel() >= 3 && Math.random() < 0.4) return pick(M_HOME);
     const own = SKIN_LINES[S.skin];
     if (own && Math.random() < (S.skin === "tea" || S.skin === "social" ? 0.34 : 0.22)) return pick(own);
@@ -4756,6 +4797,7 @@
     S.km = +(S.km + km).toFixed(1);
     S.rides += 1;
     S.lastRide = dayKey();      /* 有搭就重新計時，心碎的倒數從今天開始算 */
+    if (QUIET_RE.test(place.n)) S.quiet = { d: dayKey() };
     S.intimacy += Math.round(4 + km * 1.6);
     S.mood = clamp(S.mood + 3);
     S.energy = clamp(S.energy - 4);
@@ -6102,7 +6144,9 @@
   function renderBoxPin() {
     const pin = $("boxPin");
     if (!pin) return;
-    /* 用完不藏起來——藏起來就沒地方看「什麼時候補」 */
+    /* 用完不藏起來——藏起來就沒地方看「什麼時候補」。
+       但靜音日例外：那天不適合發約會 */
+    if (quietToday()) { pin.hidden = true; return; }
     pin.hidden = false;
     pin.className = "boxPin" + (S.boxLeft <= 0 ? " spent" : "");
     $("bpArt").innerHTML = boxSVG();
@@ -6482,6 +6526,32 @@
     $("talkClose").addEventListener("click", () => { $("talkSheet").hidden = true; });
     $("rvClose").addEventListener("click", closeReveal);
 
+    /* 真實乘客 demo：67 趟資料長出來的東西一次到位 */
+    $("btnDemo").addEventListener("click", () => {
+      S.demo = true;
+      S.rides = Math.max(S.rides, 5); S.km = Math.max(S.km, 42.3);
+      const put = (n, t, km) => { S.places[n] = S.places[n] || { t, n: 1, km, first: "08:00" }; };
+      put("雙園河濱公園", "river", 2.4); put("上海鄉村仁愛店", "market", 7.8);
+      put("元榮小食堂", "market", 7.8);  put("全家新莊華寧店", "store", 3.5);
+      put("台北火車站", "office", 3.2);
+      if (!S.saved.some(x => x.title === "跑最遠的一次")) {
+        S.saved.unshift({ r: "SSR", title: "跑最遠的一次", from: "住家", to: "桃園方向 · 48.8 km",
+                          slot: "06:23 出發 · 62 分", fare: 1350, pt: "river" });
+        S.saved = S.saved.slice(0, 8);
+      }
+      save(); renderTabs();
+      if (currentTab === "home") renderHome();
+      say(DEMO_LINES[0]);
+      toast("真實乘客資料已載入");
+    });
+
+    /* 靜音日 demo：昨天去了醫院，今天它知道要收起玩笑 */
+    $("btnQuiet").addEventListener("click", () => {
+      S.quiet = { d: dayKey() }; save();
+      if (currentTab === "home") renderHome();
+      toast("今天是靜音日");
+    });
+
     $("btnPush").addEventListener("click", autoPush);
     $("push").addEventListener("click", () => $("push").classList.remove("in"));
     $("push").addEventListener("keydown", e => {
@@ -6510,6 +6580,7 @@
     $("btnReset").addEventListener("click", () => {
       S = defaults(); save();
       onbStep = 1; shakeCount = 0;
+      /* demo 狀態跟著歸零（defaults 已含 demo/quiet 欄位，這裡只是提醒） */
       clearInterval(rideTimer); clearInterval(comeTimer);
       closeHail(); closeBoxSheet();
       $("onbName").value = rollName();
